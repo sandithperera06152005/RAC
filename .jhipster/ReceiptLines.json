@@ -1,0 +1,58 @@
+{
+  "annotations": {
+    "changelogDate": "20250226053608"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "lineid",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "invoicecode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "invoicetype",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "originalamount",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "amountowing",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "discountavailable",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "discounttaken",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "amountreceived",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "lmu",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "lmd",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "accountid",
+      "fieldType": "Long"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "ReceiptLines",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

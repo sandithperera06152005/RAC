@@ -1,0 +1,12 @@
+entity SalesInvoiceServiceChargeLineDummy {
+  // Primary key
+  invoiceId Integer,
+  lineId Integer,
+  optionId Integer,
+  serviceName String,
+  serviceDescription String,
+  value Float,
+  isCustomerService Boolean
+}
+paginate * with pagination
+filter all

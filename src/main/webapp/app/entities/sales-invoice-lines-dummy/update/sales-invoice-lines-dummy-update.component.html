@@ -1,0 +1,103 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<div class="d-flex justify-content">
+  <form name="editForm" novalidate [formGroup]="editForm">
+    <h2 id="jhi-sales-invoice-lines-dummy-heading" data-cy="SalesInvoiceLinesDummyCreateUpdateHeading" *ngIf="showCodeField"></h2>
+
+    <jhi-alert-error></jhi-alert-error>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th *ngIf="showCodeField" style="width: 120px">ID</th>
+            <th *ngIf="showCodeField" style="width: 150px">Invoice Id</th>
+            <th *ngIf="showCodeField" style="width: 150px">Line Id</th>
+            <th *ngIf="showCodeField" style="width: 150px">Item Id</th>
+            <th style="width: 100px">Item Code</th>
+            <th>Item Name</th>
+            <th *ngIf="showCodeField" style="width: 200px">Description</th>
+            <th *ngIf="showCodeField" style="width: 150px">Unit Of Measurement</th>
+            <th style="width: 120px">Quantity</th>
+            <th *ngIf="showCodeField" style="width: 150px">Item Cost</th>
+            <th *ngIf="showCodeField" style="width: 150px">Item Price</th>
+            <th style="width: 120px">Discount</th>
+            <th *ngIf="showCodeField" style="width: 120px">Tax</th>
+            <th style="width: 80px">Selling Price</th>
+            <th style="width: 80px">Line Total</th>
+            <th *ngIf="showCodeField" style="width: 120px">Lmu</th>
+            <th *ngIf="showCodeField" style="width: 180px">Lmd</th>
+            <th *ngIf="showCodeField" style="width: 100px">Nbt</th>
+            <th *ngIf="showCodeField" style="width: 100px">Vat</th>
+            <th style="width: 150px">Actions</th>
+          </tr>
+        </thead>
+        <tbody formArrayName="salesInvoiceLinesDummy">
+          <tr *ngFor="let line of salesInvoiceLinesDummyArray.controls; let i = index" [formGroupName]="i">
+            <td *ngIf="showCodeField">
+              <input type="number" class="form-control" formControlName="id" [readonly]="true" *ngIf="line.get('id')?.value" />
+            </td>
+            <td *ngIf="showCodeField"><input type="number" class="form-control" formControlName="invoiceId" /></td>
+            <td *ngIf="showCodeField"><input type="number" class="form-control" formControlName="lineId" /></td>
+            <td *ngIf="showCodeField"><input type="number" class="form-control" formControlName="itemId" /></td>
+            <td>
+              <input
+                formControlName="itemCode"
+                type="text"
+                class="form-control border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 w-48"
+                (input)="onItemCodeInput($event, i)"
+                (change)="onItemCodeSelect($event, i)"
+                [attr.list]="'autocomplete' + i"
+                [readonly]="readonly"
+              />
+
+              <datalist [id]="'autocomplete' + i">
+                <option *ngFor="let item of filteredItems[i]" [value]="item.code">
+                  {{ item.name }}
+                </option>
+              </datalist>
+            </td>
+            <td style="width: 800px"><input type="text" class="form-control" formControlName="itemName" [readonly]="readonly" /></td>
+            <td *ngIf="showCodeField"><input type="text" class="form-control" formControlName="description" [readonly]="readonly" /></td>
+            <td *ngIf="showCodeField">
+              <input type="text" class="form-control" formControlName="unitOfMeasurement" [readonly]="readonly" />
+            </td>
+            <td>
+              <input type="number" class="form-control" formControlName="quantity" (input)="onQuantityChange(i)" [readonly]="readonly" />
+            </td>
+            <td *ngIf="showCodeField"><input type="number" class="form-control" formControlName="itemCost" [readonly]="readonly" /></td>
+            <td *ngIf="showCodeField"><input type="number" class="form-control" formControlName="itemPrice" [readonly]="readonly" /></td>
+            <td><input type="number" class="form-control" formControlName="discount" [readonly]="readonly" /></td>
+            <td *ngIf="showCodeField"><input type="number" class="form-control" formControlName="tax" [readonly]="readonly" /></td>
+            <td style="width: 720px"><input type="number" class="form-control" formControlName="sellingPrice" [readonly]="readonly" /></td>
+            <td style="width: 780px"><input type="number" class="form-control" formControlName="lineTotal" [readonly]="readonly" /></td>
+            <td *ngIf="showCodeField"><input type="number" class="form-control" formControlName="lmu" [readonly]="readonly" /></td>
+            <td *ngIf="showCodeField"><input type="datetime-local" class="form-control" formControlName="lmd" [readonly]="readonly" /></td>
+            <td *ngIf="showCodeField"><input type="checkbox" class="form-check" formControlName="nbt" [disabled]="readonly" /></td>
+            <td *ngIf="showCodeField"><input type="checkbox" class="form-check" formControlName="vat" [disabled]="readonly" /></td>
+            <td class="text-center">
+              <button type="button" (click)="removeInvoiceLine(i)" class="btn btn-link text-danger p-0" *ngIf="!readonly">
+                <i class="fas fa-trash fs-5"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="showCodeField">
+      <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+        <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+      </button>
+
+      <button
+        type="submit"
+        id="save-entity"
+        data-cy="entityCreateSaveButton"
+        [disabled]="editForm.invalid || isSaving"
+        class="btn btn-primary"
+      >
+        <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+      </button>
+    </div>
+  </form>
+</div>

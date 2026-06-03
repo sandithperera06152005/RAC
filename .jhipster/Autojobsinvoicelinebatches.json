@@ -1,0 +1,122 @@
+{
+  "annotations": {
+    "changelogDate": "20250227165912"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "lineid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "batchlineid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "itemid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "batchid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "batchcode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "txdate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "manufacturedate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "expireddate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "qty",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "cost",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "price",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "notes",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "lmu",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "lmd",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "nbt",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "vat",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "discount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "total",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "issued",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "issuedby",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "issueddatetime",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "addedbyid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "canceloptid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "cancelopt",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "cancelby",
+      "fieldType": "Integer"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Autojobsinvoicelinebatches",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

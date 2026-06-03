@@ -1,0 +1,11 @@
+id;invoice_id;line_id;item_id;item_code;item_name;description;unit_of_measurement;quantity;item_cost;item_price;discount;tax;selling_price;line_total;lmu;lmd;nbt;vat
+1;9393;4187;21185;other entrench vice;pale advancement gurn;fooey;exploration;11353.53;17665.41;20941.33;27049.21;4772.86;1415.97;9551.27;21835;2025-01-29T21:13:02;false;false
+2;17429;21723;4783;once convince bran;who puppet after;that;mild collectivization;8790.15;13936.09;15724.34;31255.39;27210.26;8232.86;8920.53;17241;2025-01-30T00:19:46;true;true
+3;1377;1362;14039;along scoff closely;bungalow deliberately doing;prudent upwardly;snack;25960.47;27129.35;5972.71;21669.89;1479.36;504.2;12745.92;17765;2025-01-30T03:20:02;true;true
+4;9948;13651;1348;excellent;meanwhile;unbalance;kookily downchange next;13976.57;21608.74;18223.94;9401.52;15610.95;23072.3;31907.65;16710;2025-01-29T13:46:20;false;true
+5;1389;6029;3193;retention since retool;haunting forswear precedent;icebreaker;pish silently gadzooks;11968.53;12645.3;10907.5;5444.41;25885.23;8664.84;10957.26;7455;2025-01-29T12:14:41;false;false
+6;10421;17331;4702;gadzooks heating;cruel;lest;intellect circa plumber;23380.36;29660.1;6125.75;2318.72;13696.18;26543.09;6840.2;30175;2025-01-29T11:55:05;false;false
+7;27361;13375;1766;boldly tomorrow;oddly;but;yahoo;5780.03;13015.93;19713.38;2471.04;27690.93;15320.89;24349.2;6345;2025-01-30T05:45:57;false;true
+8;4357;7257;15237;brr torn painfully;entrench;sun whether;biodegradable wobbly unearth;30770.58;23257.73;20387.1;24374.01;15947.33;190.03;14992.15;717;2025-01-30T05:22:59;true;false
+9;11476;13123;3019;haze;ick but;down gut;barracks though intermix;25168.47;19387.7;20208.92;15920.96;23272.91;17838.85;21137.57;24862;2025-01-29T08:06:37;true;false
+10;15870;19673;29339;quick-witted;reluctantly;pish;beneath pace;29942.77;31246.26;17022.38;24660.54;21133.55;7617.42;15791.48;9081;2025-01-29T23:55:32;true;false

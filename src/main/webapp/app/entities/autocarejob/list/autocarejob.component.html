@@ -1,0 +1,439 @@
+<div>
+  <h2 id="page-heading" data-cy="AutocarejobHeading">
+    <span>Autocarejobs</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span>Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-autocarejob"
+        [routerLink]="['/autocarejob/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span>Create a new Autocarejob</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (autocarejobs?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span>No Autocarejobs found</span>
+    </div>
+  }
+
+  @if (autocarejobs && autocarejobs.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span>ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="jobnumber">
+              <div class="d-flex">
+                <span>Jobnumber</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="vehicleid" *ngIf="false">
+              <div class="d-flex">
+                <span>Vehicleid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="vehiclenumber">
+              <div class="d-flex">
+                <span>Vehiclenumber</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="millage">
+              <div class="d-flex">
+                <span>Millage</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="nextmillage">
+              <div class="d-flex">
+                <span>Nextmillage</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="nextservicedate" *ngIf="false">
+              <div class="d-flex">
+                <span>Nextservicedate</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="vehicletypeid" *ngIf="false">
+              <div class="d-flex">
+                <span>Vehicletypeid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="jobtypeid" *ngIf="false">
+              <div class="d-flex">
+                <span>Jobtypeid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="jobtypename">
+              <div class="d-flex">
+                <span>Jobtypename</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="jobopenby" *ngIf="false">
+              <div class="d-flex">
+                <span>Jobopenby</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="jobopentime" *ngIf="false">
+              <div class="d-flex">
+                <span>Jobopentime</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lmu" *ngIf="false">
+              <div class="d-flex">
+                <span>Lmu</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lmd" *ngIf="false">
+              <div class="d-flex">
+                <span>Lmd</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="specialrquirments" *ngIf="false">
+              <div class="d-flex">
+                <span>Specialrquirments</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="specialinstructions" *ngIf="false">
+              <div class="d-flex">
+                <span>Specialinstructions</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="remarks" *ngIf="false">
+              <div class="d-flex">
+                <span>Remarks</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="nextserviceinstructions" *ngIf="false">
+              <div class="d-flex">
+                <span>Nextserviceinstructions</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lastserviceinstructions" *ngIf="false">
+              <div class="d-flex">
+                <span>Lastserviceinstructions</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isadvisorchecked" *ngIf="false">
+              <div class="d-flex">
+                <span>Isadvisorchecked</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isempallocated" *ngIf="false">
+              <div class="d-flex">
+                <span>Isempallocated</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="jobclosetime" *ngIf="false">
+              <div class="d-flex">
+                <span>Jobclosetime</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isjobclose" *ngIf="false">
+              <div class="d-flex">
+                <span>Isjobclose</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isfeedback" *ngIf="false">
+              <div class="d-flex">
+                <span>Isfeedback</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="feedbackstatusid" *ngIf="false">
+              <div class="d-flex">
+                <span>Feedbackstatusid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="customername">
+              <div class="d-flex">
+                <span>Customername</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="customertel" *ngIf="false">
+              <div class="d-flex">
+                <span>Customertel</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="customerid" *ngIf="false">
+              <div class="d-flex">
+                <span>Customerid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="advisorfinalcheck" *ngIf="false">
+              <div class="d-flex">
+                <span>Advisorfinalcheck</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="jobdate">
+              <div class="d-flex">
+                <span>Jobdate</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="iscompanyservice" *ngIf="false">
+              <div class="d-flex">
+                <span>Iscompanyservice</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="freeservicenumber" *ngIf="false">
+              <div class="d-flex">
+                <span>Freeservicenumber</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="companyid" *ngIf="false">
+              <div class="d-flex">
+                <span>Companyid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="updatetocustomer" *ngIf="false">
+              <div class="d-flex">
+                <span>Updatetocustomer</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="nextgearoilmilage" *ngIf="false">
+              <div class="d-flex">
+                <span>Nextgearoilmilage</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isjobinvoiced" *ngIf="false">
+              <div class="d-flex">
+                <span>Isjobinvoiced</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="iswaiting" *ngIf="false">
+              <div class="d-flex">
+                <span>Iswaiting</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="iscustomercomment" *ngIf="false">
+              <div class="d-flex">
+                <span>Iscustomercomment</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="imagefolder" *ngIf="false">
+              <div class="d-flex">
+                <span>Imagefolder</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <!--<th scope="col" jhiSortBy="frontimage">
+              <div class="d-flex">
+                <span>Frontimage</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="leftimage">
+              <div class="d-flex">
+                <span>Leftimage</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="rightimage">
+              <div class="d-flex">
+                <span>Rightimage</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="backimage">
+              <div class="d-flex">
+                <span>Backimage</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dashboardimage">
+              <div class="d-flex">
+                <span>Dashboardimage</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th> -->
+            <!-- <th scope="col"></th> -->
+          </tr>
+        </thead>
+        <tbody>
+          @for (autocarejob of autocarejobs; track trackId) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/autocarejob', autocarejob.id, 'view']">{{ autocarejob.id }}</a>
+              </td>
+              <td>{{ autocarejob.jobnumber }}</td>
+              <td *ngIf="false">{{ autocarejob.vehicleid }}</td>
+              <td>{{ autocarejob.vehiclenumber }}</td>
+              <td>{{ autocarejob.millage }}</td>
+              <td>{{ autocarejob.nextmillage }}</td>
+              <td *ngIf="false">{{ autocarejob.nextservicedate | formatMediumDate }}</td>
+              <td *ngIf="false">{{ autocarejob.vehicletypeid }}</td>
+              <td *ngIf="false">{{ autocarejob.jobtypeid }}</td>
+              <td>{{ autocarejob.jobtypename }}</td>
+              <td *ngIf="false">{{ autocarejob.jobopenby }}</td>
+              <td *ngIf="false">{{ autocarejob.jobopentime | formatMediumDatetime }}</td>
+              <td *ngIf="false">{{ autocarejob.lmu }}</td>
+              <td *ngIf="false">{{ autocarejob.lmd | formatMediumDatetime }}</td>
+              <td *ngIf="false">{{ autocarejob.specialrquirments }}</td>
+              <td *ngIf="false">{{ autocarejob.specialinstructions }}</td>
+              <td *ngIf="false">{{ autocarejob.remarks }}</td>
+              <td *ngIf="false">{{ autocarejob.nextserviceinstructions }}</td>
+              <td *ngIf="false">{{ autocarejob.lastserviceinstructions }}</td>
+              <td *ngIf="false">{{ autocarejob.isadvisorchecked }}</td>
+              <td *ngIf="false">{{ autocarejob.isempallocated }}</td>
+              <td *ngIf="false">{{ autocarejob.jobclosetime | formatMediumDatetime }}</td>
+              <td *ngIf="false">{{ autocarejob.isjobclose }}</td>
+              <td *ngIf="false">{{ autocarejob.isfeedback }}</td>
+              <td *ngIf="false">{{ autocarejob.feedbackstatusid }}</td>
+              <td>{{ autocarejob.customername }}</td>
+              <td *ngIf="false">{{ autocarejob.customertel }}</td>
+              <td *ngIf="false">{{ autocarejob.customerid }}</td>
+              <td *ngIf="false">{{ autocarejob.advisorfinalcheck }}</td>
+              <td>{{ autocarejob.jobdate | formatMediumDatetime }}</td>
+              <td *ngIf="false">{{ autocarejob.iscompanyservice }}</td>
+              <td *ngIf="false">{{ autocarejob.freeservicenumber }}</td>
+              <td *ngIf="false">{{ autocarejob.companyid }}</td>
+              <td *ngIf="false">{{ autocarejob.updatetocustomer }}</td>
+              <td *ngIf="false">{{ autocarejob.nextgearoilmilage }}</td>
+              <td *ngIf="false">{{ autocarejob.isjobinvoiced }}</td>
+              <td *ngIf="false">{{ autocarejob.iswaiting }}</td>
+              <td *ngIf="false">{{ autocarejob.iscustomercomment }}</td>
+              <td *ngIf="false">{{ autocarejob.imagefolder }}</td>
+
+              <!--  <td>{{ autocarejob.frontimage }}</td>
+              <td>{{ autocarejob.leftimage }}</td>
+              <td>{{ autocarejob.rightimage }}</td>
+              <td>{{ autocarejob.backimage }}</td> -->
+
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/autocarejob', autocarejob.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                  </a>
+
+                  <a [routerLink]="['/autocarejob', autocarejob.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                  </a>
+
+                  <button type="submit" (click)="delete(autocarejob)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (autocarejobs && autocarejobs.length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,16 @@
+entity ReceiptLines {
+   
+  lineid Long,
+  invoicecode String,
+  invoicetype String,
+  originalamount Double,
+  amountowing Double,
+  discountavailable Double,
+  discounttaken Double,
+  amountreceived Double,
+  lmu Long,
+  lmd Instant,
+  accountid Long
+}
+paginate * with pagination
+filter all

@@ -1,0 +1,466 @@
+<div>
+  <h2 id="page-heading" data-cy="SalesInvoiceDummyHeading">
+    <span>Sales Invoice Dummies</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2 ms-3" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span>Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-sales-invoice-dummy"
+        [routerLink]="['/sales-invoice-dummy/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span>Create a new Sales Invoice Dummy</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <jhi-filter [filters]="filters"></jhi-filter>
+
+  @if (salesInvoiceDummies?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span>No Sales Invoice Dummies found</span>
+    </div>
+  }
+
+  @if (salesInvoiceDummies && salesInvoiceDummies.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <div *ngIf="false">
+              <th scope="col" jhiSortBy="id">
+                <div class="d-flex">
+                  <span>Id</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="originalInvoiceId">
+                <div class="d-flex">
+                  <span>Original Invoice Id</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+            </div>
+            <th scope="col" jhiSortBy="code">
+              <div class="d-flex">
+                <span>Code</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="invoiceDate">
+              <div class="d-flex">
+                <span>Invoice Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <div *ngIf="false">
+              <th scope="col" jhiSortBy="createdDate">
+                <div class="d-flex">
+                  <span>Created Date</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="quoteID">
+                <div class="d-flex">
+                  <span>Quote ID</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="orderID">
+                <div class="d-flex">
+                  <span>Order ID</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="deliveryDate">
+                <div class="d-flex">
+                  <span>Delivery Date</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="salesRepID">
+                <div class="d-flex">
+                  <span>Sales Rep ID</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="salesRepName">
+                <div class="d-flex">
+                  <span>Sales Rep Name</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="deliverFrom">
+                <div class="d-flex">
+                  <span>Deliver From</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="customerID">
+                <div class="d-flex">
+                  <span>Customer ID</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+            </div>
+            <th scope="col" jhiSortBy="customerName">
+              <div class="d-flex">
+                <span>Customer Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="customerAddress">
+              <div class="d-flex">
+                <span>Customer Address</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <div *ngIf="false">
+              <th scope="col" jhiSortBy="deliveryAddress">
+                <div class="d-flex">
+                  <span>Delivery Address</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+            </div>
+            <th scope="col" jhiSortBy="subTotal">
+              <div class="d-flex">
+                <span>Sub Total</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <div *ngIf="false">
+              <th scope="col" jhiSortBy="totalTax">
+                <div class="d-flex">
+                  <span>Total Tax</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="totalDiscount">
+                <div class="d-flex">
+                  <span>Total Discount</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+            </div>
+            <th scope="col" jhiSortBy="netTotal">
+              <div class="d-flex">
+                <span>Net Total</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <div *ngIf="false">
+              <th scope="col" jhiSortBy="message">
+                <div class="d-flex">
+                  <span>Message</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <div *ngIf="false">
+                <th scope="col" jhiSortBy="lmu">
+                  <div class="d-flex">
+                    <span>Lmu</span>
+
+                    <fa-icon class="p-1" icon="sort"></fa-icon>
+                  </div>
+                </th>
+                <th scope="col" jhiSortBy="lmd">
+                  <div class="d-flex">
+                    <span>Lmd</span>
+
+                    <fa-icon class="p-1" icon="sort"></fa-icon>
+                  </div>
+                </th>
+              </div>
+              <th scope="col" jhiSortBy="paidAmount">
+                <div class="d-flex">
+                  <span>Paid Amount</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+            </div>
+            <th scope="col" jhiSortBy="amountOwing">
+              <div class="d-flex">
+                <span>Amount Owing</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <div *ngIf="false">
+              <th scope="col" jhiSortBy="isActive">
+                <div class="d-flex">
+                  <span>Is Active</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+
+              <th scope="col" jhiSortBy="locationID">
+                <div class="d-flex">
+                  <span>Location ID</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="locationCode">
+                <div class="d-flex">
+                  <span>Location Code</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="referenceCode">
+                <div class="d-flex">
+                  <span>Reference Code</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="createdById">
+                <div class="d-flex">
+                  <span>Created By Id</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="createdByName">
+                <div class="d-flex">
+                  <span>Created By Name</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="autoCareCharges">
+                <div class="d-flex">
+                  <span>Auto Care Charges</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="autoCareJobId">
+                <div class="d-flex">
+                  <span>Auto Care Job Id</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+            </div>
+            <th scope="col" jhiSortBy="vehicleNo">
+              <div class="d-flex">
+                <span>Vehicle No</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <div *ngIf="false">
+              <th scope="col" jhiSortBy="nbtAmount">
+                <div class="d-flex">
+                  <span>Nbt Amount</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="vatAmount">
+                <div class="d-flex">
+                  <span>Vat Amount</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+            </div>
+            <th scope="col" jhiSortBy="dummyCommission">
+              <div class="d-flex">
+                <span>Dummy Commission</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <div *ngIf="false">
+              <th scope="col" jhiSortBy="commissionPaidDate">
+                <div class="d-flex">
+                  <span>Commission Paid Date</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="paidCommission">
+                <div class="d-flex">
+                  <span>Paid Commission</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="paidBy">
+                <div class="d-flex">
+                  <span>Paid By</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+              <th scope="col" jhiSortBy="originalInvoiceCode">
+                <div class="d-flex">
+                  <span>Original Invoice Code</span>
+
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                </div>
+              </th>
+            </div>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (salesInvoiceDummy of salesInvoiceDummies; track trackId(salesInvoiceDummy)) {
+            <tr data-cy="entityTable">
+              <div *ngIf="false">
+                <td>
+                  <a [routerLink]="['/sales-invoice-dummy', salesInvoiceDummy.id, 'view']">{{ salesInvoiceDummy.id }}</a>
+                </td>
+                <td>{{ salesInvoiceDummy.originalInvoiceId }}</td>
+              </div>
+              <td>{{ salesInvoiceDummy.code }}</td>
+              <td>{{ salesInvoiceDummy.invoiceDate | formatMediumDatetime }}</td>
+              <div *ngIf="false">
+                <td>{{ salesInvoiceDummy.createdDate | formatMediumDatetime }}</td>
+                <td>{{ salesInvoiceDummy.quoteID }}</td>
+                <td>{{ salesInvoiceDummy.orderID }}</td>
+                <td>{{ salesInvoiceDummy.deliveryDate | formatMediumDatetime }}</td>
+                <td>{{ salesInvoiceDummy.salesRepID }}</td>
+                <td>{{ salesInvoiceDummy.salesRepName }}</td>
+                <td>{{ salesInvoiceDummy.deliverFrom }}</td>
+                <td>{{ salesInvoiceDummy.customerID }}</td>
+              </div>
+              <td>{{ salesInvoiceDummy.customerName }}</td>
+              <td>{{ salesInvoiceDummy.customerAddress }}</td>
+              <div *ngIf="false">
+                <td>{{ salesInvoiceDummy.deliveryAddress }}</td>
+              </div>
+              <td>{{ salesInvoiceDummy.subTotal }}</td>
+              <div *ngIf="false">
+                <td>{{ salesInvoiceDummy.totalTax }}</td>
+                <td>{{ salesInvoiceDummy.totalDiscount }}</td>
+              </div>
+              <td>{{ salesInvoiceDummy.netTotal }}</td>
+              <div *ngIf="false">
+                <td>{{ salesInvoiceDummy.message }}</td>
+                <td>{{ salesInvoiceDummy.lmu }}</td>
+                <td>{{ salesInvoiceDummy.lmd | formatMediumDatetime }}</td>
+                <td>{{ salesInvoiceDummy.paidAmount }}</td>
+              </div>
+              <td>{{ salesInvoiceDummy.amountOwing }}</td>
+              <div *ngIf="false">
+                <td>{{ salesInvoiceDummy.isActive }}</td>
+                <td>{{ salesInvoiceDummy.locationID }}</td>
+                <td>{{ salesInvoiceDummy.locationCode }}</td>
+                <td>{{ salesInvoiceDummy.referenceCode }}</td>
+                <td>{{ salesInvoiceDummy.createdById }}</td>
+                <td>{{ salesInvoiceDummy.createdByName }}</td>
+                <td>{{ salesInvoiceDummy.autoCareCharges }}</td>
+                <td>{{ salesInvoiceDummy.autoCareJobId }}</td>
+                <td>{{ salesInvoiceDummy.nbtAmount }}</td>
+                <td>{{ salesInvoiceDummy.vatAmount }}</td>
+              </div>
+              <td>{{ salesInvoiceDummy.vehicleNo }}</td>
+
+              <div *ngIf="false">
+                <td>{{ salesInvoiceDummy.commissionPaidDate | formatMediumDatetime }}</td>
+                <td>{{ salesInvoiceDummy.paidCommission }}</td>
+                <td>{{ salesInvoiceDummy.paidBy }}</td>
+                <td>{{ salesInvoiceDummy.originalInvoiceCode }}</td>
+              </div>
+              <td>{{ salesInvoiceDummy.dummyCommission }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/sales-invoice-dummy', salesInvoiceDummy.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline">View</span>
+                  </a>
+
+                  <!-- <a
+                    [routerLink]="['/sales-invoice-dummy', salesInvoiceDummy.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline">Edit</span>
+                  </a> -->
+                  <a
+                    [routerLink]="['/voucher', 'new']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                    [queryParams]="{ id: salesInvoiceDummy.id, invoice: salesInvoiceDummy.dummyCommission }"
+                  >
+                    <fa-icon icon="book"></fa-icon>
+                    <span class="d-none d-md-inline"> Voucher</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(salesInvoiceDummy)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline">Delete</span>
+                  </button>
+                  <button type="button" (click)="printInvoice(salesInvoiceDummy.id)" class="btn btn-secondary btn-sm" title="Print Invoice">
+                    <fa-icon [icon]="faPrint"></fa-icon>
+                    <span class="d-none d-md-inline"> Print</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (salesInvoiceDummies && salesInvoiceDummies.length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

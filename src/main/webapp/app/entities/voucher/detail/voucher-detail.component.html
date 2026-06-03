@@ -1,0 +1,94 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (voucher(); as voucherRef) {
+      <div>
+        <h2 data-cy="voucherDetailsHeading"><span>Voucher</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ voucherRef.id }}</span>
+          </dd>
+          <dt><span>Code</span></dt>
+          <dd>
+            <span>{{ voucherRef.code }}</span>
+          </dd>
+          <dt><span>Voucher Date</span></dt>
+          <dd>
+            <span>{{ voucherRef.voucherDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Supplier Name</span></dt>
+          <dd>
+            <span>{{ voucherRef.supplierName }}</span>
+          </dd>
+          <dt><span>Supplier Address</span></dt>
+          <dd>
+            <span>{{ voucherRef.supplierAddress }}</span>
+          </dd>
+          <dt><span>Total Amount</span></dt>
+          <dd>
+            <span>{{ voucherRef.totalAmount }}</span>
+          </dd>
+          <dt><span>Total Amount In Word</span></dt>
+          <dd>
+            <span>{{ voucherRef.totalAmountInWord }}</span>
+          </dd>
+          <dt><span>Comments</span></dt>
+          <dd>
+            <span>{{ voucherRef.comments }}</span>
+          </dd>
+          <dt><span>Lmu</span></dt>
+          <dd>
+            <span>{{ voucherRef.lmu }}</span>
+          </dd>
+          <dt><span>Lmd</span></dt>
+          <dd>
+            <span>{{ voucherRef.lmd | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Term Id</span></dt>
+          <dd>
+            <span>{{ voucherRef.termId }}</span>
+          </dd>
+          <dt><span>Term</span></dt>
+          <dd>
+            <span>{{ voucherRef.term }}</span>
+          </dd>
+          <dt><span>Date</span></dt>
+          <dd>
+            <span>{{ voucherRef.date | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Amount Paid</span></dt>
+          <dd>
+            <span>{{ voucherRef.amountPaid }}</span>
+          </dd>
+          <dt><span>Supplier ID</span></dt>
+          <dd>
+            <span>{{ voucherRef.supplierID }}</span>
+          </dd>
+          <dt><span>Is Active</span></dt>
+          <dd>
+            <span>{{ voucherRef.isActive }}</span>
+          </dd>
+          <dt><span>Created By</span></dt>
+          <dd>
+            <span>{{ voucherRef.createdBy }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/voucher', voucherRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

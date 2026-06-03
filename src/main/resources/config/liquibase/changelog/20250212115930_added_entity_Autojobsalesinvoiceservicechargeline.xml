@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity Autojobsalesinvoiceservicechargeline.
+    -->
+    <changeSet id="20250212115930-1" author="jhipster">
+        <createTable tableName="autojobsalesinvoiceservicechargeline">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="invoiceid" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="lineid" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="optionid" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="servicename" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="servicediscription" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="value" type="${floatType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="addedbyid" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="iscustomersrvice" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="discount" type="${floatType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="serviceprice" type="${floatType}">
+                <constraints nullable="true" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+
+    <!--
+        Load sample data generated with Faker.js
+        - This data can be easily edited using a CSV editor (or even MS Excel) and
+          is located in the 'src/main/resources/config/liquibase/fake-data' directory
+        - By default this data is applied when running with the JHipster 'dev' profile.
+          This can be customized by adding or removing 'faker' in the 'spring.liquibase.contexts'
+          Spring Boot configuration key.
+    -->
+    <changeSet id="20250212115930-1-data" author="jhipster" context="faker">
+        <loadData
+                  file="config/liquibase/fake-data/autojobsalesinvoiceservicechargeline.csv"
+                  separator=";"
+                  tableName="autojobsalesinvoiceservicechargeline"
+                  usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="invoiceid" type="numeric"/>
+            <column name="lineid" type="numeric"/>
+            <column name="optionid" type="numeric"/>
+            <column name="servicename" type="string"/>
+            <column name="servicediscription" type="string"/>
+            <column name="value" type="numeric"/>
+            <column name="addedbyid" type="numeric"/>
+            <column name="iscustomersrvice" type="boolean"/>
+            <column name="discount" type="numeric"/>
+            <column name="serviceprice" type="numeric"/>
+            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

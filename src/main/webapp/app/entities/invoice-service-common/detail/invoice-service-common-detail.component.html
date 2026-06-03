@@ -1,0 +1,74 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (invoiceServiceCommon(); as invoiceServiceCommonRef) {
+      <div>
+        <h2 data-cy="invoiceServiceCommonDetailsHeading"><span>Invoice Service Common</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ invoiceServiceCommonRef.id }}</span>
+          </dd>
+          <dt><span>Invoice Id</span></dt>
+          <dd>
+            <span>{{ invoiceServiceCommonRef.invoiceId }}</span>
+          </dd>
+          <dt><span>Line Id</span></dt>
+          <dd>
+            <span>{{ invoiceServiceCommonRef.lineId }}</span>
+          </dd>
+          <dt><span>Option Id</span></dt>
+          <dd>
+            <span>{{ invoiceServiceCommonRef.optionId }}</span>
+          </dd>
+          <dt><span>Main Id</span></dt>
+          <dd>
+            <span>{{ invoiceServiceCommonRef.mainId }}</span>
+          </dd>
+          <dt><span>Code</span></dt>
+          <dd>
+            <span>{{ invoiceServiceCommonRef.code }}</span>
+          </dd>
+          <dt><span>Name</span></dt>
+          <dd>
+            <span>{{ invoiceServiceCommonRef.name }}</span>
+          </dd>
+          <dt><span>Description</span></dt>
+          <dd>
+            <span>{{ invoiceServiceCommonRef.description }}</span>
+          </dd>
+          <dt><span>Value</span></dt>
+          <dd>
+            <span>{{ invoiceServiceCommonRef.value }}</span>
+          </dd>
+          <dt><span>Added By Id</span></dt>
+          <dd>
+            <span>{{ invoiceServiceCommonRef.addedById }}</span>
+          </dd>
+          <dt><span>Discount</span></dt>
+          <dd>
+            <span>{{ invoiceServiceCommonRef.discount }}</span>
+          </dd>
+          <dt><span>Service Price</span></dt>
+          <dd>
+            <span>{{ invoiceServiceCommonRef.servicePrice }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/invoice-service-common', invoiceServiceCommonRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,148 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-receipt-lines-heading" data-cy="ReceiptLinesCreateUpdateHeading">Create or edit a Receipt Lines</h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_lineid">Lineid</label>
+          <input type="number" class="form-control" name="lineid" id="field_lineid" data-cy="lineid" formControlName="lineid" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_invoicecode">Invoicecode</label>
+          <input
+            type="text"
+            class="form-control"
+            name="invoicecode"
+            id="field_invoicecode"
+            data-cy="invoicecode"
+            formControlName="invoicecode"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_invoicetype">Invoicetype</label>
+          <input
+            type="text"
+            class="form-control"
+            name="invoicetype"
+            id="field_invoicetype"
+            data-cy="invoicetype"
+            formControlName="invoicetype"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_originalamount">Originalamount</label>
+          <input
+            type="number"
+            class="form-control"
+            name="originalamount"
+            id="field_originalamount"
+            data-cy="originalamount"
+            formControlName="originalamount"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_amountowing">Amountowing</label>
+          <input
+            type="number"
+            class="form-control"
+            name="amountowing"
+            id="field_amountowing"
+            data-cy="amountowing"
+            formControlName="amountowing"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_discountavailable">Discountavailable</label>
+          <input
+            type="number"
+            class="form-control"
+            name="discountavailable"
+            id="field_discountavailable"
+            data-cy="discountavailable"
+            formControlName="discountavailable"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_discounttaken">Discounttaken</label>
+          <input
+            type="number"
+            class="form-control"
+            name="discounttaken"
+            id="field_discounttaken"
+            data-cy="discounttaken"
+            formControlName="discounttaken"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_amountreceived">Amountreceived</label>
+          <input
+            type="number"
+            class="form-control"
+            name="amountreceived"
+            id="field_amountreceived"
+            data-cy="amountreceived"
+            formControlName="amountreceived"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_lmu">Lmu</label>
+          <input type="number" class="form-control" name="lmu" id="field_lmu" data-cy="lmu" formControlName="lmu" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_lmd">Lmd</label>
+          <div class="d-flex">
+            <input
+              id="field_lmd"
+              data-cy="lmd"
+              type="datetime-local"
+              class="form-control"
+              name="lmd"
+              formControlName="lmd"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_accountid">Accountid</label>
+          <input type="number" class="form-control" name="accountid" id="field_accountid" data-cy="accountid" formControlName="accountid" />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

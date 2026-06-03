@@ -1,0 +1,315 @@
+<div>
+  <h2 id="page-heading" data-cy="VoucherPaymentsDetailsHeading">
+    <span>Voucher Payments Details</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span>Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-voucher-payments-details"
+        [routerLink]="['/voucher-payments-details/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span>Create a new Voucher Payments Details</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <jhi-filter [filters]="filters"></jhi-filter>
+
+  @if (voucherPaymentsDetails?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span>No Voucher Payments Details found</span>
+    </div>
+  }
+
+  @if (voucherPaymentsDetails && voucherPaymentsDetails.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span>ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lineID">
+              <div class="d-flex">
+                <span>Line ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="paymentAmount">
+              <div class="d-flex">
+                <span>Payment Amount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="totalVoucherAmount">
+              <div class="d-flex">
+                <span>Total Voucher Amount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="checkqueAmount">
+              <div class="d-flex">
+                <span>Checkque Amount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="checkqueNo">
+              <div class="d-flex">
+                <span>Checkque No</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="checkqueDate">
+              <div class="d-flex">
+                <span>Checkque Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="checkqueExpireDate">
+              <div class="d-flex">
+                <span>Checkque Expire Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="bankName">
+              <div class="d-flex">
+                <span>Bank Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="bankID">
+              <div class="d-flex">
+                <span>Bank ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="creditCardNo">
+              <div class="d-flex">
+                <span>Credit Card No</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="creditCardAmount">
+              <div class="d-flex">
+                <span>Credit Card Amount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="reference">
+              <div class="d-flex">
+                <span>Reference</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="otherDetails">
+              <div class="d-flex">
+                <span>Other Details</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lmu">
+              <div class="d-flex">
+                <span>Lmu</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lmd">
+              <div class="d-flex">
+                <span>Lmd</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="termID">
+              <div class="d-flex">
+                <span>Term ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="termName">
+              <div class="d-flex">
+                <span>Term Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="accountNo">
+              <div class="d-flex">
+                <span>Account No</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="accountNumber">
+              <div class="d-flex">
+                <span>Account Number</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="accountId">
+              <div class="d-flex">
+                <span>Account Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="accountCode">
+              <div class="d-flex">
+                <span>Account Code</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="chequeStatusId">
+              <div class="d-flex">
+                <span>Cheque Status Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isDeposit">
+              <div class="d-flex">
+                <span>Is Deposit</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="depositedDate">
+              <div class="d-flex">
+                <span>Deposited Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="companyBankId">
+              <div class="d-flex">
+                <span>Company Bank Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isBankReconciliation">
+              <div class="d-flex">
+                <span>Is Bank Reconciliation</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (voucherPaymentsDetails of voucherPaymentsDetails; track trackId(voucherPaymentsDetails)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/voucher-payments-details', voucherPaymentsDetails.id, 'view']">{{ voucherPaymentsDetails.id }}</a>
+              </td>
+              <td>{{ voucherPaymentsDetails.lineID }}</td>
+              <td>{{ voucherPaymentsDetails.paymentAmount }}</td>
+              <td>{{ voucherPaymentsDetails.totalVoucherAmount }}</td>
+              <td>{{ voucherPaymentsDetails.checkqueAmount }}</td>
+              <td>{{ voucherPaymentsDetails.checkqueNo }}</td>
+              <td>{{ voucherPaymentsDetails.checkqueDate | formatMediumDatetime }}</td>
+              <td>{{ voucherPaymentsDetails.checkqueExpireDate | formatMediumDatetime }}</td>
+              <td>{{ voucherPaymentsDetails.bankName }}</td>
+              <td>{{ voucherPaymentsDetails.bankID }}</td>
+              <td>{{ voucherPaymentsDetails.creditCardNo }}</td>
+              <td>{{ voucherPaymentsDetails.creditCardAmount }}</td>
+              <td>{{ voucherPaymentsDetails.reference }}</td>
+              <td>{{ voucherPaymentsDetails.otherDetails }}</td>
+              <td>{{ voucherPaymentsDetails.lmu }}</td>
+              <td>{{ voucherPaymentsDetails.lmd | formatMediumDatetime }}</td>
+              <td>{{ voucherPaymentsDetails.termID }}</td>
+              <td>{{ voucherPaymentsDetails.termName }}</td>
+              <td>{{ voucherPaymentsDetails.accountNo }}</td>
+              <td>{{ voucherPaymentsDetails.accountNumber }}</td>
+              <td>{{ voucherPaymentsDetails.accountId }}</td>
+              <td>{{ voucherPaymentsDetails.accountCode }}</td>
+              <td>{{ voucherPaymentsDetails.chequeStatusId }}</td>
+              <td>{{ voucherPaymentsDetails.isDeposit }}</td>
+              <td>{{ voucherPaymentsDetails.depositedDate | formatMediumDatetime }}</td>
+              <td>{{ voucherPaymentsDetails.companyBankId }}</td>
+              <td>{{ voucherPaymentsDetails.isBankReconciliation }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/voucher-payments-details', voucherPaymentsDetails.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline">View</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/voucher-payments-details', voucherPaymentsDetails.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(voucherPaymentsDetails)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (voucherPaymentsDetails && voucherPaymentsDetails.length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

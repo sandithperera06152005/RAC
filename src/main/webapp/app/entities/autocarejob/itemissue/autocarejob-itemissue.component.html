@@ -1,0 +1,142 @@
+<div class="d-flex justify-content-center">
+  <div class="col-10">
+    <div class="row">
+      <div class="col-12">
+        <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+          <h2 id="jhi-autocarejob-heading" data-cy="AutocarejobCreateUpdateHeading">Issue Service Items</h2>
+
+          <div>
+            <jhi-alert-error></jhi-alert-error>
+
+            <div class="row"></div>
+            <h5 class="mb-3 mt-3">Customer Details</h5>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Job</th>
+                  <th>Vehicle</th>
+                  <th>Job Type</th>
+                  <th>Milage</th>
+                  <th>Special Rg.</th>
+                  <th>Sprecial In.</th>
+                  <th>Remarks</th>
+                  <th>Customer</th>
+                  <th>job open time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <td style="font-size: 0.75rem">{{ editForm.get('jobnumber')?.value }}</td>
+                <td style="font-size: 0.75rem">{{ editForm.get('vehiclenumber')?.value }}</td>
+                <td style="font-size: 0.75rem">{{ editForm.get('jobtypename')?.value }}</td>
+                <td style="font-size: 0.75rem">{{ editForm.get('millage')?.value }}</td>
+                <td style="font-size: 0.75rem">{{ editForm.get('specialrquirments')?.value }}</td>
+                <td style="font-size: 0.75rem">{{ editForm.get('specialinstructions')?.value }}</td>
+                <td style="font-size: 0.75rem">{{ editForm.get('remarks')?.value }}</td>
+                <td style="font-size: 0.75rem">{{ editForm.get('customername')?.value }}</td>
+                <td style="font-size: 0.75rem">{{ editForm.get('jobopentime')?.value }}</td>
+              </tbody>
+            </table>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tab panes -->
+    <div class="tab-content mt-3">
+      <div class="tab-pane fade show active" id="billing" role="tabpanel" aria-labelledby="billing-tab">
+        <div *ngIf="hasItemHistory; else noData">
+          <div class="card mb-3">
+            <div class="card-body shadow">
+              <h6>Available Items:</h6>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Item Code</th>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Unit Total</th>
+                    <th>Issue</th>
+                    <th>Cancel</th>
+                    <!-- Added Cancel Column -->
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let line of allInvoiceLines">
+                    <td style="font-size: 0.75rem">{{ line.itemcode }}</td>
+                    <td style="font-size: 0.75rem">{{ line.itemname }}</td>
+                    <td style="font-size: 0.75rem">{{ line.quantity }}</td>
+                    <td style="font-size: 0.75rem">{{ line.sellingprice }}</td>
+                    <td style="font-size: 0.75rem">{{ line.linetotal }}</td>
+                    <td style="font-size: 0.75rem">
+                      <button class="btn btn-success btn-sm" (click)="issueItem(line)">
+                        <i *ngIf="line.issued" class="bi bi-check-circle"></i> Issue
+                      </button>
+                    </td>
+                    <td>
+                      <select [(ngModel)]="line.selectedAction" class="form-select form-select-sm">
+                        <option value="return">By Customer</option>
+                        <option value="Service advicer">Service advicer</option>
+                        <option value="manager">Manager</option>
+                        <option value="product defect">product defect</option>
+                        <option value="not available">not available</option>
+                      </select>
+                    </td>
+                    <td style="font-size: 0.75rem">
+                      <button class="btn btn-danger btn-sm" (click)="removeAvailableItem(line)">Cancel</button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="allInvoiceLines.length === 0">
+                    <td colspan="7" class="text-center">No records to display</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h6>Issued Items:</h6>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Item Code</th>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Unit Total</th>
+                    <th>Cancel</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let issuedItem of issuedItems">
+                    <td style="font-size: 0.75rem">{{ issuedItem.itemcode }}</td>
+                    <td style="font-size: 0.75rem">{{ issuedItem.itemname }}</td>
+                    <td style="font-size: 0.75rem">{{ issuedItem.quantity }}</td>
+                    <td style="font-size: 0.75rem">{{ issuedItem.sellingprice }}</td>
+                    <td style="font-size: 0.75rem">{{ issuedItem.linetotal }}</td>
+                    <td>
+                      <button class="btn btn-danger btn-sm" (click)="cancelIssuedItem(issuedItem)">Cancel</button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="issuedItems.length === 0">
+                    <td colspan="6" class="text-center">No issued items</td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- <button class="btn btn-primary btn-sm mt-2" (click)="saveAll()">Save All</button> -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Show No Data Message When No Invoices Exist -->
+        <ng-template #noData>
+          <p class="text-center">No invoice history available.</p>
+        </ng-template>
+
+        <div class="tab-pane fade" id="service-charges" role="tabpanel" aria-labelledby="service-charges-tab"></div>
+      </div>
+      <div class="mt-4">
+        <button type="button" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back to Job</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

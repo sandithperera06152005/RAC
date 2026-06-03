@@ -1,0 +1,3 @@
+id;user_name;password;full_name;surname;email;image_path;is_active;department_code;emp_reg_date;lmu;lmd
+1;admin;YWRtaW4=;Administrator;Administrator;admin@localhost;;true;system;2024-01-01T00:00:00;system;2024-01-01T00:00:00
+2;user;dXNlcg==;User;User;user@localhost;;true;system;2024-01-01T00:00:00;system;2024-01-01T00:00:00

@@ -1,0 +1,54 @@
+{
+  "annotations": {
+    "changelogDate": "20250129191518"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "invoiceId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "lineId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "optionId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "serviceName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "serviceDiscription",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "value",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "addedById",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "isCustomerSrvice",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "discount",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "servicePrice",
+      "fieldType": "Double"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "InvoiceServiceCharge",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

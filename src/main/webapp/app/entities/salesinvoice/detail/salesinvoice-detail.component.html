@@ -1,0 +1,433 @@
+<style>
+  /* ===== Details Grid ===== */
+  .invoice-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem 3rem;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+  }
+
+  .invoice-item {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 4px;
+    border-left: 3px solid #007bff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .invoice-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.5px;
+  }
+
+  .invoice-value {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #212529;
+    word-break: break-word;
+  }
+
+  /* Highlight important financial items */
+  .invoice-item:nth-child(16), /* Subtotal */
+  .invoice-item:nth-child(17), /* Total Tax */
+  .invoice-item:nth-child(18), /* Total Discount */
+  .invoice-item:nth-child(19), /* Net Total */
+  .invoice-item:nth-child(20), /* Paid Amount */
+  .invoice-item:nth-child(21)  /* Amount Owing */ {
+    border-left-color: #28a745;
+    background-color: #f8fff9;
+  }
+
+  /* ===== Page Heading ===== */
+  .invoice-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+  }
+
+  .invoice-header h2 {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+  }
+
+  /* ===== Action Buttons ===== */
+  .action-buttons {
+    margin-top: 3rem;
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    justify-content: center;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 992px) {
+    .invoice-details {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem 2rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .invoice-details {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .invoice-header {
+      padding: 1rem;
+    }
+
+    .invoice-header > div {
+      flex-direction: column;
+      gap: 0.5rem;
+      text-align: center;
+    }
+  }
+
+  /* ===== Print Styles ===== */
+  @media print {
+    /* Method 1: Hide everything then show only invoice */
+    * {
+      visibility: hidden;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    #main-content,
+    #main-content *,
+    .invoice-print-area,
+    .invoice-print-area * {
+      visibility: visible;
+    }
+
+    /* Method 2: Hide common Angular app containers */
+    body > *:not(.invoice-print-area),
+    app-root > *:not(.invoice-print-area),
+    .app-container > *:not(.invoice-print-area),
+    .main-container > *:not(.invoice-print-area),
+    .container-fluid > *:not(.invoice-print-area),
+    [role='navigation'],
+    [role='banner'],
+    nav,
+    header,
+    footer,
+    .navbar,
+    .sidebar,
+    .app-nav,
+    .main-header,
+    .app-header {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      width: 0 !important;
+      overflow: hidden !important;
+      position: absolute !important;
+      opacity: 0 !important;
+    }
+
+    /* Method 3: Directly target the invoice area */
+    body {
+      margin: 0 !important;
+      padding: 0 !important;
+      font-size: 12pt !important;
+      background: white !important;
+      -webkit-print-color-adjust: exact;
+    }
+
+    /* Force the invoice to be the only thing displayed */
+    .invoice-print-area {
+      position: fixed !important;
+      left: 0 !important;
+      top: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      margin: 0 !important;
+      padding: 20px !important;
+      background: white !important;
+      z-index: 99999 !important;
+    }
+
+    /* Reset all Bootstrap containers */
+    .container,
+    .container-fluid,
+    .row,
+    .col-8,
+    .d-flex {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: block !important;
+    }
+
+    /* Invoice styling */
+    .invoice-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #000;
+      padding-bottom: 1rem;
+    }
+
+    .invoice-header h2 {
+      font-size: 28pt !important;
+      margin: 0 0 0.5rem 0;
+    }
+
+    /* Remove duplicate grid styles - already defined above */
+    .invoice-details {
+      gap: 1rem 2rem !important;
+      margin-top: 2rem !important;
+    }
+
+    .invoice-item {
+      margin-bottom: 1rem;
+      break-inside: avoid;
+    }
+
+    .invoice-label {
+      font-size: 10pt !important;
+      font-weight: bold;
+      color: #000 !important;
+      margin-bottom: 0.25rem;
+    }
+
+    .invoice-value {
+      font-size: 11pt !important;
+      color: #000 !important;
+      padding-bottom: 0.25rem;
+      border-bottom: 1px solid #ddd;
+    }
+
+    /* Hide all buttons and interactive elements */
+    button,
+    .btn,
+    a,
+    .action-buttons,
+    fa-icon,
+    jhi-alert-error,
+    jhi-alert {
+      display: none !important;
+    }
+
+    /* Page setup */
+    @page {
+      margin: 1cm;
+      size: A4 portrait;
+    }
+  }
+</style>
+
+<!-- Wrap the entire invoice content in a print area div -->
+<div class="d-flex justify-content-center invoice-print-area">
+  <div class="col-10">
+    @if (salesinvoice()) {
+      <div id="main-content">
+        <!-- HEADER -->
+        <div class="invoice-header">
+          <br />
+          <h2 data-cy="salesinvoiceDetailsHeading" class="text-primary">Sales Invoice</h2>
+          <br />
+          <hr />
+          <!-- Add invoice summary info -->
+          <div style="display: flex; justify-content: space-between; margin-top: 1rem">
+            <div><strong>Invoice #:</strong> {{ salesinvoice()!.code }}</div>
+            <div><strong>Date:</strong> {{ salesinvoice()!.invoicedate | formatMediumDatetime }}</div>
+            <div><strong>Customer:</strong> {{ salesinvoice()!.customername }}</div>
+            <div><strong>Vehicle No:</strong> {{ salesinvoice()!.vehicleno || '-' }}</div>
+          </div>
+        </div>
+
+        <!-- ITEMIZED TABS -->
+        <div class="mt-4">
+          <ul class="nav nav-tabs" id="invoiceTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link active"
+                id="items-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#items"
+                type="button"
+                role="tab"
+                aria-controls="items"
+                aria-selected="true"
+              >
+                <fa-icon icon="boxes"></fa-icon> Items (Billing)
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="services-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#services"
+                type="button"
+                role="tab"
+                aria-controls="services"
+                aria-selected="false"
+              >
+                <fa-icon icon="tools"></fa-icon> Service Charges
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="common-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#common"
+                type="button"
+                role="tab"
+                aria-controls="common"
+                aria-selected="false"
+              >
+                <fa-icon icon="hand-holding-usd"></fa-icon> Common Charges
+              </button>
+            </li>
+          </ul>
+
+          <div class="tab-content border border-top-0 p-3 bg-white shadow-sm rounded-bottom" id="invoiceTabsContent">
+            <!-- ITEMS TAB -->
+            <div class="tab-pane fade show active" id="items" role="tabpanel" aria-labelledby="items-tab">
+              <div class="table-responsive">
+                <table class="table table-sm table-striped table-hover">
+                  <thead class="table-light text-primary">
+                    <tr>
+                      <th>Code</th>
+                      <th>Description</th>
+                      <th class="text-center">Qty</th>
+                      <th class="text-end">Unit Price</th>
+                      <th class="text-end">Discount</th>
+                      <th class="text-end">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (line of invoiceLines(); track line.id) {
+                      <tr>
+                        <td>{{ line.itemcode }}</td>
+                        <td>{{ line.itemname || line.description }}</td>
+                        <td class="text-center">{{ line.quantity }}</td>
+                        <td class="text-end">{{ line.itemprice | currency: 'Rs. ' }}</td>
+                        <td class="text-end text-danger">
+                          {{ line.discount ?? line.discountamount ?? line.discountAmount ?? line.itemdiscount ?? 0 | currency: 'Rs. ' }}
+                        </td>
+
+                        <td class="text-end fw-bold text-success">{{ line.linetotal | currency: 'Rs. ' }}</td>
+                      </tr>
+                    } @empty {
+                      <tr>
+                        <td colspan="6" class="text-center text-muted py-3">No items found for this invoice.</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- SERVICE CHARGES TAB -->
+            <div class="tab-pane fade" id="services" role="tabpanel" aria-labelledby="services-tab">
+              <div class="table-responsive">
+                <table class="table table-sm table-striped table-hover">
+                  <thead class="table-light text-primary">
+                    <tr>
+                      <th>Service Name</th>
+                      <th class="text-end">Charge Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (service of serviceCharges(); track service.id) {
+                      <tr>
+                        <td>{{ service.serviceName }}</td>
+                        <td class="text-end fw-bold text-success">{{ service.value | currency: 'Rs. ' }}</td>
+                      </tr>
+                    } @empty {
+                      <tr>
+                        <td colspan="2" class="text-center text-muted py-3">No service charges found.</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- COMMON CHARGES TAB -->
+            <div class="tab-pane fade" id="common" role="tabpanel" aria-labelledby="common-tab">
+              <div class="table-responsive">
+                <table class="table table-sm table-striped table-hover">
+                  <thead class="table-light text-primary">
+                    <tr>
+                      <th>Charge Name</th>
+                      <th class="text-end">Charge Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (common of commonCharges(); track common.id) {
+                      <tr>
+                        <td>{{ common.name || common.itemName || common.itemname }}</td>
+                        <td class="text-end fw-bold text-success">
+                          {{ common.value || common.sellingPrice || common.sellingprice | currency: 'Rs. ' }}
+                        </td>
+                      </tr>
+                    } @empty {
+                      <tr>
+                        <td colspan="2" class="text-center text-muted py-3">No common charges found.</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add a totals summary for better visibility -->
+        <div style="margin-top: 3rem; padding: 1.5rem; border: 1px solid #dee2e6; border-radius: 8px; background-color: #f8f9fa">
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; font-size: 11pt">
+            <div>
+              <span class="text-muted small d-block">Subtotal</span>
+              <strong>{{ salesinvoice()!.subtotal | currency: 'Rs. ' }}</strong>
+            </div>
+            <div>
+              <span class="text-muted small d-block">Tax</span>
+              <strong>{{ salesinvoice()!.totaltax | currency: 'Rs. ' }}</strong>
+            </div>
+            <div>
+              <span class="text-muted small d-block text-danger">Discount</span>
+              <strong class="text-danger">{{ salesinvoice()!.totaldiscount | currency: 'Rs. ' }}</strong>
+            </div>
+            <div style="border-left: 2px solid #dee2e6; padding-left: 1rem">
+              <span class="text-muted small d-block">Net Total</span>
+              <h4 class="text-success mb-0">{{ salesinvoice()!.nettotal | currency: 'Rs. ' }}</h4>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTION BUTTONS (Hidden when printing) -->
+        <div class="action-buttons">
+          <button type="button" (click)="previousState()" class="btn btn-info"><fa-icon icon="arrow-left"></fa-icon>&nbsp;Back</button>
+
+          <!-- <button type="button" [routerLink]="['/salesinvoice', salesinvoice()!.id, 'edit']" class="btn btn-primary">
+            <fa-icon icon="pencil-alt"></fa-icon>&nbsp;Edit
+          </button> -->
+
+          <button type="button" (click)="printInvoice()" class="btn btn-success"><fa-icon icon="print"></fa-icon>&nbsp;Print 🖨</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

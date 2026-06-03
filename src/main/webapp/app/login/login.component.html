@@ -1,0 +1,56 @@
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+  <div class="col-lg-5 col-md-7 col-sm-10 p-4 shadow rounded bg-white">
+    <img src="content/images/rac.jpg" alt="JHipster Family Member" class="image-resize d-block mx-auto mb-3" style="max-width: 100px; height: auto;">
+    <h1 class="text-dark fw-bold mb-2" data-cy="loginTitle">Sign in</h1>
+    <p class="text-secondary">Don't have an account? <a class="text-primary  alert-link" routerLink="/account/register">Sign up</a></p>
+
+    
+    @if (authenticationError()) {
+      <div class="alert alert-danger" data-cy="loginError">
+        <strong>Failed to sign in!</strong> Please check your credentials and try again.
+      </div>
+    }
+
+    <form class="form" (ngSubmit)="login()" [formGroup]="loginForm">
+      <div class="mb-3">
+        <label class="form-label fw-semibold" for="email">Email address*</label>
+        <input
+          type="email"
+          class="form-control"
+          name="email"
+          id="email"
+          placeholder="Enter your email"
+          formControlName="username"
+          required
+          data-cy="email"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold" for="password">Password*</label>
+        <div class="input-group">
+          <input
+            type="password"
+            class="form-control"
+            name="password"
+            id="password"
+            placeholder="Enter your password"
+            formControlName="password"
+            required
+            data-cy="password"
+          />
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="rememberMe" id="rememberMe" formControlName="rememberMe" />
+          <label class="form-check-label text-secondary" for="rememberMe"> Remember me </label>
+        </div>
+        <a class="text-primary fw-semibold" href="/account/reset/request" data-cy="forgetYourPasswordSelector">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 py-2 fw-bold" data-cy="submit">Sign in</button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,74 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (receiptLines(); as receiptLinesRef) {
+      <div>
+        <h2 data-cy="receiptLinesDetailsHeading"><span>Receipt Lines</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ receiptLinesRef.id }}</span>
+          </dd>
+          <dt><span>Lineid</span></dt>
+          <dd>
+            <span>{{ receiptLinesRef.lineid }}</span>
+          </dd>
+          <dt><span>Invoicecode</span></dt>
+          <dd>
+            <span>{{ receiptLinesRef.invoicecode }}</span>
+          </dd>
+          <dt><span>Invoicetype</span></dt>
+          <dd>
+            <span>{{ receiptLinesRef.invoicetype }}</span>
+          </dd>
+          <dt><span>Originalamount</span></dt>
+          <dd>
+            <span>{{ receiptLinesRef.originalamount }}</span>
+          </dd>
+          <dt><span>Amountowing</span></dt>
+          <dd>
+            <span>{{ receiptLinesRef.amountowing }}</span>
+          </dd>
+          <dt><span>Discountavailable</span></dt>
+          <dd>
+            <span>{{ receiptLinesRef.discountavailable }}</span>
+          </dd>
+          <dt><span>Discounttaken</span></dt>
+          <dd>
+            <span>{{ receiptLinesRef.discounttaken }}</span>
+          </dd>
+          <dt><span>Amountreceived</span></dt>
+          <dd>
+            <span>{{ receiptLinesRef.amountreceived }}</span>
+          </dd>
+          <dt><span>Lmu</span></dt>
+          <dd>
+            <span>{{ receiptLinesRef.lmu }}</span>
+          </dd>
+          <dt><span>Lmd</span></dt>
+          <dd>
+            <span>{{ receiptLinesRef.lmd | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Accountid</span></dt>
+          <dd>
+            <span>{{ receiptLinesRef.accountid }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/receipt-lines', receiptLinesRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

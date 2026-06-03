@@ -1,0 +1,134 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (voucherPaymentsDetails(); as voucherPaymentsDetailsRef) {
+      <div>
+        <h2 data-cy="voucherPaymentsDetailsDetailsHeading"><span>Voucher Payments Details</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.id }}</span>
+          </dd>
+          <dt><span>Line ID</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.lineID }}</span>
+          </dd>
+          <dt><span>Payment Amount</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.paymentAmount }}</span>
+          </dd>
+          <dt><span>Total Voucher Amount</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.totalVoucherAmount }}</span>
+          </dd>
+          <dt><span>Checkque Amount</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.checkqueAmount }}</span>
+          </dd>
+          <dt><span>Checkque No</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.checkqueNo }}</span>
+          </dd>
+          <dt><span>Checkque Date</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.checkqueDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Checkque Expire Date</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.checkqueExpireDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Bank Name</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.bankName }}</span>
+          </dd>
+          <dt><span>Bank ID</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.bankID }}</span>
+          </dd>
+          <dt><span>Credit Card No</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.creditCardNo }}</span>
+          </dd>
+          <dt><span>Credit Card Amount</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.creditCardAmount }}</span>
+          </dd>
+          <dt><span>Reference</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.reference }}</span>
+          </dd>
+          <dt><span>Other Details</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.otherDetails }}</span>
+          </dd>
+          <dt><span>Lmu</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.lmu }}</span>
+          </dd>
+          <dt><span>Lmd</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.lmd | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Term ID</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.termID }}</span>
+          </dd>
+          <dt><span>Term Name</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.termName }}</span>
+          </dd>
+          <dt><span>Account No</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.accountNo }}</span>
+          </dd>
+          <dt><span>Account Number</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.accountNumber }}</span>
+          </dd>
+          <dt><span>Account Id</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.accountId }}</span>
+          </dd>
+          <dt><span>Account Code</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.accountCode }}</span>
+          </dd>
+          <dt><span>Cheque Status Id</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.chequeStatusId }}</span>
+          </dd>
+          <dt><span>Is Deposit</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.isDeposit }}</span>
+          </dd>
+          <dt><span>Deposited Date</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.depositedDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Company Bank Id</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.companyBankId }}</span>
+          </dd>
+          <dt><span>Is Bank Reconciliation</span></dt>
+          <dd>
+            <span>{{ voucherPaymentsDetailsRef.isBankReconciliation }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/voucher-payments-details', voucherPaymentsDetailsRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,203 @@
+<div class="d-flex justify-content-center">
+  <div class="col-10">
+    <div class="row">
+      <!-- Left Side: Form -->
+      <div class="col-6">
+        <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+          <h2 id="jhi-autocarejob-heading" data-cy="AutocarejobCreateUpdateHeading" class="mb-4">Create Autocare Job</h2>
+
+          <div>
+            <jhi-alert-error></jhi-alert-error>
+
+            @if (editForm.controls.id.value !== null) {
+              <div class="mb-3">
+                <label class="form-label" for="field_id">ID</label>
+                <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+              </div>
+            }
+
+            <!-- Vehicle Number & Millage (side by side) -->
+            <div class="row">
+              <div class="mb-3 col-7">
+                <label class="form-label" for="field_vehiclenumber">Vehicle Number</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="vehiclenumber"
+                  id="field_vehiclenumber"
+                  data-cy="vehiclenumber"
+                  formControlName="vehiclenumber"
+                  autocomplete="off"
+                  list="vehiclenumberList"
+                  (change)="onVehicleSelect($event)"
+                  (input)="onVehicleSearch($event)"
+                  [ngModel]="vehicleNo"
+                />
+                <datalist id="vehiclenumberList">
+                  <option *ngFor="let item of filteredVehicles" [value]="item.vehiclenumber">
+                    {{ item.conformdate }}
+                  </option>
+                </datalist>
+              </div>
+
+              <div class="mb-3 col-5">
+                <label class="form-label" for="field_millage">Mileage</label>
+                <input type="number" class="form-control" name="millage" id="field_millage" data-cy="millage" formControlName="millage" />
+              </div>
+            </div>
+
+            <!-- Job Type -->
+            <div class="mb-3">
+              <label class="form-label" for="field_jobtypename">Job Type</label>
+              <select
+                class="form-control"
+                name="jobtypename"
+                id="field_jobtypename"
+                data-cy="jobtypename"
+                formControlName="jobtypename"
+                [ngModel]="jobType"
+              >
+                <option value="Full Service and Other Services">Full Service and Other Services</option>
+                <option value="Detailing services">Detailing services</option>
+                <option value="Performance Care">Performance Care</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+              <label class="form-label" for="field_description">Description</label>
+              <input
+                type="text"
+                class="form-control"
+                name="description"
+                id="field_description"
+                data-cy="description"
+                formControlName="description"
+                placeholder="Enter description"
+              />
+            </div>
+
+            <!-- Customer Name & Tel (side by side) -->
+            <div class="row">
+              <div class="mb-3 col-7">
+                <label class="form-label" for="field_customername">Customer Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="customername"
+                  id="field_customername"
+                  data-cy="customername"
+                  formControlName="customername"
+                  [ngModel]="customername"
+                />
+              </div>
+
+              <div class="mb-3 col-5">
+                <label class="form-label" for="field_customertel">Customer Tel</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="customertel"
+                  id="field_customertel"
+                  data-cy="customertel"
+                  formControlName="customertel"
+                  [ngModel]="customerTel"
+                />
+              </div>
+            </div>
+
+            <!-- Job Date -->
+            <div class="mb-3">
+              <label class="form-label" for="field_jobdate">Job Date</label>
+              <div class="d-flex">
+                <input
+                  id="field_jobdate"
+                  data-cy="jobdate"
+                  type="datetime-local"
+                  class="form-control"
+                  name="jobdate"
+                  formControlName="jobdate"
+                  placeholder="YYYY-MM-DD HH:mm"
+                />
+              </div>
+            </div>
+
+            <!-- Checkboxes side by side -->
+            <div class="mb-4">
+              <div class="row">
+                <div class="col-6 d-flex align-items-center gap-2">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    name="updatetocustomer"
+                    id="field_updatetocustomer"
+                    data-cy="updatetocustomer"
+                    formControlName="updatetocustomer"
+                  />
+                  <label class="form-check-label mb-0" for="field_updatetocustomer">Call to Customer</label>
+                </div>
+                <div class="col-6 d-flex align-items-center gap-2">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    name="iswaiting"
+                    id="field_iswaiting"
+                    data-cy="iswaiting"
+                    formControlName="iswaiting"
+                  />
+                  <label class="form-check-label mb-0" for="field_iswaiting">Customer Is Waiting</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+              <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+            </button>
+
+            <button type="submit" id="save-entity" data-cy="entityCreateSaveButton" class="btn btn-primary">
+              <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+            </button>
+          </div>
+        </form>
+      </div>
+      <!-- Right Side: Appointments List -->
+      <div class="col-6">
+        <br /><br /><br />
+        <h5>Current Appointments</h5>
+
+        <div *ngIf="todayAppointments.length > 0; else noAppointments">
+          <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+              <tr>
+                <th>Customer Name</th>
+                <th>Vehicle Number</th>
+                <th>Appointment Date</th>
+                <th>Appointment Type</th>
+                <th>Contact Number</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let appointment of todayAppointments">
+                <td>{{ appointment.customername }}</td>
+                <td>{{ appointment.vehiclenumber }}</td>
+                <td>{{ appointment.conformdate?.toDate() | date }}</td>
+                <td>{{ jobTypeMap[appointment.appointmenttype ?? 0] }}</td>
+                <td>{{ appointment.contactnumber }}</td>
+                <td>
+                  <button class="btn btn-info btn-sm" (click)="loadAppointment(appointment)">Load</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ng-template #noAppointments>
+          <p>No appointments for today.</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

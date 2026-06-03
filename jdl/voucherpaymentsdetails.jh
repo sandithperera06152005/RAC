@@ -1,0 +1,31 @@
+entity VoucherPaymentsDetails {
+ 
+  lineID Integer,
+  paymentAmount Float,
+  totalVoucherAmount Float,
+  checkqueAmount Float,
+  checkqueNo String,
+  checkqueDate Instant,
+  checkqueExpireDate Instant,
+  bankName String,
+  bankID Integer,
+  creditCardNo String,
+  creditCardAmount Float,
+  reference String,
+  otherDetails String,
+  lmu String,
+  lmd Instant,
+  termID Integer,
+  termName String,
+  accountNo Integer,
+  accountNumber Long,
+  accountId Integer,
+  accountCode String,
+  chequeStatusId Integer,
+  isDeposit Boolean,
+  depositedDate Instant,
+  companyBankId Integer,
+  isBankReconciliation Boolean
+}
+paginate * with pagination
+filter all

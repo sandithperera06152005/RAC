@@ -1,0 +1,114 @@
+<div class="d-flex justify-content-center" *ngIf="false">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-autojobsalesinvoiceservicechargeline-heading" data-cy="AutojobsalesinvoiceservicechargelineCreateUpdateHeading">
+        Create or edit a Autojobsalesinvoiceservicechargeline
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_invoiceid">Invoiceid</label>
+          <input type="number" class="form-control" name="invoiceid" id="field_invoiceid" data-cy="invoiceid" formControlName="invoiceid" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_lineid">Lineid</label>
+          <input type="number" class="form-control" name="lineid" id="field_lineid" data-cy="lineid" formControlName="lineid" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_optionid">Optionid</label>
+          <input type="number" class="form-control" name="optionid" id="field_optionid" data-cy="optionid" formControlName="optionid" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_servicename">Servicename</label>
+          <input
+            type="text"
+            class="form-control"
+            name="servicename"
+            id="field_servicename"
+            data-cy="servicename"
+            formControlName="servicename"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_servicediscription">Servicediscription</label>
+          <input
+            type="text"
+            class="form-control"
+            name="servicediscription"
+            id="field_servicediscription"
+            data-cy="servicediscription"
+            formControlName="servicediscription"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_value">Value</label>
+          <input type="number" class="form-control" name="value" id="field_value" data-cy="value" formControlName="value" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_addedbyid">Addedbyid</label>
+          <input type="number" class="form-control" name="addedbyid" id="field_addedbyid" data-cy="addedbyid" formControlName="addedbyid" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_iscustomersrvice">Iscustomersrvice</label>
+          <input
+            type="checkbox"
+            class="form-check"
+            name="iscustomersrvice"
+            id="field_iscustomersrvice"
+            data-cy="iscustomersrvice"
+            formControlName="iscustomersrvice"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_discount">Discount</label>
+          <input type="number" class="form-control" name="discount" id="field_discount" data-cy="discount" formControlName="discount" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_serviceprice">Serviceprice</label>
+          <input
+            type="number"
+            class="form-control"
+            name="serviceprice"
+            id="field_serviceprice"
+            data-cy="serviceprice"
+            formControlName="serviceprice"
+          />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+entity SaleInvoiceCommonServiceCharge {
+    invoiceId Integer ,
+    lineId Integer ,
+    optionId Integer ,
+    mainId Integer ,
+    code String ,
+    name String ,
+    description String,
+    value Float ,
+    discount Float,
+    servicePrice Float 
+}
+paginate * with pagination
+filter all

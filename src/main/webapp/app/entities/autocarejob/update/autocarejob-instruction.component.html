@@ -1,0 +1,986 @@
+<div class="container mt-2">
+  <h2 class="mb-1">AutoCare Advisor Instruction</h2>
+  <br />
+  <!-- Row for Form and Summary -->
+  <div class="row">
+    <!-- Left Side: Form -->
+    <div class="col-md-8">
+      <!-- Tab Navigation -->
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="form1-tab"
+            [attr.data-bs-toggle]="'tab'"
+            [attr.data-bs-target]="'#form1'"
+            type="button"
+            role="tab"
+            aria-controls="form1"
+            aria-selected="true"
+          >
+            Instructions
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="form2-tab"
+            [attr.data-bs-toggle]="canNavigateToOtherTabs() ? 'tab' : null"
+            [attr.data-bs-target]="canNavigateToOtherTabs() ? '#form2' : null"
+            type="button"
+            (click)="onTabNavigationAttempt($event)"
+            role="tab"
+            aria-controls="form2"
+            aria-selected="false"
+          >
+            Services
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="form3-tab"
+            [attr.data-bs-toggle]="canNavigateToOtherTabs() ? 'tab' : null"
+            [attr.data-bs-target]="canNavigateToOtherTabs() ? '#form3' : null"
+            type="button"
+            (click)="onTabNavigationAttempt($event)"
+            role="tab"
+            aria-controls="form3"
+            aria-selected="false"
+          >
+            Items
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="form4-tab"
+            [attr.data-bs-toggle]="canNavigateToOtherTabs() ? 'tab' : null"
+            [attr.data-bs-target]="canNavigateToOtherTabs() ? '#form4' : null"
+            type="button"
+            (click)="onTabNavigationAttempt($event)"
+            role="tab"
+            aria-controls="form4"
+            aria-selected="false"
+          >
+            Comman Service
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="form5-tab"
+            [attr.data-bs-toggle]="canNavigateToOtherTabs() ? 'tab' : null"
+            [attr.data-bs-target]="canNavigateToOtherTabs() ? '#form5' : null"
+            type="button"
+            (click)="onTabNavigationAttempt($event)"
+            role="tab"
+            aria-controls="form5"
+            aria-selected="false"
+          >
+            Workshop work Service
+          </button>
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="myTabContent">
+        <!-- Form 1 -->
+        <div class="tab-pane fade show active" id="form1" role="tabpanel" aria-labelledby="form1-tab">
+          <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+            <!-- <h2 id="jhi-autocarejob-heading" data-cy="AutocarejobCreateUpdateHeading"> Autocarejob Instruction</h2> -->
+
+            <div>
+              <jhi-alert-error></jhi-alert-error>
+
+              @if (editForm.controls.id.value !== null) {
+                <div class="row align-items-center mt-3 mb-3" *ngIf="false">
+                  <label class="col-auto form-label" for="field_id">ID</label>
+                  <div class="col">
+                    <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+                  </div>
+                </div>
+              }
+
+              <fieldset class="border p-3">
+                <legend class="w-auto px-2">Vehicle</legend>
+                <div class="row">
+                  <div class="mb-3 col-6">
+                    <label class="form-label" for="field_vehiclenumber">Vehiclenumber</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      name="vehiclenumber"
+                      id="field_vehiclenumber"
+                      data-cy="vehiclenumber"
+                      formControlName="vehiclenumber"
+                      autocomplete="off"
+                      list="vehiclenumberList"
+                      (change)="onVehicleSelect($event)"
+                      (input)="onVehicleSearch($event)"
+                    />
+                    <datalist id="vehiclenumberList">
+                      <option *ngFor="let item of filteredVehicles" [value]="item.vehiclenumber">
+                        <!-- {{ item.milage }}KM - {{ item.nextmilage }}KM -->
+                      </option>
+                    </datalist>
+                  </div>
+
+                  <div class="mb-3 col-6">
+                    <label class="form-label" for="field_jobtypename">Jobtypename</label>
+                    <select
+                      class="form-control form-control-sm"
+                      name="jobtypename"
+                      id="field_jobtypename"
+                      data-cy="jobtypename"
+                      formControlName="jobtypename"
+                    >
+                      <option value="Full Service and Other Services">Full Service and Other Services</option>
+                      <option value="Detailing services">Detailing services</option>
+                      <option value="Performance Care">Performance Care</option>
+                      <option value="Oil and Fluid Change">Oil and Fluid Change</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="mb-3 col-6">
+                    <label class="form-label" for="field_customername">Customername</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      name="customername"
+                      id="field_customername"
+                      data-cy="customername"
+                      formControlName="customername"
+                    />
+                  </div>
+
+                  <div class="mb-3 col-6">
+                    <label class="form-label" for="field_customertel">Customer Tel</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      name="customertel"
+                      id="field_customertel"
+                      data-cy="customertel"
+                      formControlName="customertel"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12 mb-3">
+                    <div class="border p-3">
+                      <div class="row align-items-center">
+                        <div class="col-6">
+                          <label class="form-label" for="field_millage">Millage</label>
+                          <input
+                            type="number"
+                            class="form-control form-control-sm"
+                            name="millage"
+                            id="field_millage"
+                            data-cy="millage"
+                            formControlName="millage"
+                            (input)="onMillageChange($event)"
+                          />
+                        </div>
+
+                        <div class="col-6">
+                          <label class="form-label" for="field_nextservicedate">Next Service Date</label>
+                          <div class="input-group">
+                            <input
+                              id="field_nextservicedate"
+                              type="text"
+                              class="form-control form-control-sm"
+                              name="nextservicedate"
+                              ngbDatepicker
+                              #nextservicedateDp="ngbDatepicker"
+                              formControlName="nextservicedate"
+                            />
+                            <button type="button" class="btn btn-secondary" (click)="nextservicedateDp.toggle()">
+                              <fa-icon icon="calendar-alt"></fa-icon>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mb-3 col-12">
+                    <label class="form-label" for="field_nextgearoilmilage">Next Milage</label>
+                    <div class="d-flex align-items-center gap-3">
+                      <!-- Radio buttons -->
+                      <div>
+                        <label class="form-check-label">
+                          <input
+                            type="radio"
+                            class="form-check-input"
+                            name="nextMilageOptions"
+                            value="3000"
+                            [checked]="selectedRadioValue === 3000"
+                            (change)="onRadioButtonChange($event)"
+                          />
+                          3000
+                        </label>
+                        <label class="form-check-label ms-3">
+                          <input
+                            type="radio"
+                            class="form-check-input"
+                            name="nextMilageOptions"
+                            value="3500"
+                            [checked]="selectedRadioValue === 3500"
+                            (change)="onRadioButtonChange($event)"
+                          />
+                          3500
+                        </label>
+                        <label class="form-check-label ms-3">
+                          <input
+                            type="radio"
+                            class="form-check-input"
+                            name="nextMilageOptions"
+                            value="5000"
+                            [checked]="selectedRadioValue === 5000"
+                            (change)="onRadioButtonChange($event)"
+                          />
+                          5000
+                        </label>
+                        <label class="form-check-label ms-3">
+                          <input
+                            type="radio"
+                            class="form-check-input"
+                            name="nextMilageOptions"
+                            value="7500"
+                            [checked]="selectedRadioValue === 7500"
+                            (change)="onRadioButtonChange($event)"
+                          />
+                          7500
+                        </label>
+                        <label class="form-check-label ms-3">
+                          <input
+                            type="radio"
+                            class="form-check-input"
+                            name="nextMilageOptions"
+                            value="10000"
+                            [checked]="selectedRadioValue === 10000"
+                            (change)="onRadioButtonChange($event)"
+                          />
+                          10000
+                        </label>
+                      </div>
+                      <!-- Input field -->
+                      <div>
+                        <input
+                          type="text"
+                          class="form-control form-control-sm"
+                          [class.is-invalid]="isNextMilageInvalid()"
+                          name="nextmillage"
+                          id="field_nextmillage"
+                          data-cy="nextmillage"
+                          formControlName="nextmillage"
+                          [value]="nextmillage"
+                          readonly
+                        />
+                      </div>
+                    </div>
+                    <div *ngIf="isNextMilageInvalid()" class="text-danger small mt-2">
+                      Please select one Next Milage option before moving to other tabs.
+                    </div>
+                  </div>
+
+                  <div class="mb-3 col-6">
+                    <label class="form-label" for="field_nextgearoilmilage">Next gear oilmilage</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      name="nextgearoilmilage"
+                      id="field_nextgearoilmilage"
+                      data-cy="nextgearoilmilage"
+                      formControlName="nextgearoilmilage"
+                    />
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="border p-3">
+                <legend class="w-auto px-2">Instructions</legend>
+                <div class="row">
+                  <div class="mb-3 col-6">
+                    <label class="form-label" for="field_specialrquirments">Special requirements</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      name="specialrquirments"
+                      id="field_specialrquirments"
+                      data-cy="specialrquirments"
+                      formControlName="specialrquirments"
+                    />
+                  </div>
+
+                  <div class="mb-3 col-6">
+                    <label class="form-label" for="field_specialinstructions">Special instructions</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      name="specialinstructions"
+                      id="field_specialinstructions"
+                      data-cy="specialinstructions"
+                      formControlName="specialinstructions"
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="mb-3 col-6">
+                    <label class="form-label" for="field_remarks">Remarks</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      name="remarks"
+                      id="field_remarks"
+                      data-cy="remarks"
+                      formControlName="remarks"
+                    />
+                  </div>
+
+                  <div class="mb-3 col-6">
+                    <label class="form-label" for="field_nextserviceinstructions">Next service instructions</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      name="nextserviceinstructions"
+                      id="field_nextserviceinstructions"
+                      data-cy="nextserviceinstructions"
+                      formControlName="nextserviceinstructions"
+                    />
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="border p-3">
+                <legend class="w-auto px-2">Last Service</legend>
+                <div class="mb-3">
+                  <label class="form-label" for="field_lastserviceinstructions">Last service instructions</label>
+                  <!-- <input
+                        type="text"
+                        class="form-control"
+                        name="lastserviceinstructions"
+                        id="field_lastserviceinstructions"
+                        data-cy="lastserviceinstructions"
+                        formControlName="lastserviceinstructions"
+                      /> -->
+                </div>
+              </fieldset>
+            </div>
+          </form>
+        </div>
+
+        <!-- Form 2 -->
+        <div class="tab-pane fade" id="form2" role="tabpanel" aria-labelledby="form2-tab">
+          <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+            <div class="row align-items-center mt-3 mb-3" *ngIf="editForm.controls.id.value !== null" style="display: none">
+              <label class="col-auto form-label" for="field_id">ID</label>
+              <div class="col">
+                <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+              </div>
+            </div>
+
+            <fieldset class="border p-3">
+              <legend class="w-auto px-2">Vehicle</legend>
+              <div class="row">
+                <div class="mb-3 col-6">
+                  <label class="form-label" for="vehiclenumber">Vehicle Number</label>
+
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    name="vehiclenumber"
+                    id="field_vehiclenumber"
+                    data-cy="vehiclenumber"
+                    formControlName="vehiclenumber"
+                    autocomplete="off"
+                    list="vehiclenumberList"
+                    (change)="onVehicleSelect($event)"
+                    (input)="onVehicleSearch($event)"
+                  />
+
+                  <datalist id="vehiclenumberList">
+                    <option *ngFor="let item of filteredVehicles" [value]="item.vehiclenumber"></option>
+                  </datalist>
+                </div>
+                <div class="mb-3 col-6">
+                  <label class="form-label" for="field_jobtypename">Jobtypename</label>
+                  <select
+                    class="form-control form-control-sm"
+                    name="jobtypename"
+                    id="field_jobtypename"
+                    data-cy="jobtypename"
+                    formControlName="jobtypename"
+                  >
+                    <option value="Full Service and Other Services">Full Service and Other Services</option>
+                    <option value="Detailing services">Detailing services</option>
+                    <option value="Performance Care">Performance Care</option>
+                    <option value="Oil and Fluid Change">Oil and Fluid Change</option>
+                  </select>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="border p-3 mt-3">
+              <legend class="w-auto px-2">Current Services</legend>
+              <div class="mb-3">
+                <label class="form-label">Vehicle Types</label>
+                <select
+                  class="form-control form-control-sm"
+                  [(ngModel)]="selectedVehicleTypeId"
+                  (change)="onVehicleTypeChange()"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  <option *ngFor="let vehicleType of vehicletypes" [ngValue]="vehicleType.id">{{ vehicleType.vehicletype }}</option>
+                </select>
+              </div>
+              <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd">
+                <table class="table table-bordered">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th>Service</th>
+                      <th>Amount</th>
+                      <th>Select</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let service of filteredBillingServiceOptionValues">
+                      <td>{{ getBillingServiceOptionName(service.billingserviceoptionid) }}</td>
+                      <td>
+                        <input
+                          type="text"
+                          class="form-control form-control-sm"
+                          [ngModel]="formatServiceAmount(service.value)"
+                          [ngModelOptions]="{ standalone: true }"
+                          (ngModelChange)="onAmountChange(service, $event)"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="checkbox"
+                          [checked]="isServiceSelected(service)"
+                          (change)="onServiceSelectionChanges(service, $event)"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div *ngIf="selectedServices.length > 0" class="mt-3">
+                <h5>Selected Services</h5>
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Service Name</th>
+                      <th>Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let service of selectedServices">
+                      <td>{{ getBillingServiceOptionName(service.billingserviceoptionid) }}</td>
+                      <td>{{ service.value | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td><strong>Total:</strong></td>
+                      <td>
+                        <strong>{{ totalServiceCharge | currency: 'LKR' : 'symbol' : '1.2-2' }}</strong>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </fieldset>
+
+            <!-- Toggle button for subcategories -->
+            <div class="d-flex align-items-center mt-3" style="cursor: pointer" (click)="toggleSubcategories()">
+              <span [ngClass]="{ 'rotate-arrow': subcategoriesVisible }"> </span>
+              <h5 class="ms-2 mb-0">service options</h5>
+            </div>
+
+            <!-- Subcategories section -->
+            <div *ngIf="subcategoriesVisible" style="display: flex; flex-wrap: wrap; gap: 16px">
+              <!-- Group subcategories by mainCategory -->
+              <ng-container *ngFor="let mainCategory of getUniqueMainCategories()">
+                <fieldset class="border p-3 mt-3" style="flex: 1 1 calc(50% - 8px); box-sizing: border-box">
+                  <legend class="w-auto px-2">{{ mainCategory }}</legend>
+                  <!-- Display subcategories for this mainCategory -->
+                  <div *ngFor="let subcategory of getSubCategoriesByMainCategory(mainCategory)" class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [id]="'subcategory-' + subcategory.id"
+                      [checked]="isSubcategorySelected(subcategory)"
+                      (change)="onSubcategorySelectionChange(subcategory, $event)"
+                    />
+                    <label class="form-check-label" [for]="'subcategory-' + subcategory.id">
+                      {{ subcategory.name }}
+                    </label>
+                  </div>
+                </fieldset>
+              </ng-container>
+            </div>
+          </form>
+        </div>
+
+        <!-- Form 3 -->
+        <div class="tab-pane fade" id="form3" role="tabpanel" aria-labelledby="form3-tab">
+          <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+            @if (editForm.controls.id.value !== null) {
+              <div class="row align-items-center mt-3 mb-3" style="display: none">
+                <label class="col-auto form-label" for="field_id">ID</label>
+                <div class="col">
+                  <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+                </div>
+              </div>
+            }
+            <div class="container border p-3 bg-light">
+              <h5 class="mb-3">Add New Items</h5>
+
+              <!-- Item Search Section -->
+              <div class="row align-items-center mb-3">
+                <label class="col-auto fw-bold">Items :</label>
+                <div class="col-auto">
+                  <input type="radio" name="searchBy" id="byName" [checked]="!searchItemsByCode" (change)="onItemSearchModeChange(false)" />
+                  <label for="byName">By Name</label>
+                  <input
+                    type="radio"
+                    name="searchBy"
+                    id="byCode"
+                    class="ms-2"
+                    [checked]="searchItemsByCode"
+                    (change)="onItemSearchModeChange(true)"
+                  />
+                  <label for="byCode">By Code</label>
+                </div>
+                <div class="col">
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    name="item"
+                    id="field_item"
+                    data-cy="item"
+                    autocomplete="off"
+                    list="itemList"
+                    (input)="onItemSearch($event)"
+                  />
+                  <datalist id="itemList">
+                    @if (searchItemsByCode) {
+                      <option *ngFor="let item of filtereditems" [value]="item.code">
+                        {{ item.name }} — {{ item.lastsellingprice }} — Avl: {{ item.availablequantity }}
+                      </option>
+                    } @else {
+                      <option *ngFor="let item of filtereditems" [value]="item.name">
+                        {{ item.lastsellingprice }} — Avl: {{ item.availablequantity }}
+                      </option>
+                    }
+                  </datalist>
+                </div>
+                <div class="col-auto">
+                  <button type="button" class="btn btn-primary" (click)="onAddItem()">Add Item</button>
+                </div>
+              </div>
+              <div *ngIf="itemAddErrorMessage" class="alert alert-danger py-2 mb-3">
+                {{ itemAddErrorMessage }}
+              </div>
+
+              <!-- Selected Items Table -->
+              <h6 class="mb-2">Selected Items :</h6>
+              <table class="table table-bordered text-center">
+                <thead class="table-dark">
+                  <tr>
+                    <th>Item</th>
+                    <th>Avl.Qty</th>
+                    <th>Price</th>
+                    <th>Req Qty</th>
+                    <th>Dis (%)</th>
+                    <th>Total</th>
+                    <th>Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of selectedItems; let i = index">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.availablequantity }}</td>
+                    <td>{{ item.lastsellingprice }}</td>
+                    <td>
+                      <input
+                        type="number"
+                        class="form-control text-center"
+                        [(ngModel)]="item.requestedQuantity"
+                        min="1"
+                        [max]="item.availablequantity ?? null"
+                        [ngModelOptions]="{ standalone: true }"
+                        (input)="updateItemTotal()"
+                      />
+                    </td>
+
+                    <td>
+                      <input
+                        type="number"
+                        class="form-control text-center"
+                        [(ngModel)]="item.discountPercentage"
+                        min="0"
+                        max="100"
+                        [ngModelOptions]="{ standalone: true }"
+                        (input)="updateItemTotal()"
+                      />
+                    </td>
+
+                    <td>{{ calculateItemTotal(item) | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
+                    <!-- Display the total per item -->
+                    <td>
+                      <button type="button" class="btn btn-danger btn-sm" (click)="onDeleteItem(i)">🗑</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- Total Section -->
+              <div class="p-2 bg-dark text-white">
+                <div class="d-flex justify-content-between">
+                  <span>Total Without Discount:</span>
+                  <span>{{ calculateTotalWithoutDiscount() | currency: 'LKR' : 'symbol' : '1.2-2' }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span>Total Discount:</span>
+                  <span>{{ calculateTotalDiscount() | currency: 'LKR' : 'symbol' : '1.2-2' }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span>Total With Discount:</span>
+                  <span>{{ calculateTotalWithDiscount() | currency: 'LKR' : 'symbol' : '1.2-2' }}</span>
+                </div>
+              </div>
+              <jhi-autojobsinvoicelines-update></jhi-autojobsinvoicelines-update>
+            </div>
+          </form>
+        </div>
+
+        <!-- Form 4 -->
+        <div class="tab-pane fade" id="form4" role="tabpanel" aria-labelledby="form4-tab">
+          <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+            @if (editForm.controls.id.value !== null) {
+              <div class="row align-items-center mt-3 mb-3" style="display: none">
+                <label class="col-auto form-label" for="field_id">ID</label>
+                <div class="col">
+                  <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+                </div>
+              </div>
+            }
+            <fieldset class="border p-3 mt-3">
+              <legend class="w-auto px-2">Common Services</legend>
+
+              <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd">
+                <!-- Common Services Selection Table -->
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Service</th>
+                      <th>Amount</th>
+                      <th>Select</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of commonserviceoption">
+                      <td>{{ item.name }}</td>
+                      <td>{{ item.value | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
+                      <td>
+                        <input
+                          type="checkbox"
+                          [checked]="isCommonServiceSelected(item)"
+                          (change)="onServiceSelectionChange(item, $event)"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- Selected Common Services Table -->
+              <table class="table table-bordered" *ngIf="selectedcommonServices.length > 0">
+                <thead>
+                  <tr>
+                    <th>Service Name</th>
+                    <th>Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let service of selectedcommonServices">
+                    <td>{{ service.name }}</td>
+                    <td>{{ service.value | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th>Total</th>
+                    <th>{{ totalcommonServiceCharge | currency: 'LKR' : 'symbol' : '1.2-2' }}</th>
+                  </tr>
+                </tfoot>
+              </table>
+              <!-- <button class="btn btn-primary">Add Service</button> -->
+            </fieldset>
+            <div class="mt-3 p-3 border">
+              <h5>
+                Total Common Service Charge:
+                <span class="fw-bold">{{ totalcommonServiceCharge | currency: 'LKR' : 'symbol' : '1.2-2' }}</span>
+              </h5>
+            </div>
+            <jhi-autojobsaleinvoicecommonservicecharge-update></jhi-autojobsaleinvoicecommonservicecharge-update>
+          </form>
+        </div>
+
+        <!-- Form 5 -->
+        <div class="tab-pane fade" id="form5" role="tabpanel" aria-labelledby="form5-tab">
+          <jhi-workshopvehiclework-update [formData]="mapFormTowork(editForm.value)"></jhi-workshopvehiclework-update>
+          <div class="d-flex justify-content-end mt-2 me-3">
+            <!-- <button
+                  type="button"
+                  class="btn btn-sm btn-primary px-4"
+                  (click)="saveWorkshopTab()"
+                  [disabled]="editForm.controls.id.value === null"
+                >
+                  Save Workshop Work Services
+                </button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Right Side: Summary -->
+    <div class="col-md-4">
+      <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+        @if (editForm.controls.id.value !== null) {
+          <div class="row align-items-center mt-2 mb-2" style="display: none">
+            <label class="col-auto form-label" for="field_id">ID</label>
+            <div class="col">
+              <input
+                type="number"
+                class="form-control form-control-sm"
+                name="id"
+                id="field_id"
+                data-cy="id"
+                formControlName="id"
+                [readonly]="true"
+              />
+            </div>
+          </div>
+        }
+        <h5 class="text-dark">Summary</h5>
+        <div id="summaryDisplay" class="border p-2 rounded shadow-sm" style="background-color: #d8dcf3; font-size: 0.9rem">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-6">
+                <p><strong>Job ID:</strong> {{ editForm.controls['id'].value }}</p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Vehicle No:</strong> {{ editForm.controls['vehiclenumber'].value }}</p>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <p><strong>Customer:</strong> {{ editForm.controls['customername'].value }}</p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Tel:</strong> {{ editForm.controls['customertel'].value }}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <p><strong>Job Type:</strong> {{ editForm.controls['jobtypename'].value }}</p>
+              </div>
+            </div>
+          </div>
+
+          <hr />
+
+          <h6 class="text-dark">Company Service:</h6>
+
+          <div class="border p-2 rounded" style="background-color: #e9e8f2; font-size: 0.85rem">
+            <p>
+              <strong>Item Charges:</strong>
+              <span class="float-right">{{ calculateTotalWithDiscount() | currency: 'LKR' : 'symbol' : '1.2-2' }}</span>
+            </p>
+            <p>
+              <strong>Service Charges:</strong>
+              <span class="float-right">{{ totalServiceCharge | currency: 'LKR' : 'symbol' : '1.2-2' }}</span>
+            </p>
+            <p>
+              <strong>Common Service:</strong>
+              <span class="float-right">{{ totalcommonServiceCharge | currency: 'LKR' : 'symbol' : '1.2-2' }}</span>
+            </p>
+            <p class="text-danger font-weight-bold">
+              <strong>Total Bill:</strong>
+              <span class="float-right">{{
+                totalServiceCharge + calculateTotalWithDiscount() + totalcommonServiceCharge | currency: 'LKR' : 'symbol' : '1.2-2'
+              }}</span>
+            </p>
+          </div>
+
+          <div style="display: none" aria-hidden="true">
+            <jhi-autojobsinvoice-update [formData]="mapFormToAutojobsinvoice(editForm.value)" (invoiceSaved)="onInvoiceSaved($event)">
+            </jhi-autojobsinvoice-update>
+          </div>
+        </div>
+      </form>
+      <div class="d-flex justify-content-center mt-2">
+        <button class="btn btn-sm btn-success mx-2 px-3" style="width: 120px" (click)="printSummary()">Print</button>
+        <button class="btn btn-sm btn-primary mx-2 px-3" style="width: 120px" (click)="saveAll()">Save All</button>
+      </div>
+    </div>
+
+    <!-- Print Layout (Hidden in UI, Only Visible in Print) -->
+    <div id="printSummary" class="d-none d-print-block p-3" style="font-family: Arial, sans-serif">
+      <div class="text-center mb-3">
+        <h2 class="font-weight-bold mb-1">RATHNAWEERA AUTO CARE [PVT] LTD</h2>
+        <h4 class="mb-0">ADVISOR INSTRUCTION SHEET - Admin</h4>
+      </div>
+
+      <div class="border border-dark p-2 mt-2 mb-3" style="font-size: 11px; line-height: 1.1">
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); row-gap: 0px; column-gap: 15px">
+          <div>
+            <p class="m-0"><strong>VEHICLE NO</strong> - {{ editForm.controls['vehiclenumber'].value }}</p>
+          </div>
+          <div>
+            <p class="m-0"><strong>MILAGE</strong> - {{ editForm.controls['millage'].value }}</p>
+          </div>
+          <div>
+            <p class="m-0">
+              <strong>JOB N0</strong> - {{ editForm.controls['id'].value }}{{ editForm.controls['iswaiting'].value ? ' / Waiting' : '' }}
+            </p>
+          </div>
+
+          <div>
+            <p class="m-0"><strong>DATE</strong> - {{ editForm.controls['jobopentime'].value | date: 'dd/MM/yyyy-HH:mm' }}</p>
+          </div>
+          <div>
+            <p class="m-0"><strong>NAME</strong> - {{ editForm.controls['customername'].value }}</p>
+          </div>
+          <div>
+            <p class="m-0"><strong>T/P</strong> - {{ editForm.controls['customertel'].value }}</p>
+          </div>
+
+          <div>
+            <p class="m-0">
+              <strong>ADDRESS</strong> - {{ searchedCustomer?.residenceaddress || searchedCustomer?.businessaddress || '' }}
+            </p>
+          </div>
+          <div>
+            <p class="m-0"><strong>JOB TYPE</strong> - {{ editForm.controls['jobtypename'].value }}</p>
+          </div>
+          <div>
+            <p class="m-0">
+              <strong>REFERENCE</strong> -
+              <ng-container *ngFor="let subcategory of selectedSubcategoryItems; let last = last"
+                >{{ subcategory.name }}{{ !last ? ', ' : '' }}</ng-container
+              >
+            </p>
+          </div>
+
+          <div>
+            <p class="m-0"><strong>SPECIAL REQUIRMENTS</strong> - {{ editForm.controls['specialrquirments'].value || '' }}</p>
+          </div>
+          <div>
+            <p class="m-0"><strong>REMARKS</strong> - {{ editForm.controls['remarks'].value || '' }}</p>
+          </div>
+          <div>
+            <p class="m-0"><strong>SP INSTRUCTIONS</strong> - {{ editForm.controls['specialinstructions'].value || '' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <h4 class="mt-3"><strong>ESTIMATE / ඇස්තමේන්තුව</strong></h4>
+
+      <table class="table table-bordered mt-3">
+        <thead>
+          <tr>
+            <th>DESCRIPTION</th>
+            <th>PRICE</th>
+            <th>QTY</th>
+            <th>DIS %</th>
+            <th>TOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="5"><strong>ITEMS</strong></td>
+          </tr>
+          <tr *ngFor="let item of selectedItems; let i = index">
+            <td>{{ item.name }}</td>
+            <td>{{ item.lastsellingprice }}</td>
+            <td>{{ item.requestedQuantity }}</td>
+            <td>{{ item.discountPercentage }}</td>
+            <td>{{ calculateItemTotal(item) | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
+          </tr>
+
+          <tr>
+            <td colspan="5"><strong>SERVICE CHARGES</strong></td>
+          </tr>
+          <tr *ngFor="let service of selectedServices; let i = index">
+            <td>{{ getBillingServiceOptionName(service.billingserviceoptionid) }}</td>
+            <td>{{ service.value }}</td>
+            <td>1</td>
+            <td>0</td>
+            <td>{{ service.value | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
+          </tr>
+
+          <tr>
+            <td colspan="5"><strong>COMMON SERVICES</strong></td>
+          </tr>
+          <tr *ngFor="let service of selectedcommonServices; let i = index">
+            <td>{{ service.name }}</td>
+            <td>{{ service.value }}</td>
+            <td>1</td>
+            <td>0</td>
+            <td>{{ service.value | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="d-flex justify-content-end mt-3">
+        <h4>
+          <strong
+            >TOTAL VALUE:
+            <span class="text-primary">{{
+              totalServiceCharge + calculateTotalWithDiscount() | currency: 'LKR' : 'symbol' : '1.2-2'
+            }}</span></strong
+          >
+        </h4>
+      </div>
+      <p>සැපයුම් විකුණුම්ගෙන් යාමක් අවශ්‍යනම් මම භාණ්ඩ හා සේවා වලට වෙනස් මෙන් මිල ගණන් වෙනස් විය හැකි බව කරුණාවෙන් සැලකිලිමත් වන්න.</p>
+      <p>Above prices may be vary on the requirement of goods and services.</p>
+      <div class="d-flex justify-content-between mt-4">
+        <div class="text-center">
+          <p>______________________</p>
+          <p>Service Advisor</p>
+        </div>
+        <div class="text-center">
+          <p>______________________</p>
+          <p>Customer</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+
+    #printSummary,
+    #printSummary * {
+      visibility: visible;
+    }
+
+    #printSummary {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+  }
+</style>

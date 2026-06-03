@@ -1,0 +1,11 @@
+id;invoice_id;line_id;option_id;service_name;service_discription;value;added_by_id;is_customer_srvice;discount;service_price
+1;32231;32035;31372;bowed phooey;sate boo;12589.1;4829;false;20262.66;29137.92
+2;23653;357;10216;equally;appliance joyfully lava;15943.6;12284;true;7591.06;8266.4
+3;20098;24601;3967;consequently meh;rationalize faithfully absent;24598.41;5903;true;1221.6;6357.54
+4;12522;5310;19329;signature;technician;5762.16;26808;true;21358;31205.28
+5;32294;5194;14532;meander;approach as hunger;29292.76;6681;false;14452.66;17967.92
+6;5583;30781;65;why quaver dissemble;overproduce shoulder;9167.61;20769;false;26570.87;19753.11
+7;30206;8186;11301;expansion;indeed familiarize;13152.81;5436;false;19844.11;1170.76
+8;13610;18478;11636;brood;cruel flame please;10292.9;28422;false;25148.09;28376.55
+9;12169;7873;29437;after;because;8046.48;83;true;9229.06;2904.75
+10;13440;27358;4393;yummy scuffle because;shrilly;12912.38;29571;false;10365.4;11323.01

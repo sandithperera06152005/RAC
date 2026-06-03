@@ -1,0 +1,102 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (autojobsinvoicelines(); as autojobsinvoicelinesRef) {
+      <div>
+        <h2 data-cy="autojobsinvoicelinesDetailsHeading"><span>Autojobsinvoicelines</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.id }}</span>
+          </dd>
+          <dt><span>Invocieid</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.invocieid }}</span>
+          </dd>
+          <dt><span>Lineid</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.lineid }}</span>
+          </dd>
+          <dt><span>Itemid</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.itemid }}</span>
+          </dd>
+          <dt><span>Itemcode</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.itemcode }}</span>
+          </dd>
+          <dt><span>Itemname</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.itemname }}</span>
+          </dd>
+          <dt><span>Description</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.description }}</span>
+          </dd>
+          <dt><span>Unitofmeasurement</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.unitofmeasurement }}</span>
+          </dd>
+          <dt><span>Quantity</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.quantity }}</span>
+          </dd>
+          <dt><span>Itemcost</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.itemcost }}</span>
+          </dd>
+          <dt><span>Itemprice</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.itemprice }}</span>
+          </dd>
+          <dt><span>Discount</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.discount }}</span>
+          </dd>
+          <dt><span>Tax</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.tax }}</span>
+          </dd>
+          <dt><span>Sellingprice</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.sellingprice }}</span>
+          </dd>
+          <dt><span>Linetotal</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.linetotal }}</span>
+          </dd>
+          <dt><span>Lmu</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.lmu }}</span>
+          </dd>
+          <dt><span>Lmd</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.lmd | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Nbt</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.nbt }}</span>
+          </dd>
+          <dt><span>Vat</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinesRef.vat }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/autojobsinvoicelines', autojobsinvoicelinesRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

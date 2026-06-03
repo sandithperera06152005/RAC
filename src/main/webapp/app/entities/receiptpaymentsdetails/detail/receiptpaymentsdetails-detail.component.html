@@ -1,0 +1,182 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (receiptpaymentsdetails(); as receiptpaymentsdetailsRef) {
+      <div>
+        <h2 data-cy="receiptpaymentsdetailsDetailsHeading"><span>Receiptpaymentsdetails</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>Id</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.id }}</span>
+          </dd>
+          <dt><span>Lineid</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.lineid }}</span>
+          </dd>
+          <dt><span>Paymentamount</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.paymentamount }}</span>
+          </dd>
+          <dt><span>Totalreceiptamount</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.totalreceiptamount }}</span>
+          </dd>
+          <dt><span>Checkqueamount</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.checkqueamount }}</span>
+          </dd>
+          <dt><span>Checkqueno</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.checkqueno }}</span>
+          </dd>
+          <dt><span>Checkquedate</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.checkquedate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Checkqueexpiredate</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.checkqueexpiredate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Bankname</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.bankname }}</span>
+          </dd>
+          <dt><span>Bankid</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.bankid }}</span>
+          </dd>
+          <dt><span>Bankbranchname</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.bankbranchname }}</span>
+          </dd>
+          <dt><span>Bankbranchid</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.bankbranchid }}</span>
+          </dd>
+          <dt><span>Creditcardno</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.creditcardno }}</span>
+          </dd>
+          <dt><span>Creditcardamount</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.creditcardamount }}</span>
+          </dd>
+          <dt><span>Reference</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.reference }}</span>
+          </dd>
+          <dt><span>Otherdetails</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.otherdetails }}</span>
+          </dd>
+          <dt><span>Lmu</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.lmu }}</span>
+          </dd>
+          <dt><span>Lmd</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.lmd | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Termid</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.termid }}</span>
+          </dd>
+          <dt><span>Termname</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.termname }}</span>
+          </dd>
+          <dt><span>Accountno</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.accountno }}</span>
+          </dd>
+          <dt><span>Accountnumber</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.accountnumber }}</span>
+          </dd>
+          <dt><span>Chequereturndate</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.chequereturndate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Isdeposit</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.isdeposit }}</span>
+          </dd>
+          <dt><span>Depositeddate</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.depositeddate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Chequestatuschangeddate</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.chequestatuschangeddate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Returnchequesttledate</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.returnchequesttledate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Chequestatusid</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.chequestatusid }}</span>
+          </dd>
+          <dt><span>Is Pd Cheque</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.isPdCheque }}</span>
+          </dd>
+          <dt><span>Depositdate</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.depositdate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Accountid</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.accountid }}</span>
+          </dd>
+          <dt><span>Accountcode</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.accountcode }}</span>
+          </dd>
+          <dt><span>Bankdepositbankname</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.bankdepositbankname }}</span>
+          </dd>
+          <dt><span>Bankdepositbankid</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.bankdepositbankid }}</span>
+          </dd>
+          <dt><span>Bankdepositbankbranchname</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.bankdepositbankbranchname }}</span>
+          </dd>
+          <dt><span>Bankdepositbankbranchid</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.bankdepositbankbranchid }}</span>
+          </dd>
+          <dt><span>Returnchequefine</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.returnchequefine }}</span>
+          </dd>
+          <dt><span>Companybankid</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.companybankid }}</span>
+          </dd>
+          <dt><span>Isbankreconciliation</span></dt>
+          <dd>
+            <span>{{ receiptpaymentsdetailsRef.isbankreconciliation }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/receiptpaymentsdetails', receiptpaymentsdetailsRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

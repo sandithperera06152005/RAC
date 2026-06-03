@@ -1,0 +1,48 @@
+{
+  "annotations": {
+    "changelogDate": "20250217063812"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "vehicleworkid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "lineid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "workid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "workshopwork",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "isjobdone",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "jobdonedate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "jobnumber",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "jobvalue",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "estimatevalue",
+      "fieldType": "Float"
+    }
+  ],
+  "name": "WorkshopVehicleWorkList",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no"
+}

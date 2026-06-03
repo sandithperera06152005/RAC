@@ -1,0 +1,15 @@
+entity Autojobsaleinvoicecommonservicecharge {
+    invoiceid Integer 
+    lineid Integer 
+    optionid Integer 
+    mainid Integer
+    code String
+    name String
+    description String
+    value Float
+    addedbyid Integer
+    discount Float
+    serviceprice Float
+}
+paginate * with pagination
+filter all

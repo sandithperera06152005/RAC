@@ -1,0 +1,74 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (autojobsalesinvoiceservicechargeline(); as autojobsalesinvoiceservicechargelineRef) {
+      <div>
+        <h2 data-cy="autojobsalesinvoiceservicechargelineDetailsHeading"><span>Autojobsalesinvoiceservicechargeline</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ autojobsalesinvoiceservicechargelineRef.id }}</span>
+          </dd>
+          <dt><span>Invoiceid</span></dt>
+          <dd>
+            <span>{{ autojobsalesinvoiceservicechargelineRef.invoiceid }}</span>
+          </dd>
+          <dt><span>Lineid</span></dt>
+          <dd>
+            <span>{{ autojobsalesinvoiceservicechargelineRef.lineid }}</span>
+          </dd>
+          <dt><span>Optionid</span></dt>
+          <dd>
+            <span>{{ autojobsalesinvoiceservicechargelineRef.optionid }}</span>
+          </dd>
+          <dt><span>Servicename</span></dt>
+          <dd>
+            <span>{{ autojobsalesinvoiceservicechargelineRef.servicename }}</span>
+          </dd>
+          <dt><span>Servicediscription</span></dt>
+          <dd>
+            <span>{{ autojobsalesinvoiceservicechargelineRef.servicediscription }}</span>
+          </dd>
+          <dt><span>Value</span></dt>
+          <dd>
+            <span>{{ autojobsalesinvoiceservicechargelineRef.value }}</span>
+          </dd>
+          <dt><span>Addedbyid</span></dt>
+          <dd>
+            <span>{{ autojobsalesinvoiceservicechargelineRef.addedbyid }}</span>
+          </dd>
+          <dt><span>Iscustomersrvice</span></dt>
+          <dd>
+            <span>{{ autojobsalesinvoiceservicechargelineRef.iscustomersrvice }}</span>
+          </dd>
+          <dt><span>Discount</span></dt>
+          <dd>
+            <span>{{ autojobsalesinvoiceservicechargelineRef.discount }}</span>
+          </dd>
+          <dt><span>Serviceprice</span></dt>
+          <dd>
+            <span>{{ autojobsalesinvoiceservicechargelineRef.serviceprice }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button
+          type="button"
+          [routerLink]="['/autojobsalesinvoiceservicechargeline', autojobsalesinvoiceservicechargelineRef.id, 'edit']"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

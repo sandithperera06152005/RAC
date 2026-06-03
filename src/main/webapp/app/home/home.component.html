@@ -1,0 +1,72 @@
+<div class="container-fluid py-3">
+  <div class="row">
+    <div class="col-12">
+      <!-- Simple Header: Centered when logged out, Left-aligned when logged in -->
+      <div class="d-flex align-items-center" [ngClass]="account() ? 'mb-4' : 'justify-content-center mb-5'">
+        <div class="image-wrapper me-3">
+          <img src="content/images/rac.jpg" alt="RAC Logo" class="image-resize" />
+        </div>
+        <div class="text-start">
+          <h2 class="fw-bold mb-1 text-primary">Rathaweera Auto</h2>
+          <p class="text-muted mb-0 small uppercase tracking-wider">Automotive care management system</p>
+        </div>
+      </div>
+
+      <div class="content-section">
+        @if (account() !== null) {
+          <div class="card jh-card border-0 shadow-sm mb-4">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="avatar-circle bg-primary text-white me-3">
+                  <span class="fw-bold">{{ account()?.login?.charAt(0)?.toUpperCase() }}</span>
+                </div>
+                <div>
+                  <h5 class="mb-0">
+                    Welcome, <strong>{{ account()!.login }}</strong>
+                  </h5>
+                </div>
+              </div>
+              <hr class="my-3 opacity-10" />
+              <jhi-autocareopenjob></jhi-autocareopenjob>
+            </div>
+          </div>
+        } @else {
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card jh-card border-0 shadow-sm h-100">
+                <div class="card-body p-3 d-flex flex-column">
+                  <h4 class="fw-bold mb-2">Sign In</h4>
+                  <p class="text-secondary small mb-3 flex-grow-1">Access your dashboard and manage jobs.</p>
+                  <button type="button" class="btn btn-primary w-100 fw-bold" (click)="login()">Sign In</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card jh-card border-0 shadow-sm h-100">
+                <div class="card-body p-3 d-flex flex-column">
+                  <h4 class="fw-bold mb-2">Register</h4>
+                  <p class="text-secondary small mb-3 flex-grow-1">Create a new account to get started.</p>
+                  <a routerLink="/account/register" class="btn btn-outline-primary w-100 fw-bold"> Register </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br />
+          <div class="mt-4">
+            <div class="alert alert-info border-0 p-3 bg-light small">
+              <div class="d-flex align-items-center">
+                <fa-icon icon="info-circle" class="me-2 text-primary"></fa-icon>
+                <span>Need help? Contact the system administrator.</span>
+                <!-- 
+                Default accounts:
+                - Administrator (login="admin" and password="admin")
+                - User (login="user" and password="user")
+                -->
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

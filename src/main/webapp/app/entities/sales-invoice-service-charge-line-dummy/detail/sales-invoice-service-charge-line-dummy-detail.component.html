@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (salesInvoiceServiceChargeLineDummy(); as salesInvoiceServiceChargeLineDummyRef) {
+      <div>
+        <h2 data-cy="salesInvoiceServiceChargeLineDummyDetailsHeading"><span>Sales Invoice Service Charge Line Dummy</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineDummyRef.id }}</span>
+          </dd>
+          <dt><span>Invoice Id</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineDummyRef.invoiceId }}</span>
+          </dd>
+          <dt><span>Line Id</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineDummyRef.lineId }}</span>
+          </dd>
+          <dt><span>Option Id</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineDummyRef.optionId }}</span>
+          </dd>
+          <dt><span>Service Name</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineDummyRef.serviceName }}</span>
+          </dd>
+          <dt><span>Service Description</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineDummyRef.serviceDescription }}</span>
+          </dd>
+          <dt><span>Value</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineDummyRef.value }}</span>
+          </dd>
+          <dt><span>Is Customer Service</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineDummyRef.isCustomerService }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button
+          type="button"
+          [routerLink]="['/sales-invoice-service-charge-line-dummy', salesInvoiceServiceChargeLineDummyRef.id, 'edit']"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

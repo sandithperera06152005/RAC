@@ -1,0 +1,22 @@
+entity SalesInvoiceLinesDummy {
+  invoiceId Integer,
+  lineId Integer,
+  itemId Integer,
+  itemCode String,
+  itemName String,
+  description String,
+  unitOfMeasurement String,
+  quantity Float,
+  itemCost Float,
+  itemPrice Float,
+  discount Float,
+  tax Float,
+  sellingPrice Float,
+  lineTotal Float,
+  lmu Integer,
+  lmd Instant,
+  nbt Boolean,
+  vat Boolean
+}
+paginate * with pagination
+filter all

@@ -1,0 +1,12 @@
+entity Workshopvehicleworklist {
+    vehicleworkid Integer
+    lineid Integer
+    workid Integer
+    workshopwork String 
+    isjobdone Boolean
+    jobdonedate Instant
+    jobnumber String 
+    jobvalue Float
+    estimatevalue Float
+}
+paginate * with pagination

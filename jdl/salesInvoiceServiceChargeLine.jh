@@ -1,0 +1,13 @@
+entity SalesInvoiceServiceChargeLine {
+    invoiceId Integer ,
+    lineId Integer ,
+    optionId Integer,
+    serviceName String ,
+    serviceDescription String,
+    value Float ,
+    isCustomerService Boolean ,
+    discount Float,
+    servicePrice Float,
+}
+paginate * with pagination
+filter all

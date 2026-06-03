@@ -1,0 +1,12 @@
+entity Commonserviceoption {
+    mainid Integer // MainId
+    code String // Code
+    name String // Name
+    description String // Description
+    value Float // Value
+    isactive Boolean // IsActive
+    lmd Instant // LMD
+    lmu Integer // LMU
+}
+paginate * with pagination
+filter all

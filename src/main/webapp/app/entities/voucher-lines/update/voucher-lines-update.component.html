@@ -1,0 +1,88 @@
+<div class="d-flex justify-content-center">
+  <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+    <div>
+      <jhi-alert-error></jhi-alert-error>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th *ngIf="false">ID</th>
+            <th *ngIf="false">Line ID</th>
+            <th>Description</th>
+            <th *ngIf="false">Grn Type</th>
+            <th>Original Amount</th>
+            <th>Amount Owing</th>
+            <th *ngIf="false">Discount Available</th>
+            <th *ngIf="false">Discount Taken</th>
+            <th>Amount Received</th>
+            <th *ngIf="false">Lmu</th>
+            <th *ngIf="false">Lmd</th>
+            <th>Account</th>
+            <th *ngIf="false">Account ID</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody formArrayName="voucherlines">
+          <tr *ngFor="let line of voucherlinesArray.controls; let i = index" [formGroupName]="i">
+            <td *ngIf="false">
+              <input type="number" class="form-control" formControlName="id" [readonly]="true" *ngIf="line.get('id')?.value" />
+            </td>
+            <td *ngIf="false">
+              <input type="number" class="form-control" formControlName="lineID" />
+            </td>
+            <td>
+              <input type="text" class="form-control" formControlName="grnCode" [value]="i === 0 ? code : line.get('grnCode')?.value" />
+            </td>
+            <td *ngIf="false">
+              <input type="text" class="form-control" formControlName="grnType" />
+            </td>
+            <td>
+              <input
+                type="number"
+                class="form-control"
+                formControlName="originalAmount"
+                [value]="i === 0 ? originalamount : line.get('originalAmount')?.value"
+                (input)="calculateAmountOwing(i, line.value)"
+              />
+            </td>
+            <td>
+              <input type="number" class="form-control" formControlName="amountOwing" [value]="getAmountOwing(i, line.value)" />
+            </td>
+            <td *ngIf="false">
+              <input type="number" class="form-control" formControlName="discountAvailable" />
+            </td>
+            <td *ngIf="false">
+              <input type="number" class="form-control" formControlName="discountTaken" />
+            </td>
+            <td>
+              <input
+                type="number"
+                class="form-control"
+                formControlName="amountReceived"
+                [value]="i === 0 ? amount : line.get('amountReceived')?.value"
+                (input)="calculateAmountOwing(i, line.value)"
+              />
+            </td>
+            <td *ngIf="false">
+              <input type="number" class="form-control" formControlName="lmu" />
+            </td>
+            <td *ngIf="false">
+              <input type="datetime-local" class="form-control" formControlName="lmd" />
+            </td>
+            <td>{{ name }}</td>
+            <td *ngIf="false">
+              {{ accountId }}
+            </td>
+            <td>
+              <button type="button" class="btn btn-danger" (click)="removeVoucherLine(i)">Remove</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button type="button" class="btn btn-secondary" (click)="addVoucherLine()">Add Line</button>
+    </div>
+
+    <div></div>
+  </form>
+</div>

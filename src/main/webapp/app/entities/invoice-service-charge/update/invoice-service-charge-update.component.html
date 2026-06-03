@@ -1,0 +1,72 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<div class="d-flex justify-content-center">
+  <div class="col-10">
+    <h2 id="jhi-invoice-service-common-heading" data-cy="InvoiceServiceCommonCreateUpdateHeading">Invoice Service Common</h2>
+
+    <jhi-alert-error></jhi-alert-error>
+
+    <!-- Customer Details Section -->
+    <div class="card p-3 mb-3">
+      <h4>Customer Details</h4>
+      <div class="form-group">
+        <label for="customer">Customers:</label>
+        <input type="text" class="form-control" id="customer" formControlName="customer" placeholder="Enter customer name" />
+      </div>
+      <div class="form-group">
+        <label for="owing">Owing:</label>
+        <input type="text" class="form-control text-danger" id="owing" formControlName="owing" value="0" readonly />
+      </div>
+      <div class="form-group">
+        <label for="vehicle">Vehicle:</label>
+        <select class="form-control" id="vehicle" formControlName="vehicle">
+          <option value="KO-8703">KO-8703</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="date">Date:</label>
+        <input type="date" class="form-control" id="date" formControlName="date" required />
+      </div>
+    </div>
+
+    <form [formGroup]="editForm">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Invoice ID</th>
+            <th>Line ID</th>
+            <th>Option ID</th>
+            <th>Service Name</th>
+            <th>Service Description</th>
+            <th>Value</th>
+            <th>Added By ID</th>
+            <th>Is Customer Service</th>
+            <th>Discount</th>
+            <th>Service Price</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody formArrayName="invoiceServiceCharges">
+          <tr *ngFor="let charge of invoiceServiceChargesArray.controls; let i = index" [formGroupName]="i">
+            <td><input formControlName="id" type="number" readonly /></td>
+            <td><input formControlName="invoiceId" type="number" /></td>
+            <td><input formControlName="lineId" type="number" /></td>
+            <td><input formControlName="optionId" type="number" /></td>
+            <td><input formControlName="serviceName" type="text" /></td>
+            <td><input formControlName="serviceDescription" type="text" /></td>
+            <td><input formControlName="value" type="number" /></td>
+            <td><input formControlName="addedById" type="number" /></td>
+            <td><input formControlName="isCustomerService" type="checkbox" /></td>
+            <td><input formControlName="discount" type="number" /></td>
+            <td><input formControlName="servicePrice" type="number" /></td>
+            <td>
+              <button type="button"  class="btn btn-danger btn-sm" (click)="removeInvoiceServiceCharge(i)"><i class="fas fa-trash fs-5"></i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <button type="button" (click)="addInvoiceServiceCharge()">Add Row</button>
+    </form>
+  </div>
+</div>

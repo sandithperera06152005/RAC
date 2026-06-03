@@ -1,0 +1,592 @@
+<div justify-content-right class="row">
+  <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+    <h2 id="jhi-sales-invoice-heading" data-cy="SalesInvoiceCreateUpdateHeading">Sales Invoice</h2>
+
+    <jhi-alert-error></jhi-alert-error>
+
+    @if (editForm.controls.id.value !== null) {
+    <div class="mb-3">
+      <label class="form-label" for="field_id">Id</label>
+      <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+    </div>
+    }
+    <div class="container">
+      <div class="row">
+        <!-- Customer Details Container -->
+        <div class="col-md-4">
+          <div class="p-2 border rounded bg-light">
+            <h6 class="mb-2">Customer Details</h6>
+            <div class="mb-2">
+              <label class="form-label" for="field_customerName">Customer Name</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                name="customerName"
+                id="field_customerName"
+                formControlName="customerName"
+              />
+            </div>
+            <div class="mb-2">
+              <label class="form-label" for="field_amountOwing">Amount Owing</label>
+              <input
+                type="number"
+                class="form-control form-control-sm"
+                name="amountOwing"
+                id="field_amountOwing"
+                formControlName="amountOwing"
+              />
+            </div>
+            <div class="mb-2">
+              <label class="form-label" for="field_vehicleNo">Vehicle No</label>
+              <input type="text" class="form-control form-control-sm" name="vehicleNo" id="field_vehicleNo" formControlName="vehicleNo" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label" for="field_invoiceDate">Invoice Date</label>
+              <input
+                type="datetime-local"
+                class="form-control form-control-sm"
+                id="field_invoiceDate"
+                name="invoiceDate"
+                formControlName="invoiceDate"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="p-2 border rounded bg-light">
+            <h6 class="mb-2">Item Details</h6>
+            <div class="row">
+              <!-- Left Column -->
+              <div class="col-md-6">
+                <div class="mb-2">
+                  <label class="form-label" for="field_code">Code</label>
+                  <input type="text" class="form-control form-control-sm" id="field_code" formControlName="code" />
+                </div>
+                <div class="mb-2">
+                  <label class="form-label" for="field_item">Item</label>
+                  <input type="text" class="form-control form-control-sm" id="field_item" />
+                </div>
+                <div class="mb-2">
+                  <label class="form-label" for="field_itemPrice">Item Price</label>
+                  <input type="number" class="form-control form-control-sm" id="field_itemPrice" />
+                </div>
+                <div class="mb-2">
+                  <label class="form-label" for="field_availableQty">Available Quantity</label>
+                  <input type="number" class="form-control form-control-sm" id="field_availableQty" />
+                </div>
+              </div>
+
+              <!-- Right Column -->
+              <div class="col-md-6">
+                <div class="mb-2">
+                  <label class="form-label" for="field_buyQty">Buy Quantity</label>
+                  <input type="number" class="form-control form-control-sm" id="field_buyQty" />
+                </div>
+                <div class="mb-2">
+                  <label class="form-label me-2">Discount Option</label>
+                  <div>
+                    <input type="radio" name="itemDiscountOption" id="itemPercentage" value="percentage" />
+                    <label for="itemPercentage">%</label>
+                    <input type="radio" name="itemDiscountOption" id="itemValue" value="value" />
+                    <label for="itemValue">Value</label>
+                  </div>
+                </div>
+                <div class="mb-2">
+                  <label class="form-label" for="field_itemDiscount">Discount</label>
+                  <input type="number" class="form-control form-control-sm" id="field_itemDiscount" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Final Payments Container -->
+        <div class="col-md-4">
+          <div class="p-2 border rounded bg-light">
+            <h6 class="mb-2">Final Payments</h6>
+            <div class="row">
+              <!-- Left Column -->
+              <div class="col-md-6">
+                <div class="mb-2">
+                  <label class="form-label me-2" for="field_subTotal">Sub Total</label>
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    name="subTotal"
+                    id="field_subTotal"
+                    formControlName="subTotal"
+                  />
+                </div>
+
+                <div class="mb-2">
+                  <label class="form-label me-2">Discount Option</label>
+                  <div>
+                    <input
+                      type="radio"
+                      name="discountOption"
+                      id="percentage"
+                      value="percentage"
+                      [checked]="discountOption === 'percentage'"
+                      (change)="onDiscountOptionChange('percentage')"
+                    />
+                    <label for="percentage">%</label>
+
+                    <input
+                      type="radio"
+                      name="discountOption"
+                      id="value"
+                      value="value"
+                      [checked]="discountOption === 'value'"
+                      (change)="onDiscountOptionChange('value')"
+                    />
+                    <label for="value">Value</label>
+                  </div>
+                </div>
+
+                <div class="mb-2">
+                  <label class="form-label me-2" for="field_valueDiscount">Discount Value</label>
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    name="valueDiscount"
+                    id="field_valueDiscount"
+                    [(ngModel)]="discountValue"
+                    [ngModelOptions]="{ standalone: true }"
+                    (input)="onDiscountValueChange($event)"
+                  />
+                </div>
+              </div>
+
+              <!-- Right Column -->
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-md-6 mb-2">
+                    <label class="form-label me-2" for="field_nbtAmount">NBT</label>
+                    <input
+                      type="number"
+                      class="form-control form-control-sm"
+                      name="nbtAmount"
+                      id="field_nbtAmount"
+                      formControlName="nbtAmount"
+                    />
+                  </div>
+
+                  <div class="col-md-6 mb-2">
+                    <label class="form-label me-2" for="field_vatAmount">VAT</label>
+                    <input
+                      type="number"
+                      class="form-control form-control-sm"
+                      name="vatAmount"
+                      id="field_vatAmount"
+                      formControlName="vatAmount"
+                    />
+                  </div>
+                </div>
+
+                <div class="mb-2">
+                  <label class="form-label me-2" for="field_totalTax">Tax</label>
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    name="totalTax"
+                    id="field_totalTax"
+                    formControlName="totalTax"
+                  />
+                </div>
+
+                <div class="mb-2">
+                  <div class="form-check">
+                    <input type="checkbox" class="form-check-input" name="tax" id="field_tax" formControlName="totalTax" />
+                    <label class="form-check-label" for="field_tax">Apply Tax</label>
+                  </div>
+                </div>
+
+                <div class="mb-2">
+                  <label class="form-label me-2" for="field_netTotal">Net Total</label>
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    name="netTotal"
+                    id="field_netTotal"
+                    formControlName="netTotal"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-12">
+          <!-- sales-invoice-update.component.html -->
+          <div class="container">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <a
+                  class="nav-link active"
+                  id="billing-tab"
+                  data-bs-toggle="tab"
+                  href="#billing"
+                  role="tab"
+                  aria-controls="billing"
+                  aria-selected="true"
+                >
+                  Billing Information
+                </a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a
+                  class="nav-link"
+                  id="service-charges-tab"
+                  data-bs-toggle="tab"
+                  href="#service-charges"
+                  role="tab"
+                  aria-controls="service-charges"
+                  aria-selected="false"
+                >
+                  Service Charges
+                </a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a
+                  class="nav-link"
+                  id="common-charges-tab"
+                  data-bs-toggle="tab"
+                  href="#common-charges"
+                  role="tab"
+                  aria-controls="common-charges"
+                  aria-selected="false"
+                >
+                  Service Common Charges
+                </a>
+              </li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content mt-3">
+              <div class="tab-pane fade show active" id="billing" role="tabpanel" aria-labelledby="billing-tab">
+                <jhi-sales-invoice-lines-dummy-update
+                  (totalUpdated)="receiveTotal($event, 'child1')"
+                ></jhi-sales-invoice-lines-dummy-update>
+              </div>
+              <div class="tab-pane fade" id="service-charges" role="tabpanel" aria-labelledby="service-charges-tab">
+                <jhi-sales-invoice-service-charge-line-dummy-update
+                  (totalUpdated)="receiveTotal($event, 'child2')"
+                ></jhi-sales-invoice-service-charge-line-dummy-update>
+              </div>
+              <div class="tab-pane fade" id="common-charges" role="tabpanel" aria-labelledby="common-charges-tab">
+                <jhi-sale-invoice-common-service-charge-dummy-update
+                  (totalUpdated)="receiveTotal($event, 'child3')"
+                ></jhi-sale-invoice-common-service-charge-dummy-update>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_locationID">Location ID</label>
+      <input type="number" class="form-control" name="locationID" id="field_locationID" data-cy="locationID" formControlName="locationID" />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_originalInvoiceId">Original Invoice Id</label>
+      <input
+        type="number"
+        class="form-control"
+        name="originalInvoiceId"
+        id="field_originalInvoiceId"
+        data-cy="originalInvoiceId"
+        formControlName="originalInvoiceId"
+      />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_code">Code</label>
+      <input type="text" class="form-control" name="code" id="field_code" data-cy="code" formControlName="code" />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_createdDate">Created Date</label>
+      <div class="d-flex">
+        <input
+          id="field_createdDate"
+          data-cy="createdDate"
+          type="datetime-local"
+          class="form-control"
+          name="createdDate"
+          formControlName="createdDate"
+          placeholder="YYYY-MM-DD HH:mm"
+        />
+      </div>
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      >
+      <label class="form-label" for="field_quoteID">Quote ID</label>
+      <input type="number" class="form-control" name="quoteID" id="field_quoteID" data-cy="quoteID" formControlName="quoteID" />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_orderID">Order ID</label>
+      <input type="number" class="form-control" name="orderID" id="field_orderID" data-cy="orderID" formControlName="orderID" />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_deliveryDate">Delivery Date</label>
+      <div class="d-flex">
+        <input
+          id="field_deliveryDate"
+          data-cy="deliveryDate"
+          type="datetime-local"
+          class="form-control"
+          name="deliveryDate"
+          formControlName="deliveryDate"
+          placeholder="YYYY-MM-DD HH:mm"
+        />
+      </div>
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_salesRepID">Sales Rep ID</label>
+      <input type="number" class="form-control" name="salesRepID" id="field_salesRepID" data-cy="salesRepID" formControlName="salesRepID" />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_salesRepName">Sales Rep Name</label>
+      <input
+        type="text"
+        class="form-control"
+        name="salesRepName"
+        id="field_salesRepName"
+        data-cy="salesRepName"
+        formControlName="salesRepName"
+      />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_deliverFrom">Deliver From</label>
+      <input
+        type="text"
+        class="form-control"
+        name="deliverFrom"
+        id="field_deliverFrom"
+        data-cy="deliverFrom"
+        formControlName="deliverFrom"
+      />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_customerID">Customer ID</label>
+      <input type="number" class="form-control" name="customerID" id="field_customerID" data-cy="customerID" formControlName="customerID" />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_customerAddress">Customer Address</label>
+      <input
+        type="text"
+        class="form-control"
+        name="customerAddress"
+        id="field_customerAddress"
+        data-cy="customerAddress"
+        formControlName="customerAddress"
+      />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_deliveryAddress">Delivery Address</label>
+      <input
+        type="text"
+        class="form-control"
+        name="deliveryAddress"
+        id="field_deliveryAddress"
+        data-cy="deliveryAddress"
+        formControlName="deliveryAddress"
+      />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_message">Message</label>
+      <input type="text" class="form-control" name="message" id="field_message" data-cy="message" formControlName="message" />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_lmu">Lmu</label>
+      <input type="number" class="form-control" name="lmu" id="field_lmu" data-cy="lmu" formControlName="lmu" />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_lmd">Lmd</label>
+      <div class="d-flex">
+        <input
+          id="field_lmd"
+          data-cy="lmd"
+          type="datetime-local"
+          class="form-control"
+          name="lmd"
+          formControlName="lmd"
+          placeholder="YYYY-MM-DD HH:mm"
+        />
+      </div>
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_paidAmount">Paid Amount</label>
+      <input type="number" class="form-control" name="paidAmount" id="field_paidAmount" data-cy="paidAmount" formControlName="paidAmount" />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_isActive">Is Active</label>
+      <input type="checkbox" class="form-check" name="isActive" id="field_isActive" data-cy="isActive" formControlName="isActive" />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_locationCode">Location Code</label>
+      <input
+        type="text"
+        class="form-control"
+        name="locationCode"
+        id="field_locationCode"
+        data-cy="locationCode"
+        formControlName="locationCode"
+      />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_referenceCode">Reference Code</label>
+      <input
+        type="text"
+        class="form-control"
+        name="referenceCode"
+        id="field_referenceCode"
+        data-cy="referenceCode"
+        formControlName="referenceCode"
+      />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_createdById">Created By Id</label>
+      <input
+        type="number"
+        class="form-control"
+        name="createdById"
+        id="field_createdById"
+        data-cy="createdById"
+        formControlName="createdById"
+      />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_createdByName">Created By Name</label>
+      <input
+        type="text"
+        class="form-control"
+        name="createdByName"
+        id="field_createdByName"
+        data-cy="createdByName"
+        formControlName="createdByName"
+      />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_autoCareCharges">Auto Care Charges</label>
+      <input
+        type="number"
+        class="form-control"
+        name="autoCareCharges"
+        id="field_autoCareCharges"
+        data-cy="autoCareCharges"
+        formControlName="autoCareCharges"
+      />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_autoCareJobId">Auto Care Job Id</label>
+      <input
+        type="number"
+        class="form-control"
+        name="autoCareJobId"
+        id="field_autoCareJobId"
+        data-cy="autoCareJobId"
+        formControlName="autoCareJobId"
+      />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_dummyCommission">Dummy Commission</label>
+      <input
+        type="number"
+        class="form-control"
+        name="dummyCommission"
+        id="field_dummyCommission"
+        data-cy="dummyCommission"
+        formControlName="dummyCommission"
+      />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_commissionPaidDate">Commission Paid Date</label>
+      <div class="d-flex">
+        <input
+          id="field_commissionPaidDate"
+          data-cy="commissionPaidDate"
+          type="datetime-local"
+          class="form-control"
+          name="commissionPaidDate"
+          formControlName="commissionPaidDate"
+          placeholder="YYYY-MM-DD HH:mm"
+        />
+      </div>
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_paidCommission">Paid Commission</label>
+      <input
+        type="number"
+        class="form-control"
+        name="paidCommission"
+        id="field_paidCommission"
+        data-cy="paidCommission"
+        formControlName="paidCommission"
+      />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_paidBy">Paid By</label>
+      <input type="number" class="form-control" name="paidBy" id="field_paidBy" data-cy="paidBy" formControlName="paidBy" />
+    </div>
+
+    <div class="mb-3" *ngIf="showCodeField">
+      <label class="form-label" for="field_originalInvoiceCode">Original Invoice Code</label>
+      <input
+        type="text"
+        class="form-control"
+        name="originalInvoiceCode"
+        id="field_originalInvoiceCode"
+        data-cy="originalInvoiceCode"
+        formControlName="originalInvoiceCode"
+      />
+    </div>
+
+    <div>
+      <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+        <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+      </button>
+
+      <button
+        type="submit"
+        id="save-entity"
+        data-cy="entityCreateSaveButton"
+        [disabled]="editForm.invalid || isSaving"
+        class="btn btn-primary"
+        style="padding: 8px 16px; background-color: #4caf50; border: none; color: white; cursor: pointer"
+      >
+        <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+      </button>
+    </div>
+  </form>
+</div>

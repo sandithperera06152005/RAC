@@ -1,0 +1,112 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8" *ngIf="false">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-workshop-vehicle-work-list-heading" data-cy="WorkshopVehicleWorkListCreateUpdateHeading">
+        Create or edit a Workshop Vehicle Work List
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_vehicleworkid">Vehicleworkid</label>
+          <input
+            type="number"
+            class="form-control"
+            name="vehicleworkid"
+            id="field_vehicleworkid"
+            data-cy="vehicleworkid"
+            formControlName="vehicleworkid"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_lineid">Lineid</label>
+          <input type="number" class="form-control" name="lineid" id="field_lineid" data-cy="lineid" formControlName="lineid" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_workid">Workid</label>
+          <input type="number" class="form-control" name="workid" id="field_workid" data-cy="workid" formControlName="workid" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_workshopwork">Workshopwork</label>
+          <input
+            type="text"
+            class="form-control"
+            name="workshopwork"
+            id="field_workshopwork"
+            data-cy="workshopwork"
+            formControlName="workshopwork"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_isjobdone">Isjobdone</label>
+          <input type="checkbox" class="form-check" name="isjobdone" id="field_isjobdone" data-cy="isjobdone" formControlName="isjobdone" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_jobdonedate">Jobdonedate</label>
+          <div class="d-flex">
+            <input
+              id="field_jobdonedate"
+              data-cy="jobdonedate"
+              type="datetime-local"
+              class="form-control"
+              name="jobdonedate"
+              formControlName="jobdonedate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_jobnumber">Jobnumber</label>
+          <input type="text" class="form-control" name="jobnumber" id="field_jobnumber" data-cy="jobnumber" formControlName="jobnumber" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_jobvalue">Jobvalue</label>
+          <input type="number" class="form-control" name="jobvalue" id="field_jobvalue" data-cy="jobvalue" formControlName="jobvalue" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_estimatevalue">Estimatevalue</label>
+          <input
+            type="number"
+            class="form-control"
+            name="estimatevalue"
+            id="field_estimatevalue"
+            data-cy="estimatevalue"
+            formControlName="estimatevalue"
+          />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

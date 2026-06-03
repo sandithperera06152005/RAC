@@ -1,0 +1,54 @@
+{
+  "annotations": {
+    "changelogDate": "20250212115930"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "invoiceid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "lineid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "optionid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "servicename",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "servicediscription",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "value",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "addedbyid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "iscustomersrvice",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "discount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "serviceprice",
+      "fieldType": "Float"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Autojobsalesinvoiceservicechargeline",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

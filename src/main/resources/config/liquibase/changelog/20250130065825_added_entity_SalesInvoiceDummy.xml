@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity SalesInvoiceDummy.
+    -->
+    <changeSet id="20250130065825-1" author="jhipster">
+        <createTable tableName="sales_invoice_dummy">
+            <column name="id" type="integer">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="original_invoice_id" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="code" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="invoice_date" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="created_date" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="quote_id" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="order_id" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="delivery_date" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="sales_rep_id" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="sales_rep_name" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="deliver_from" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="customer_id" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="customer_name" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="customer_address" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="delivery_address" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="sub_total" type="${floatType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="total_tax" type="${floatType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="total_discount" type="${floatType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="net_total" type="${floatType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="message" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="lmu" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="lmd" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="paid_amount" type="${floatType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="amount_owing" type="${floatType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="is_active" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="location_id" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="location_code" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="reference_code" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="created_by_id" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="created_by_name" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="auto_care_charges" type="${floatType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="auto_care_job_id" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="vehicle_no" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="nbt_amount" type="${floatType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="vat_amount" type="${floatType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="dummy_commission" type="${floatType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="commission_paid_date" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="paid_commission" type="${floatType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="paid_by" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="original_invoice_code" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+        <dropDefaultValue tableName="sales_invoice_dummy" columnName="invoice_date" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="sales_invoice_dummy" columnName="created_date" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="sales_invoice_dummy" columnName="delivery_date" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="sales_invoice_dummy" columnName="lmd" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="sales_invoice_dummy" columnName="commission_paid_date" columnDataType="${datetimeType}"/>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+
+    <!--
+        Load sample data generated with Faker.js
+        - This data can be easily edited using a CSV editor (or even MS Excel) and
+          is located in the 'src/main/resources/config/liquibase/fake-data' directory
+        - By default this data is applied when running with the JHipster 'dev' profile.
+          This can be customized by adding or removing 'faker' in the 'spring.liquibase.contexts'
+          Spring Boot configuration key.
+    -->
+    <changeSet id="20250130065825-1-data" author="jhipster" context="faker">
+        <loadData
+                  file="config/liquibase/fake-data/sales_invoice_dummy.csv"
+                  separator=";"
+                  tableName="sales_invoice_dummy"
+                  usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="original_invoice_id" type="numeric"/>
+            <column name="code" type="string"/>
+            <column name="invoice_date" type="date"/>
+            <column name="created_date" type="date"/>
+            <column name="quote_id" type="numeric"/>
+            <column name="order_id" type="numeric"/>
+            <column name="delivery_date" type="date"/>
+            <column name="sales_rep_id" type="numeric"/>
+            <column name="sales_rep_name" type="string"/>
+            <column name="deliver_from" type="string"/>
+            <column name="customer_id" type="numeric"/>
+            <column name="customer_name" type="string"/>
+            <column name="customer_address" type="string"/>
+            <column name="delivery_address" type="string"/>
+            <column name="sub_total" type="numeric"/>
+            <column name="total_tax" type="numeric"/>
+            <column name="total_discount" type="numeric"/>
+            <column name="net_total" type="numeric"/>
+            <column name="message" type="string"/>
+            <column name="lmu" type="numeric"/>
+            <column name="lmd" type="date"/>
+            <column name="paid_amount" type="numeric"/>
+            <column name="amount_owing" type="numeric"/>
+            <column name="is_active" type="boolean"/>
+            <column name="location_id" type="numeric"/>
+            <column name="location_code" type="string"/>
+            <column name="reference_code" type="string"/>
+            <column name="created_by_id" type="numeric"/>
+            <column name="created_by_name" type="string"/>
+            <column name="auto_care_charges" type="numeric"/>
+            <column name="auto_care_job_id" type="numeric"/>
+            <column name="vehicle_no" type="string"/>
+            <column name="nbt_amount" type="numeric"/>
+            <column name="vat_amount" type="numeric"/>
+            <column name="dummy_commission" type="numeric"/>
+            <column name="commission_paid_date" type="date"/>
+            <column name="paid_commission" type="numeric"/>
+            <column name="paid_by" type="numeric"/>
+            <column name="original_invoice_code" type="string"/>
+            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

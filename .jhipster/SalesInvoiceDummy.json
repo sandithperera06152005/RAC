@@ -1,0 +1,174 @@
+{
+  "annotations": {
+    "changelogDate": "20250130065825"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "originalInvoiceId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "invoiceDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "createdDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "quoteID",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "orderID",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "deliveryDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "salesRepID",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "salesRepName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "deliverFrom",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "customerID",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "customerName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "customerAddress",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "deliveryAddress",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "subTotal",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "totalTax",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "totalDiscount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "netTotal",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "message",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "lmu",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "lmd",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "paidAmount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "amountOwing",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "isActive",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "locationID",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "locationCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "referenceCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdById",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "createdByName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "autoCareCharges",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "autoCareJobId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "vehicleNo",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "nbtAmount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "vatAmount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "dummyCommission",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "commissionPaidDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "paidCommission",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "paidBy",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "originalInvoiceCode",
+      "fieldType": "String"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "SalesInvoiceDummy",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

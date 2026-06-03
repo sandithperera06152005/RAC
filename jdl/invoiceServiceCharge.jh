@@ -1,0 +1,17 @@
+entity InvoiceServiceCharge {
+  InvoiceId Long,
+  LineId Long,
+  OptionId Long,
+  ServiceName String,
+  ServiceDiscription String,
+  Value Double,
+  AddedById Long,
+  IsCustomerSrvice Boolean,
+  Discount Double,
+  ServicePrice Double
+}
+
+// Enable pagination for all entities
+paginate * with pagination
+filter all
+// Enable filtering for all entities

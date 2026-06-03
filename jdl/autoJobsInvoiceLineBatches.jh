@@ -1,0 +1,31 @@
+entity Autojobsinvoicelinebatches {
+    id Integer 
+    lineid Integer 
+    batchlineid Integer 
+    itemid Integer
+    code String 
+    batchid Integer
+    batchcode String 
+    txdate Instant
+    manufacturedate Instant
+    expireddate Instant
+    qty Float
+    cost Float
+    price Float
+    notes String 
+    lmu Integer
+    lmd Instant
+    nbt Boolean
+    vat Boolean
+    discount Float
+    total Float
+    issued Boolean
+    issuedby Integer
+    issueddatetime Instant
+    addedbyid Integer
+    canceloptid Integer
+    cancelopt String
+    cancelby Integer
+}
+paginate * with pagination
+filter all

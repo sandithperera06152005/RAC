@@ -1,0 +1,26 @@
+entity SalesInvoiceLines {
+    invoiceid Integer, // Primary Key (part 1)
+    lineid Integer,   // Primary Key (part 2)
+    itemid Integer,             // Foreign Key to Inventory (nullable)
+    itemcode String,
+    itemname String,
+    description String,
+    unitofmeasurement String,
+    quantity Float,
+    itemcost Float,
+    itemprice Float,
+    discount Float,
+    tax Float,
+    sellingprice Float,
+    linetotal Float,
+    lmu Integer,               // Last Modified User
+    lmd Instant,               // Last Modified Date
+    nbt Boolean,             // Non-Business Tax
+    vat Boolean,                 // Value Added Tax
+}
+
+// Enable pagination for all entities
+paginate * with pagination
+filter all
+// Enable filtering for all entities
+

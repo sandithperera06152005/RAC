@@ -1,0 +1,263 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-voucher-heading" data-cy="VoucherCreateUpdateHeading">Create or edit a Voucher</h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <style>
+          .card {
+            background-color: #f8f9fa; /* Light gray background */
+            border: 2px solid #007bff; /* Blue border */
+          }
+
+          .card-body {
+            background-color: #ffffff; /* White background inside the card */
+            border-radius: 10px;
+          }
+
+          .card-title {
+            color: #5b5d63; /* Bootstrap primary blue */
+            font-weight: bold;
+          }
+
+          label {
+            font-weight: 600;
+            color: #333; /* Darker text for labels */
+          }
+
+          .form-control {
+            border-radius: 8px;
+            border: 1px solid #ccc;
+          }
+
+          .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+          }
+
+          /* Add some space between columns on larger screens */
+          @media (min-width: 768px) {
+            .row .col-md-6 {
+              padding-right: 15px;
+            }
+          }
+        </style>
+
+        <div class="card shadow-lg p-4">
+          <div class="card-body">
+            <h5 class="card-title text-center mb-4">Voucher Details</h5>
+
+            <div class="row">
+              <!-- Left Column -->
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label" for="field_code">Code</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="code"
+                    id="field_code"
+                    data-cy="code"
+                    formControlName="code"
+                    [value]="voucherCode"
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label" for="field_voucherDate">Voucher Date</label>
+                  <input
+                    id="field_voucherDate"
+                    data-cy="voucherDate"
+                    type="datetime-local"
+                    class="form-control"
+                    name="voucherDate"
+                    formControlName="voucherDate"
+                    placeholder="YYYY-MM-DD HH:mm"
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label" for="field_totalAmount">Total Amount</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="totalAmount"
+                    id="field_totalAmount"
+                    data-cy="totalAmount"
+                    formControlName="totalAmount"
+                  />
+                </div>
+              </div>
+
+              <!-- Right Column -->
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label" for="field_amountPaid">Amount Paid</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="amountPaid"
+                    id="field_amountPaid"
+                    data-cy="amountPaid"
+                    formControlName="amountPaid"
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label" for="field_totalAmountInWord">Total Amount In Word</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="totalAmountInWord"
+                    id="field_totalAmountInWord"
+                    data-cy="totalAmountInWord"
+                    formControlName="totalAmountInWord"
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label" for="field_comments">Comments</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="comments"
+                    id="field_comments"
+                    data-cy="comments"
+                    formControlName="comments"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- In the parent component HTML file (e.g., voucher-update.component.html) -->
+        <jhi-voucher-lines-update
+          [accountId]="accountId"
+          [code]="code"
+          [amount]="amount"
+          [name]="name"
+          [originalamount]="originalamount"
+        ></jhi-voucher-lines-update>
+
+        <!-- Pass voucherLinesData to the child component -->
+
+        <div class="mb-3" *ngIf="false">
+          <label class="form-label" for="field_supplierName">Supplier Name</label>
+          <input
+            type="text"
+            class="form-control"
+            name="supplierName"
+            id="field_supplierName"
+            data-cy="supplierName"
+            formControlName="supplierName"
+          />
+        </div>
+
+        <div class="mb-3" *ngIf="false">
+          <label class="form-label" for="field_supplierAddress">Supplier Address</label>
+          <input
+            type="text"
+            class="form-control"
+            name="supplierAddress"
+            id="field_supplierAddress"
+            data-cy="supplierAddress"
+            formControlName="supplierAddress"
+          />
+        </div>
+
+        <div class="mb-3" *ngIf="false">
+          <label class="form-label" for="field_lmu">Lmu</label>
+          <input type="number" class="form-control" name="lmu" id="field_lmu" data-cy="lmu" formControlName="lmu" />
+        </div>
+
+        <div class="mb-3" *ngIf="false">
+          <label class="form-label" for="field_lmd">Lmd</label>
+          <div class="d-flex">
+            <input
+              id="field_lmd"
+              data-cy="lmd"
+              type="datetime-local"
+              class="form-control"
+              name="lmd"
+              formControlName="lmd"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3" *ngIf="false">
+          <label class="form-label" for="field_termId">Term Id</label>
+          <input type="number" class="form-control" name="termId" id="field_termId" data-cy="termId" formControlName="termId" />
+        </div>
+
+        <div class="mb-3" *ngIf="false">
+          <label class="form-label" for="field_term">Term</label>
+          <input type="text" class="form-control" name="term" id="field_term" data-cy="term" formControlName="term" />
+        </div>
+
+        <div class="mb-3" *ngIf="false">
+          <label class="form-label" for="field_date">Date</label>
+          <div class="d-flex">
+            <input
+              id="field_date"
+              data-cy="date"
+              type="datetime-local"
+              class="form-control"
+              name="date"
+              formControlName="date"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3" *ngIf="false">
+          <label class="form-label" for="field_supplierID">Supplier ID</label>
+          <input
+            type="number"
+            class="form-control"
+            name="supplierID"
+            id="field_supplierID"
+            data-cy="supplierID"
+            formControlName="supplierID"
+          />
+        </div>
+
+        <div class="mb-3" *ngIf="false">
+          <label class="form-label" for="field_isActive">Is Active</label>
+          <input type="checkbox" class="form-check" name="isActive" id="field_isActive" data-cy="isActive" formControlName="isActive" />
+        </div>
+
+        <div class="mb-3" *ngIf="false">
+          <label class="form-label" for="field_createdBy">Created By</label>
+          <input type="number" class="form-control" name="createdBy" id="field_createdBy" data-cy="createdBy" formControlName="createdBy" />
+        </div>
+      </div>
+      <br />
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

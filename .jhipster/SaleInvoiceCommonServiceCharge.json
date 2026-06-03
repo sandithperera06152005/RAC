@@ -1,0 +1,54 @@
+{
+  "annotations": {
+    "changelogDate": "20250212111155"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "invoiceId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "lineId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "optionId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "mainId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "value",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "discount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "servicePrice",
+      "fieldType": "Float"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "SaleInvoiceCommonServiceCharge",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

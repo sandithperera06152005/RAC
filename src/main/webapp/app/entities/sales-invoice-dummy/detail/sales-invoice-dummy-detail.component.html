@@ -1,0 +1,186 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (salesInvoiceDummy(); as salesInvoiceDummyRef) {
+      <div>
+        <h2 data-cy="salesInvoiceDummyDetailsHeading"><span>Sales Invoice Dummy</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>Id</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.id }}</span>
+          </dd>
+          <dt><span>Original Invoice Id</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.originalInvoiceId }}</span>
+          </dd>
+          <dt><span>Code</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.code }}</span>
+          </dd>
+          <dt><span>Invoice Date</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.invoiceDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Created Date</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.createdDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Quote ID</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.quoteID }}</span>
+          </dd>
+          <dt><span>Order ID</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.orderID }}</span>
+          </dd>
+          <dt><span>Delivery Date</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.deliveryDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Sales Rep ID</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.salesRepID }}</span>
+          </dd>
+          <dt><span>Sales Rep Name</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.salesRepName }}</span>
+          </dd>
+          <dt><span>Deliver From</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.deliverFrom }}</span>
+          </dd>
+          <dt><span>Customer ID</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.customerID }}</span>
+          </dd>
+          <dt><span>Customer Name</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.customerName }}</span>
+          </dd>
+          <dt><span>Customer Address</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.customerAddress }}</span>
+          </dd>
+          <dt><span>Delivery Address</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.deliveryAddress }}</span>
+          </dd>
+          <dt><span>Sub Total</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.subTotal }}</span>
+          </dd>
+          <dt><span>Total Tax</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.totalTax }}</span>
+          </dd>
+          <dt><span>Total Discount</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.totalDiscount }}</span>
+          </dd>
+          <dt><span>Net Total</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.netTotal }}</span>
+          </dd>
+          <dt><span>Message</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.message }}</span>
+          </dd>
+          <dt><span>Lmu</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.lmu }}</span>
+          </dd>
+          <dt><span>Lmd</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.lmd | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Paid Amount</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.paidAmount }}</span>
+          </dd>
+          <dt><span>Amount Owing</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.amountOwing }}</span>
+          </dd>
+          <dt><span>Is Active</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.isActive }}</span>
+          </dd>
+          <dt><span>Location ID</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.locationID }}</span>
+          </dd>
+          <dt><span>Location Code</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.locationCode }}</span>
+          </dd>
+          <dt><span>Reference Code</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.referenceCode }}</span>
+          </dd>
+          <dt><span>Created By Id</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.createdById }}</span>
+          </dd>
+          <dt><span>Created By Name</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.createdByName }}</span>
+          </dd>
+          <dt><span>Auto Care Charges</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.autoCareCharges }}</span>
+          </dd>
+          <dt><span>Auto Care Job Id</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.autoCareJobId }}</span>
+          </dd>
+          <dt><span>Vehicle No</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.vehicleNo }}</span>
+          </dd>
+          <dt><span>Nbt Amount</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.nbtAmount }}</span>
+          </dd>
+          <dt><span>Vat Amount</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.vatAmount }}</span>
+          </dd>
+          <dt><span>Dummy Commission</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.dummyCommission }}</span>
+          </dd>
+          <dt><span>Commission Paid Date</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.commissionPaidDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Paid Commission</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.paidCommission }}</span>
+          </dd>
+          <dt><span>Paid By</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.paidBy }}</span>
+          </dd>
+          <dt><span>Original Invoice Code</span></dt>
+          <dd>
+            <span>{{ salesInvoiceDummyRef.originalInvoiceCode }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/sales-invoice-dummy', salesInvoiceDummyRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

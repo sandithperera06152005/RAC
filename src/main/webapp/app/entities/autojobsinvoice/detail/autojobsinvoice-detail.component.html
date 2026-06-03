@@ -1,0 +1,155 @@
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      @if (autojobsinvoice(); as autojobsinvoiceRef) {
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-white border-bottom py-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0 text-primary fw-bold">Autojobsinvoice Details</h4>
+              <span class="badge bg-primary px-3 py-2">Invoice #{{ autojobsinvoiceRef.code }}</span>
+            </div>
+          </div>
+          <div class="card-body p-4">
+            <jhi-alert-error></jhi-alert-error>
+            <jhi-alert></jhi-alert>
+
+            <div class="row g-4">
+              <!-- Invoice Info -->
+              <div class="col-md-6">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Invoice Information</h6>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Invoice ID</div>
+                  <div class="col-7 fw-bold">{{ autojobsinvoiceRef.id }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Code</div>
+                  <div class="col-7 fw-bold">{{ autojobsinvoiceRef.code }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Invoice Date</div>
+                  <div class="col-7">{{ autojobsinvoiceRef.invoicedate | formatMediumDatetime }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Created Date</div>
+                  <div class="col-7 text-muted small">{{ autojobsinvoiceRef.createddate | formatMediumDatetime }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Location</div>
+                  <div class="col-7">{{ autojobsinvoiceRef.locationcode }} (ID: {{ autojobsinvoiceRef.locationid }})</div>
+                </div>
+              </div>
+
+              <!-- Job & Quote Info -->
+              <div class="col-md-6">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Job & Order Information</h6>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Job ID</div>
+                  <div class="col-7">
+                    <span class="badge bg-dark">{{ autojobsinvoiceRef.jobid }}</span>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Quote ID</div>
+                  <div class="col-7">{{ autojobsinvoiceRef.quoteid }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Order ID</div>
+                  <div class="col-7">{{ autojobsinvoiceRef.orderid }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Delivery Date</div>
+                  <div class="col-7">{{ autojobsinvoiceRef.delieverydate | formatMediumDatetime }}</div>
+                </div>
+              </div>
+
+              <!-- Customer Info -->
+              <div class="col-12 mt-4">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Customer Information</h6>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Customer Name</div>
+                      <div class="col-7 fw-bold">{{ autojobsinvoiceRef.customername }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Customer ID</div>
+                      <div class="col-7">{{ autojobsinvoiceRef.customerid }}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Address</div>
+                      <div class="col-7 small">{{ autojobsinvoiceRef.customeraddress }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Financial Summary -->
+              <div class="col-12 mt-4">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Financial Summary</h6>
+                <div class="row g-3">
+                  <div class="col-md-3">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Subtotal</div>
+                      <div class="h6 mb-0 fw-bold">{{ autojobsinvoiceRef.subtotal | currency: 'LKR ' : 'symbol' : '1.2-2' }}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Net Total</div>
+                      <div class="h5 mb-0 fw-bold text-primary">
+                        {{ autojobsinvoiceRef.nettotal | currency: 'LKR ' : 'symbol' : '1.2-2' }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Paid Amount</div>
+                      <div class="h6 mb-0 fw-bold text-success">
+                        {{ autojobsinvoiceRef.paidamount | currency: 'LKR ' : 'symbol' : '1.2-2' }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Amount Owing</div>
+                      <div class="h6 mb-0 fw-bold text-danger">
+                        {{ autojobsinvoiceRef.amountowing | currency: 'LKR ' : 'symbol' : '1.2-2' }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Remarks & Other -->
+              <div class="col-12 mt-4" *ngIf="autojobsinvoiceRef.message">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Additional Information</h6>
+                <div class="row">
+                  <div class="col-12">
+                    <label class="small text-secondary fw-bold">Message</label>
+                    <div class="p-3 bg-white border rounded mt-1">{{ autojobsinvoiceRef.message }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-white py-3 border-top-0 d-flex gap-2 justify-content-end">
+            <button
+              type="submit"
+              (click)="previousState()"
+              class="btn btn-outline-secondary px-4 shadow-sm"
+              data-cy="entityDetailsBackButton"
+            >
+              <fa-icon icon="arrow-left" class="me-1"></fa-icon> Back
+            </button>
+
+            <button type="button" [routerLink]="['/autojobsinvoice', autojobsinvoiceRef.id, 'edit']" class="btn btn-primary px-4 shadow-sm">
+              <fa-icon icon="pencil-alt" class="me-1"></fa-icon> Edit
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

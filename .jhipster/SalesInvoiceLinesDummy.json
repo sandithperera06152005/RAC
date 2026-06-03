@@ -1,0 +1,86 @@
+{
+  "annotations": {
+    "changelogDate": "20250130072225"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "invoiceId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "lineId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "itemId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "itemCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "itemName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "unitOfMeasurement",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "quantity",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "itemCost",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "itemPrice",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "discount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "tax",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "sellingPrice",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "lineTotal",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "lmu",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "lmd",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "nbt",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "vat",
+      "fieldType": "Boolean"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "SalesInvoiceLinesDummy",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

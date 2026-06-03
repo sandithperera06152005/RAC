@@ -1,0 +1,22 @@
+entity Autojobsinvoicelines {
+    invocieid Integer
+    lineid Integer
+    itemid Integer
+    itemcode String
+    itemname String
+    description String
+    unitofmeasurement String
+    quantity Float
+    itemcost Float
+    itemprice Float
+    discount Float
+    tax Float
+    sellingprice Float
+    linetotal Float
+    lmu Integer
+    lmd Instant
+    nbt Boolean
+    vat Boolean
+}
+paginate * with pagination
+filter all

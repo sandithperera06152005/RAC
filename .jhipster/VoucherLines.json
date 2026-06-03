@@ -1,0 +1,58 @@
+{
+  "annotations": {
+    "changelogDate": "20250211043043"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "lineID",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "grnCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "grnType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "originalAmount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "amountOwing",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "discountAvailable",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "discountTaken",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "amountReceived",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "lmu",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "lmd",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "accountId",
+      "fieldType": "Integer"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "VoucherLines",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

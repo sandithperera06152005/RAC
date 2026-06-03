@@ -1,0 +1,70 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (salesInvoiceServiceChargeLine(); as salesInvoiceServiceChargeLineRef) {
+      <div>
+        <h2 data-cy="salesInvoiceServiceChargeLineDetailsHeading"><span>Sales Invoice Service Charge Line</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineRef.id }}</span>
+          </dd>
+          <dt><span>Invoice Id</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineRef.invoiceId }}</span>
+          </dd>
+          <dt><span>Line Id</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineRef.lineId }}</span>
+          </dd>
+          <dt><span>Option Id</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineRef.optionId }}</span>
+          </dd>
+          <dt><span>Service Name</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineRef.serviceName }}</span>
+          </dd>
+          <dt><span>Service Description</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineRef.serviceDescription }}</span>
+          </dd>
+          <dt><span>Value</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineRef.value }}</span>
+          </dd>
+          <dt><span>Is Customer Service</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineRef.isCustomerService }}</span>
+          </dd>
+          <dt><span>Discount</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineRef.discount }}</span>
+          </dd>
+          <dt><span>Service Price</span></dt>
+          <dd>
+            <span>{{ salesInvoiceServiceChargeLineRef.servicePrice }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button
+          type="button"
+          [routerLink]="['/sales-invoice-service-charge-line', salesInvoiceServiceChargeLineRef.id, 'edit']"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

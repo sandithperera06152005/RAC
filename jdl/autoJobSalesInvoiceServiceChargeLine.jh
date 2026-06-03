@@ -1,0 +1,14 @@
+entity Autojobsalesinvoiceservicechargeline {
+    invoiceid Integer
+    lineid Integer
+    optionid Integer
+    servicename String 
+    servicediscription String 
+    value Float
+    addedbyid Integer
+    iscustomersrvice Boolean
+    discount Float
+    serviceprice Float
+}
+paginate * with pagination
+filter all

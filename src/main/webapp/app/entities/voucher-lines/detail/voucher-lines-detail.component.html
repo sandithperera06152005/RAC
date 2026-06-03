@@ -1,0 +1,74 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (voucherLines(); as voucherLinesRef) {
+      <div>
+        <h2 data-cy="voucherLinesDetailsHeading"><span>Voucher Lines</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ voucherLinesRef.id }}</span>
+          </dd>
+          <dt><span>Line ID</span></dt>
+          <dd>
+            <span>{{ voucherLinesRef.lineID }}</span>
+          </dd>
+          <dt><span>Grn Code</span></dt>
+          <dd>
+            <span>{{ voucherLinesRef.grnCode }}</span>
+          </dd>
+          <dt><span>Grn Type</span></dt>
+          <dd>
+            <span>{{ voucherLinesRef.grnType }}</span>
+          </dd>
+          <dt><span>Original Amount</span></dt>
+          <dd>
+            <span>{{ voucherLinesRef.originalAmount }}</span>
+          </dd>
+          <dt><span>Amount Owing</span></dt>
+          <dd>
+            <span>{{ voucherLinesRef.amountOwing }}</span>
+          </dd>
+          <dt><span>Discount Available</span></dt>
+          <dd>
+            <span>{{ voucherLinesRef.discountAvailable }}</span>
+          </dd>
+          <dt><span>Discount Taken</span></dt>
+          <dd>
+            <span>{{ voucherLinesRef.discountTaken }}</span>
+          </dd>
+          <dt><span>Amount Received</span></dt>
+          <dd>
+            <span>{{ voucherLinesRef.amountReceived }}</span>
+          </dd>
+          <dt><span>Lmu</span></dt>
+          <dd>
+            <span>{{ voucherLinesRef.lmu }}</span>
+          </dd>
+          <dt><span>Lmd</span></dt>
+          <dd>
+            <span>{{ voucherLinesRef.lmd | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Account Id</span></dt>
+          <dd>
+            <span>{{ voucherLinesRef.accountId }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/voucher-lines', voucherLinesRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

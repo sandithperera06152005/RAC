@@ -1,0 +1,138 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (autojobsinvoicelinebatches(); as autojobsinvoicelinebatchesRef) {
+      <div>
+        <h2 data-cy="autojobsinvoicelinebatchesDetailsHeading"><span>Autojobsinvoicelinebatches</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>Id</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.id }}</span>
+          </dd>
+          <dt><span>Lineid</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.lineid }}</span>
+          </dd>
+          <dt><span>Batchlineid</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.batchlineid }}</span>
+          </dd>
+          <dt><span>Itemid</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.itemid }}</span>
+          </dd>
+          <dt><span>Code</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.code }}</span>
+          </dd>
+          <dt><span>Batchid</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.batchid }}</span>
+          </dd>
+          <dt><span>Batchcode</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.batchcode }}</span>
+          </dd>
+          <dt><span>Txdate</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.txdate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Manufacturedate</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.manufacturedate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Expireddate</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.expireddate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Qty</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.qty }}</span>
+          </dd>
+          <dt><span>Cost</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.cost }}</span>
+          </dd>
+          <dt><span>Price</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.price }}</span>
+          </dd>
+          <dt><span>Notes</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.notes }}</span>
+          </dd>
+          <dt><span>Lmu</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.lmu }}</span>
+          </dd>
+          <dt><span>Lmd</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.lmd | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Nbt</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.nbt }}</span>
+          </dd>
+          <dt><span>Vat</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.vat }}</span>
+          </dd>
+          <dt><span>Discount</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.discount }}</span>
+          </dd>
+          <dt><span>Total</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.total }}</span>
+          </dd>
+          <dt><span>Issued</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.issued }}</span>
+          </dd>
+          <dt><span>Issuedby</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.issuedby }}</span>
+          </dd>
+          <dt><span>Issueddatetime</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.issueddatetime | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Addedbyid</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.addedbyid }}</span>
+          </dd>
+          <dt><span>Canceloptid</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.canceloptid }}</span>
+          </dd>
+          <dt><span>Cancelopt</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.cancelopt }}</span>
+          </dd>
+          <dt><span>Cancelby</span></dt>
+          <dd>
+            <span>{{ autojobsinvoicelinebatchesRef.cancelby }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button
+          type="button"
+          [routerLink]="['/autojobsinvoicelinebatches', autojobsinvoicelinebatchesRef.id, 'edit']"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

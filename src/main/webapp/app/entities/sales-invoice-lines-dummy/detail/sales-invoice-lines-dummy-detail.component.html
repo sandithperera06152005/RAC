@@ -1,0 +1,102 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (salesInvoiceLinesDummy(); as salesInvoiceLinesDummyRef) {
+      <div>
+        <h2 data-cy="salesInvoiceLinesDummyDetailsHeading"><span>Sales Invoice Lines Dummy</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.id }}</span>
+          </dd>
+          <dt><span>Invoice Id</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.invoiceId }}</span>
+          </dd>
+          <dt><span>Line Id</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.lineId }}</span>
+          </dd>
+          <dt><span>Item Id</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.itemId }}</span>
+          </dd>
+          <dt><span>Item Code</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.itemCode }}</span>
+          </dd>
+          <dt><span>Item Name</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.itemName }}</span>
+          </dd>
+          <dt><span>Description</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.description }}</span>
+          </dd>
+          <dt><span>Unit Of Measurement</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.unitOfMeasurement }}</span>
+          </dd>
+          <dt><span>Quantity</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.quantity }}</span>
+          </dd>
+          <dt><span>Item Cost</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.itemCost }}</span>
+          </dd>
+          <dt><span>Item Price</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.itemPrice }}</span>
+          </dd>
+          <dt><span>Discount</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.discount }}</span>
+          </dd>
+          <dt><span>Tax</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.tax }}</span>
+          </dd>
+          <dt><span>Selling Price</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.sellingPrice }}</span>
+          </dd>
+          <dt><span>Line Total</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.lineTotal }}</span>
+          </dd>
+          <dt><span>Lmu</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.lmu }}</span>
+          </dd>
+          <dt><span>Lmd</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.lmd | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Nbt</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.nbt }}</span>
+          </dd>
+          <dt><span>Vat</span></dt>
+          <dd>
+            <span>{{ salesInvoiceLinesDummyRef.vat }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/sales-invoice-lines-dummy', salesInvoiceLinesDummyRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

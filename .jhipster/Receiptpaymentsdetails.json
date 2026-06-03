@@ -1,0 +1,168 @@
+{
+  "annotations": {
+    "changelogDate": "20250218134225"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "lineid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "paymentamount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "totalreceiptamount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "checkqueamount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "checkqueno",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "checkquedate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "checkqueexpiredate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "bankname",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "bankid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "bankbranchname",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "bankbranchid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "creditcardno",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "creditcardamount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "reference",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "otherdetails",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "lmu",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "lmd",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "termid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "termname",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "accountno",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "accountnumber",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "chequereturndate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "isdeposit",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "depositeddate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "chequestatuschangeddate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "returnchequesttledate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "chequestatusid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "isPdCheque",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "depositdate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "accountid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "accountcode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "bankdepositbankname",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "bankdepositbankid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "bankdepositbankbranchname",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "bankdepositbankbranchid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "returnchequefine",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "companybankid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "isbankreconciliation",
+      "fieldType": "Boolean"
+    }
+  ],
+  "name": "Receiptpaymentsdetails",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no"
+}

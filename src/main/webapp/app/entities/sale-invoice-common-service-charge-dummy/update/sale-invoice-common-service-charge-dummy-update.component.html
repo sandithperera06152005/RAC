@@ -1,0 +1,191 @@
+<div class="d-flex justify-content">
+  <div class="col-12">
+    <form name="editForm" novalidate [formGroup]="editForm">
+      <h2
+        id="jhi-sale-invoice-common-service-charge-dummy-heading"
+        data-cy="SaleInvoiceCommonServiceChargeDummyCreateUpdateHeading"
+        *ngIf="showCodeField"
+      ></h2>
+
+      <div class="w-full px-4">
+        <jhi-alert-error></jhi-alert-error>
+
+        <div *ngIf="!readonly">
+          <div class="row mb-3 mt-3 align-items-center">
+            <div class="col-md-6" *ngIf="commonServiceOptions.length > 0">
+              <label class="form-label fw-bold text-muted small uppercase">Quick Search</label>
+              <div class="input-group shadow-sm">
+                <span class="input-group-text bg-white border-end-0"><fa-icon icon="search"></fa-icon></span>
+                <input
+                  type="text"
+                  class="form-control border-start-0 border-0 bg-white"
+                  placeholder="Filter common services..."
+                  [(ngModel)]="searchTerm"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+            </div>
+          </div>
+
+          <style>
+            .service-card {
+              cursor: pointer;
+              transition: all 0.2s ease-in-out;
+              border: 1px solid #e9ecef !important;
+            }
+            .service-card:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+              border-color: #0d6efd !important;
+            }
+            .service-card.selected {
+              background-color: #198754 !important;
+              color: white !important;
+              border-color: #198754 !important;
+            }
+            .cursor-pointer {
+              cursor: pointer;
+            }
+            .border-dashed {
+              border-style: dashed !important;
+            }
+          </style>
+
+          <div class="services-container p-3 rounded-3 bg-light mb-3" *ngIf="commonServiceOptions.length > 0">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="mb-0 text-success fw-bold">Common Service Options</h5>
+              <span class="badge bg-success rounded-pill">{{ serviceChargeDummiesArray.length }} selected</span>
+            </div>
+
+            <div class="row g-2 overflow-auto" style="max-height: 300px; scrollbar-width: thin">
+              <div class="col-md-4 col-sm-6" *ngFor="let option of filteredCommonOptions">
+                <div
+                  class="card h-100 service-card border-0 shadow-sm transition-all"
+                  [class.selected]="isSelected(option.id)"
+                  (click)="toggleService(option)"
+                >
+                  <div class="card-body p-2 d-flex align-items-center">
+                    <div class="form-check mb-0">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        [checked]="isSelected(option.id)"
+                        (click)="$event.stopPropagation(); toggleService(option)"
+                      />
+                    </div>
+                    <label class="ms-2 mb-0 small text-truncate cursor-pointer" style="flex: 1">{{ option.name }}</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 text-center py-4 text-muted" *ngIf="filteredCommonOptions.length === 0">
+                <fa-icon icon="info-circle"></fa-icon> No services match your search.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive rounded-3 shadow-sm mt-4 border">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light">
+              <tr>
+                <th *ngIf="false">ID</th>
+                <th *ngIf="false">Invoice ID</th>
+                <th *ngIf="false">Line ID</th>
+                <th *ngIf="false">Option ID</th>
+                <th *ngIf="false">Main ID</th>
+                <th class="ps-3 py-3">Name</th>
+                <th>Description</th>
+                <th class="text-end">Value</th>
+                <th class="text-center pe-3" *ngIf="!readonly">Actions</th>
+              </tr>
+            </thead>
+            <tbody formArrayName="serviceChargeDummies">
+              <tr *ngFor="let dummy of serviceChargeDummiesArray.controls; let i = index" [formGroupName]="i" class="transition-all">
+                <td *ngIf="false">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    formControlName="id"
+                    [readonly]="true"
+                    *ngIf="dummy.get('id')?.value"
+                  />
+                </td>
+                <td *ngIf="false">
+                  <input type="number" class="form-control form-control-sm" formControlName="invoiceid" />
+                </td>
+                <td *ngIf="false">
+                  <input type="number" class="form-control form-control-sm" formControlName="lineid" />
+                </td>
+                <td *ngIf="false">
+                  <input type="number" class="form-control form-control-sm" formControlName="optionid" />
+                </td>
+                <td *ngIf="false">
+                  <input type="number" class="form-control form-control-sm" formControlName="mainid" />
+                </td>
+                <td class="ps-3">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-white border-end-0"><fa-icon icon="concierge-bell"></fa-icon></span>
+                    <input
+                      formControlName="name"
+                      type="text"
+                      class="form-control border-start-0"
+                      placeholder="Service name..."
+                      (input)="onItemCodeInput($event, i)"
+                      (change)="onItemCodeSelect($event, i)"
+                      [attr.list]="'autocomplete__' + i"
+                      [readonly]="readonly"
+                    />
+                  </div>
+
+                  <datalist [id]="'autocomplete__' + i">
+                    <option *ngFor="let item of filteredItems[i]" [value]="item.name">
+                      {{ item.name }}
+                    </option>
+                  </datalist>
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm border-0 bg-transparent"
+                    formControlName="description"
+                    [readonly]="readonly"
+                    placeholder="Optional description..."
+                  />
+                </td>
+                <td class="text-end" style="width: 150px">
+                  <div class="input-group input-group-sm justify-content-end">
+                    <span class="input-group-text bg-white border-end-0 text-muted small">Rs.</span>
+                    <input
+                      type="number"
+                      class="form-control text-end border-start-0 fw-bold"
+                      formControlName="value"
+                      [readonly]="readonly"
+                      style="max-width: 100px"
+                    />
+                  </div>
+                </td>
+                <td class="text-center pe-3" *ngIf="!readonly">
+                  <button type="button" class="btn btn-link text-danger p-0" (click)="removeServiceChargeDummy(i)" title="Delete charge">
+                    <fa-icon icon="trash-alt" size="lg"></fa-icon>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="serviceChargeDummiesArray.controls.length === 0">
+                <td colspan="4" class="text-center py-4 text-muted small">
+                  <fa-icon icon="file-invoice" size="2x" class="d-block mb-2 opacity-50"></fa-icon>
+                  No common service charges added yet.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-3" *ngIf="!readonly">
+          <button type="button" class="btn btn-outline-success btn-sm border-dashed" (click)="addServiceChargeDummy()">
+            <fa-icon icon="plus"></fa-icon> Add New Manual Charge
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

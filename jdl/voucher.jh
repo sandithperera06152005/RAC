@@ -1,0 +1,22 @@
+entity Voucher {
+ 
+  code String,
+  voucherDate Instant,
+  supplierName String,
+  supplierAddress String,
+  totalAmount Float,
+  totalAmountInWord String,
+  comments String,
+  lmu Integer,
+  lmd Instant,
+  termId Integer,
+  term String,
+  date Instant,
+  amountPaid Float,
+  supplierID Integer,
+  isActive Boolean,
+  createdBy Integer
+}
+
+paginate * with pagination
+filter all

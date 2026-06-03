@@ -1,0 +1,58 @@
+{
+  "annotations": {
+    "changelogDate": "20250212122528"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "invoiceid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "lineid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "optionid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "mainid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "value",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "addedbyid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "discount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "serviceprice",
+      "fieldType": "Float"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Autojobsaleinvoicecommonservicecharge",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

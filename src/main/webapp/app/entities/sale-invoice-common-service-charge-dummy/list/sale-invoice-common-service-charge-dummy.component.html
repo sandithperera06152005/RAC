@@ -1,0 +1,160 @@
+<div>
+  <h2 id="page-heading" data-cy="SaleInvoiceCommonServiceChargeDummyHeading">
+    <span>Sale Invoice Common Service Charge Dummies</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span>Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-sale-invoice-common-service-charge-dummy"
+        [routerLink]="['/sale-invoice-common-service-charge-dummy/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span>Create a new Sale Invoice Common Service Charge Dummy</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (saleInvoiceCommonServiceChargeDummies?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span>No Sale Invoice Common Service Charge Dummies found</span>
+    </div>
+  }
+
+  @if (saleInvoiceCommonServiceChargeDummies && saleInvoiceCommonServiceChargeDummies.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span>ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="invoiceid">
+              <div class="d-flex">
+                <span>Invoiceid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lineid">
+              <div class="d-flex">
+                <span>Lineid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="optionid">
+              <div class="d-flex">
+                <span>Optionid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="mainid">
+              <div class="d-flex">
+                <span>Mainid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="code">
+              <div class="d-flex">
+                <span>Code</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="name">
+              <div class="d-flex">
+                <span>Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="description">
+              <div class="d-flex">
+                <span>Description</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="value">
+              <div class="d-flex">
+                <span>Value</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (
+            saleInvoiceCommonServiceChargeDummy of saleInvoiceCommonServiceChargeDummies;
+            track trackId(saleInvoiceCommonServiceChargeDummy)
+          ) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/sale-invoice-common-service-charge-dummy', saleInvoiceCommonServiceChargeDummy.id, 'view']">{{
+                  saleInvoiceCommonServiceChargeDummy.id
+                }}</a>
+              </td>
+              <td>{{ saleInvoiceCommonServiceChargeDummy.invoiceid }}</td>
+              <td>{{ saleInvoiceCommonServiceChargeDummy.lineid }}</td>
+              <td>{{ saleInvoiceCommonServiceChargeDummy.optionid }}</td>
+              <td>{{ saleInvoiceCommonServiceChargeDummy.mainid }}</td>
+              <td>{{ saleInvoiceCommonServiceChargeDummy.code }}</td>
+              <td>{{ saleInvoiceCommonServiceChargeDummy.name }}</td>
+              <td>{{ saleInvoiceCommonServiceChargeDummy.description }}</td>
+              <td>{{ saleInvoiceCommonServiceChargeDummy.value }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/sale-invoice-common-service-charge-dummy', saleInvoiceCommonServiceChargeDummy.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline">View</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/sale-invoice-common-service-charge-dummy', saleInvoiceCommonServiceChargeDummy.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline">Edit</span>
+                  </a>
+
+                  <button
+                    type="submit"
+                    (click)="delete(saleInvoiceCommonServiceChargeDummy)"
+                    class="btn btn-danger btn-sm"
+                    data-cy="entityDeleteButton"
+                  >
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

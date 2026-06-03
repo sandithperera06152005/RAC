@@ -1,0 +1,58 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (servicecategory(); as servicecategoryRef) {
+      <div>
+        <h2 data-cy="servicecategoryDetailsHeading"><span>Servicecategory</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ servicecategoryRef.id }}</span>
+          </dd>
+          <dt><span>Name</span></dt>
+          <dd>
+            <span>{{ servicecategoryRef.name }}</span>
+          </dd>
+          <dt><span>Description</span></dt>
+          <dd>
+            <span>{{ servicecategoryRef.description }}</span>
+          </dd>
+          <dt><span>Lmu</span></dt>
+          <dd>
+            <span>{{ servicecategoryRef.lmu }}</span>
+          </dd>
+          <dt><span>Lmd</span></dt>
+          <dd>
+            <span>{{ servicecategoryRef.lmd | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Showsecurity</span></dt>
+          <dd>
+            <span>{{ servicecategoryRef.showsecurity }}</span>
+          </dd>
+          <dt><span>Sortorder</span></dt>
+          <dd>
+            <span>{{ servicecategoryRef.sortorder }}</span>
+          </dd>
+          <dt><span>Isactive</span></dt>
+          <dd>
+            <span>{{ servicecategoryRef.isactive }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/servicecategory', servicecategoryRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

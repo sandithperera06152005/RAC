@@ -1,0 +1,187 @@
+<div>
+  <h2 id="page-heading" data-cy="ReceiptLinesHeading">
+    <span>Receipt Lines</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span>Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-receipt-lines"
+        [routerLink]="['/receipt-lines/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span>Create a new Receipt Lines</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <jhi-filter [filters]="filters"></jhi-filter>
+
+  @if (receiptLines?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span>No Receipt Lines found</span>
+    </div>
+  }
+
+  @if (receiptLines && receiptLines.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span>ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lineid">
+              <div class="d-flex">
+                <span>Lineid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="invoicecode">
+              <div class="d-flex">
+                <span>Invoicecode</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="invoicetype">
+              <div class="d-flex">
+                <span>Invoicetype</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="originalamount">
+              <div class="d-flex">
+                <span>Originalamount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="amountowing">
+              <div class="d-flex">
+                <span>Amountowing</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="discountavailable">
+              <div class="d-flex">
+                <span>Discountavailable</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="discounttaken">
+              <div class="d-flex">
+                <span>Discounttaken</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="amountreceived">
+              <div class="d-flex">
+                <span>Amountreceived</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lmu">
+              <div class="d-flex">
+                <span>Lmu</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lmd">
+              <div class="d-flex">
+                <span>Lmd</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="accountid">
+              <div class="d-flex">
+                <span>Accountid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (receiptLines of receiptLines; track trackId(receiptLines)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/receipt-lines', receiptLines.id, 'view']">{{ receiptLines.id }}</a>
+              </td>
+              <td>{{ receiptLines.lineid }}</td>
+              <td>{{ receiptLines.invoicecode }}</td>
+              <td>{{ receiptLines.invoicetype }}</td>
+              <td>{{ receiptLines.originalamount }}</td>
+              <td>{{ receiptLines.amountowing }}</td>
+              <td>{{ receiptLines.discountavailable }}</td>
+              <td>{{ receiptLines.discounttaken }}</td>
+              <td>{{ receiptLines.amountreceived }}</td>
+              <td>{{ receiptLines.lmu }}</td>
+              <td>{{ receiptLines.lmd | formatMediumDatetime }}</td>
+              <td>{{ receiptLines.accountid }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/receipt-lines', receiptLines.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline">View</span>
+                  </a>
+
+                  <a [routerLink]="['/receipt-lines', receiptLines.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(receiptLines)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (receiptLines && receiptLines.length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

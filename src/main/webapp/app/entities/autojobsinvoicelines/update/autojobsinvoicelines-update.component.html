@@ -1,0 +1,155 @@
+<div class="d-flex justify-content-center" *ngIf="false">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-autojobsinvoicelines-heading" data-cy="AutojobsinvoicelinesCreateUpdateHeading">Create or edit a Autojobsinvoicelines</h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_invocieid">Invocieid</label>
+          <input type="number" class="form-control" name="invocieid" id="field_invocieid" data-cy="invocieid" formControlName="invocieid" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_lineid">Lineid</label>
+          <input type="number" class="form-control" name="lineid" id="field_lineid" data-cy="lineid" formControlName="lineid" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_itemid">Itemid</label>
+          <input type="number" class="form-control" name="itemid" id="field_itemid" data-cy="itemid" formControlName="itemid" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_itemcode">Itemcode</label>
+          <input type="text" class="form-control" name="itemcode" id="field_itemcode" data-cy="itemcode" formControlName="itemcode" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_itemname">Itemname</label>
+          <input type="text" class="form-control" name="itemname" id="field_itemname" data-cy="itemname" formControlName="itemname" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_description">Description</label>
+          <input
+            type="text"
+            class="form-control"
+            name="description"
+            id="field_description"
+            data-cy="description"
+            formControlName="description"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_unitofmeasurement">Unitofmeasurement</label>
+          <input
+            type="text"
+            class="form-control"
+            name="unitofmeasurement"
+            id="field_unitofmeasurement"
+            data-cy="unitofmeasurement"
+            formControlName="unitofmeasurement"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_quantity">Quantity</label>
+          <input type="number" class="form-control" name="quantity" id="field_quantity" data-cy="quantity" formControlName="quantity" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_itemcost">Itemcost</label>
+          <input type="number" class="form-control" name="itemcost" id="field_itemcost" data-cy="itemcost" formControlName="itemcost" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_itemprice">Itemprice</label>
+          <input type="number" class="form-control" name="itemprice" id="field_itemprice" data-cy="itemprice" formControlName="itemprice" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_discount">Discount</label>
+          <input type="number" class="form-control" name="discount" id="field_discount" data-cy="discount" formControlName="discount" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_tax">Tax</label>
+          <input type="number" class="form-control" name="tax" id="field_tax" data-cy="tax" formControlName="tax" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_sellingprice">Sellingprice</label>
+          <input
+            type="number"
+            class="form-control"
+            name="sellingprice"
+            id="field_sellingprice"
+            data-cy="sellingprice"
+            formControlName="sellingprice"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_linetotal">Linetotal</label>
+          <input type="number" class="form-control" name="linetotal" id="field_linetotal" data-cy="linetotal" formControlName="linetotal" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_lmu">Lmu</label>
+          <input type="number" class="form-control" name="lmu" id="field_lmu" data-cy="lmu" formControlName="lmu" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_lmd">Lmd</label>
+          <div class="d-flex">
+            <input
+              id="field_lmd"
+              data-cy="lmd"
+              type="datetime-local"
+              class="form-control"
+              name="lmd"
+              formControlName="lmd"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_nbt">Nbt</label>
+          <input type="checkbox" class="form-check" name="nbt" id="field_nbt" data-cy="nbt" formControlName="nbt" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_vat">Vat</label>
+          <input type="checkbox" class="form-check" name="vat" id="field_vat" data-cy="vat" formControlName="vat" />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,78 @@
+{
+  "annotations": {
+    "changelogDate": "20250211041743"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "voucherDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "supplierName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "supplierAddress",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "totalAmount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "totalAmountInWord",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "comments",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "lmu",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "lmd",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "termId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "term",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "date",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "amountPaid",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "supplierID",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "isActive",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "Integer"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Voucher",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

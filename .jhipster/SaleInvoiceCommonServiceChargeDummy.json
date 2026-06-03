@@ -1,0 +1,45 @@
+{
+  "annotations": {
+    "changelogDate": "20250131043339"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "invoiceid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "lineid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "optionid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "mainid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "value",
+      "fieldType": "Float"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "SaleInvoiceCommonServiceChargeDummy",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

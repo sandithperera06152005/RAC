@@ -1,0 +1,16 @@
+entity VoucherLines {
+  
+  lineID Integer,
+  grnCode String,
+  grnType String,
+  originalAmount Float,
+  amountOwing Float,
+  discountAvailable Float,
+  discountTaken Float,
+  amountReceived Float,
+  lmu Integer,
+  lmd Instant,
+  accountId Integer
+}
+paginate * with pagination
+filter all

@@ -1,0 +1,110 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (accounts(); as accountsRef) {
+      <div>
+        <h2 data-cy="accountsDetailsHeading"><span>Accounts</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ accountsRef.id }}</span>
+          </dd>
+          <dt><span>Code</span></dt>
+          <dd>
+            <span>{{ accountsRef.code }}</span>
+          </dd>
+          <dt><span>Date</span></dt>
+          <dd>
+            <span>{{ accountsRef.date | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Name</span></dt>
+          <dd>
+            <span>{{ accountsRef.name }}</span>
+          </dd>
+          <dt><span>Description</span></dt>
+          <dd>
+            <span>{{ accountsRef.description }}</span>
+          </dd>
+          <dt><span>Type</span></dt>
+          <dd>
+            <span>{{ accountsRef.type }}</span>
+          </dd>
+          <dt><span>Parent</span></dt>
+          <dd>
+            <span>{{ accountsRef.parent }}</span>
+          </dd>
+          <dt><span>Balance</span></dt>
+          <dd>
+            <span>{{ accountsRef.balance }}</span>
+          </dd>
+          <dt><span>Lmu</span></dt>
+          <dd>
+            <span>{{ accountsRef.lmu }}</span>
+          </dd>
+          <dt><span>Lmd</span></dt>
+          <dd>
+            <span>{{ accountsRef.lmd | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Hasbatches</span></dt>
+          <dd>
+            <span>{{ accountsRef.hasbatches }}</span>
+          </dd>
+          <dt><span>Accountvalue</span></dt>
+          <dd>
+            <span>{{ accountsRef.accountvalue }}</span>
+          </dd>
+          <dt><span>Accountlevel</span></dt>
+          <dd>
+            <span>{{ accountsRef.accountlevel }}</span>
+          </dd>
+          <dt><span>Accountsnumberingsystem</span></dt>
+          <dd>
+            <span>{{ accountsRef.accountsnumberingsystem }}</span>
+          </dd>
+          <dt><span>Subparentid</span></dt>
+          <dd>
+            <span>{{ accountsRef.subparentid }}</span>
+          </dd>
+          <dt><span>Canedit</span></dt>
+          <dd>
+            <span>{{ accountsRef.canedit }}</span>
+          </dd>
+          <dt><span>Amount</span></dt>
+          <dd>
+            <span>{{ accountsRef.amount }}</span>
+          </dd>
+          <dt><span>Creditamount</span></dt>
+          <dd>
+            <span>{{ accountsRef.creditamount }}</span>
+          </dd>
+          <dt><span>Debitamount</span></dt>
+          <dd>
+            <span>{{ accountsRef.debitamount }}</span>
+          </dd>
+          <dt><span>Debitorcredit</span></dt>
+          <dd>
+            <span>{{ accountsRef.debitorcredit }}</span>
+          </dd>
+          <dt><span>Reporttype</span></dt>
+          <dd>
+            <span>{{ accountsRef.reporttype }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/accounts', accountsRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

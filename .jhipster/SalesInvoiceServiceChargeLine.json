@@ -1,0 +1,50 @@
+{
+  "annotations": {
+    "changelogDate": "20250212111835"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "invoiceId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "lineId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "optionId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "serviceName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "serviceDescription",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "value",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "isCustomerService",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "discount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "servicePrice",
+      "fieldType": "Float"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "SalesInvoiceServiceChargeLine",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

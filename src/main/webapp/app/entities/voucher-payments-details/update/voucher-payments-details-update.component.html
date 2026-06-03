@@ -1,0 +1,290 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-voucher-payments-details-heading" data-cy="VoucherPaymentsDetailsCreateUpdateHeading">
+        Create or edit a Voucher Payments Details
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_lineID">Line ID</label>
+          <input type="number" class="form-control" name="lineID" id="field_lineID" data-cy="lineID" formControlName="lineID" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_paymentAmount">Payment Amount</label>
+          <input
+            type="number"
+            class="form-control"
+            name="paymentAmount"
+            id="field_paymentAmount"
+            data-cy="paymentAmount"
+            formControlName="paymentAmount"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_totalVoucherAmount">Total Voucher Amount</label>
+          <input
+            type="number"
+            class="form-control"
+            name="totalVoucherAmount"
+            id="field_totalVoucherAmount"
+            data-cy="totalVoucherAmount"
+            formControlName="totalVoucherAmount"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_checkqueAmount">Checkque Amount</label>
+          <input
+            type="number"
+            class="form-control"
+            name="checkqueAmount"
+            id="field_checkqueAmount"
+            data-cy="checkqueAmount"
+            formControlName="checkqueAmount"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_checkqueNo">Checkque No</label>
+          <input
+            type="text"
+            class="form-control"
+            name="checkqueNo"
+            id="field_checkqueNo"
+            data-cy="checkqueNo"
+            formControlName="checkqueNo"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_checkqueDate">Checkque Date</label>
+          <div class="d-flex">
+            <input
+              id="field_checkqueDate"
+              data-cy="checkqueDate"
+              type="datetime-local"
+              class="form-control"
+              name="checkqueDate"
+              formControlName="checkqueDate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_checkqueExpireDate">Checkque Expire Date</label>
+          <div class="d-flex">
+            <input
+              id="field_checkqueExpireDate"
+              data-cy="checkqueExpireDate"
+              type="datetime-local"
+              class="form-control"
+              name="checkqueExpireDate"
+              formControlName="checkqueExpireDate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_bankName">Bank Name</label>
+          <input type="text" class="form-control" name="bankName" id="field_bankName" data-cy="bankName" formControlName="bankName" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_bankID">Bank ID</label>
+          <input type="number" class="form-control" name="bankID" id="field_bankID" data-cy="bankID" formControlName="bankID" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_creditCardNo">Credit Card No</label>
+          <input
+            type="text"
+            class="form-control"
+            name="creditCardNo"
+            id="field_creditCardNo"
+            data-cy="creditCardNo"
+            formControlName="creditCardNo"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_creditCardAmount">Credit Card Amount</label>
+          <input
+            type="number"
+            class="form-control"
+            name="creditCardAmount"
+            id="field_creditCardAmount"
+            data-cy="creditCardAmount"
+            formControlName="creditCardAmount"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_reference">Reference</label>
+          <input type="text" class="form-control" name="reference" id="field_reference" data-cy="reference" formControlName="reference" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_otherDetails">Other Details</label>
+          <input
+            type="text"
+            class="form-control"
+            name="otherDetails"
+            id="field_otherDetails"
+            data-cy="otherDetails"
+            formControlName="otherDetails"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_lmu">Lmu</label>
+          <input type="text" class="form-control" name="lmu" id="field_lmu" data-cy="lmu" formControlName="lmu" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_lmd">Lmd</label>
+          <div class="d-flex">
+            <input
+              id="field_lmd"
+              data-cy="lmd"
+              type="datetime-local"
+              class="form-control"
+              name="lmd"
+              formControlName="lmd"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_termID">Term ID</label>
+          <input type="number" class="form-control" name="termID" id="field_termID" data-cy="termID" formControlName="termID" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_termName">Term Name</label>
+          <input type="text" class="form-control" name="termName" id="field_termName" data-cy="termName" formControlName="termName" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_accountNo">Account No</label>
+          <input type="number" class="form-control" name="accountNo" id="field_accountNo" data-cy="accountNo" formControlName="accountNo" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_accountNumber">Account Number</label>
+          <input
+            type="number"
+            class="form-control"
+            name="accountNumber"
+            id="field_accountNumber"
+            data-cy="accountNumber"
+            formControlName="accountNumber"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_accountId">Account Id</label>
+          <input type="number" class="form-control" name="accountId" id="field_accountId" data-cy="accountId" formControlName="accountId" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_accountCode">Account Code</label>
+          <input
+            type="text"
+            class="form-control"
+            name="accountCode"
+            id="field_accountCode"
+            data-cy="accountCode"
+            formControlName="accountCode"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_chequeStatusId">Cheque Status Id</label>
+          <input
+            type="number"
+            class="form-control"
+            name="chequeStatusId"
+            id="field_chequeStatusId"
+            data-cy="chequeStatusId"
+            formControlName="chequeStatusId"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_isDeposit">Is Deposit</label>
+          <input type="checkbox" class="form-check" name="isDeposit" id="field_isDeposit" data-cy="isDeposit" formControlName="isDeposit" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_depositedDate">Deposited Date</label>
+          <div class="d-flex">
+            <input
+              id="field_depositedDate"
+              data-cy="depositedDate"
+              type="datetime-local"
+              class="form-control"
+              name="depositedDate"
+              formControlName="depositedDate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_companyBankId">Company Bank Id</label>
+          <input
+            type="number"
+            class="form-control"
+            name="companyBankId"
+            id="field_companyBankId"
+            data-cy="companyBankId"
+            formControlName="companyBankId"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_isBankReconciliation">Is Bank Reconciliation</label>
+          <input
+            type="checkbox"
+            class="form-check"
+            name="isBankReconciliation"
+            id="field_isBankReconciliation"
+            data-cy="isBankReconciliation"
+            formControlName="isBankReconciliation"
+          />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

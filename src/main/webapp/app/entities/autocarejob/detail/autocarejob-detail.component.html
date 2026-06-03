@@ -1,0 +1,131 @@
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      @if (autocarejob()) {
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-white border-bottom py-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0 text-primary fw-bold">Autocare Job Details</h4>
+              <span class="badge bg-primary px-3 py-2">Job #{{ autocarejob()!.jobnumber }}</span>
+            </div>
+          </div>
+          <div class="card-body p-4">
+            <jhi-alert-error></jhi-alert-error>
+            <jhi-alert></jhi-alert>
+
+            <div class="row g-4">
+              <!-- General Info -->
+              <div class="col-md-6">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">General Information</h6>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Job ID</div>
+                  <div class="col-7 fw-bold">{{ autocarejob()!.id }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Job Number</div>
+                  <div class="col-7 fw-bold">{{ autocarejob()!.jobnumber }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Opened By</div>
+                  <div class="col-7">User ID: {{ autocarejob()!.jobopenby }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Open Time</div>
+                  <div class="col-7 text-muted small">{{ autocarejob()!.jobopentime | formatMediumDatetime }}</div>
+                </div>
+              </div>
+
+              <!-- Vehicle Info -->
+              <div class="col-md-6">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Vehicle Information</h6>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Vehicle Number</div>
+                  <div class="col-7">
+                    <span class="badge bg-dark">{{ autocarejob()!.vehiclenumber }}</span>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Vehicle Type</div>
+                  <div class="col-7 fw-bold">{{ autocarejob()!.jobtypename }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Vehicle ID</div>
+                  <div class="col-7">{{ autocarejob()!.vehicleid }}</div>
+                </div>
+              </div>
+
+              <!-- Service Details -->
+              <div class="col-12 mt-4">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Service & Milage Details</h6>
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Current Milage</div>
+                      <div class="h5 mb-0 fw-bold">{{ autocarejob()!.millage }} KM</div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Next Service Milage</div>
+                      <div class="h5 mb-0 fw-bold text-primary">{{ autocarejob()!.nextmillage }} KM</div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Next Service Date</div>
+                      <div class="h5 mb-0 fw-bold">{{ autocarejob()!.nextservicedate | formatMediumDate }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Customer Details (Un-hiding as it's part of the entity information usually shown) -->
+              <div class="col-12 mt-4" *ngIf="autocarejob()!.customername">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Customer Information</h6>
+                <div class="row mb-2">
+                  <div class="col-3 text-secondary">Customer Name</div>
+                  <div class="col-9 fw-bold">{{ autocarejob()!.customername }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-3 text-secondary">Contact Number</div>
+                  <div class="col-9">{{ autocarejob()!.customertel }}</div>
+                </div>
+              </div>
+
+              <!-- Instructions & Remarks (Un-hiding the relevant ones) -->
+              <div class="col-12 mt-4" *ngIf="autocarejob()!.specialinstructions || autocarejob()!.remarks">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Instructions & Remarks</h6>
+                <div class="row" *ngIf="autocarejob()!.specialinstructions">
+                  <div class="col-12 mb-3">
+                    <label class="small text-secondary fw-bold">Special Instructions</label>
+                    <div class="p-3 bg-white border rounded mt-1">{{ autocarejob()!.specialinstructions }}</div>
+                  </div>
+                </div>
+                <div class="row" *ngIf="autocarejob()!.remarks">
+                  <div class="col-12">
+                    <label class="small text-secondary fw-bold">Remarks</label>
+                    <div class="p-3 bg-white border rounded mt-1">{{ autocarejob()!.remarks }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-white py-3 border-top-0 d-flex gap-2 justify-content-end">
+            <button
+              type="submit"
+              (click)="previousState()"
+              class="btn btn-outline-secondary px-4 shadow-sm"
+              data-cy="entityDetailsBackButton"
+            >
+              <fa-icon icon="arrow-left" class="me-1"></fa-icon> Back
+            </button>
+
+            <button type="button" [routerLink]="['/autocarejob', autocarejob()!.id, 'edit']" class="btn btn-primary px-4 shadow-sm">
+              <fa-icon icon="pencil-alt" class="me-1"></fa-icon> Edit
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

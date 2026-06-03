@@ -1,0 +1,18 @@
+entity InvoiceServiceCommon {
+  InvoiceId Long,
+  LineId Long,
+  OptionId Long,
+  MainId Long,
+  Code Double,
+  Name String,
+  Description String,
+  Value Double,
+  AddedById Long,
+  Discount Double,
+  ServicePrice Double
+}
+
+// Enable pagination for all entities
+paginate * with pagination
+filter all
+// Enable filtering for all entities

@@ -1,0 +1,251 @@
+<div>
+  <h2 id="page-heading" data-cy="SalesInvoiceLinesDummyHeading">
+    <span>Sales Invoice Lines Dummies</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span>Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-sales-invoice-lines-dummy"
+        [routerLink]="['/sales-invoice-lines-dummy/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span>Create a new Sales Invoice Lines Dummy</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <jhi-filter [filters]="filters"></jhi-filter>
+
+  @if (salesInvoiceLinesDummies?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span>No Sales Invoice Lines Dummies found</span>
+    </div>
+  }
+
+  @if (salesInvoiceLinesDummies && salesInvoiceLinesDummies.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span>ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="invoiceId">
+              <div class="d-flex">
+                <span>Invoice Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lineId">
+              <div class="d-flex">
+                <span>Line Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="itemId">
+              <div class="d-flex">
+                <span>Item Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="itemCode">
+              <div class="d-flex">
+                <span>Item Code</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="itemName">
+              <div class="d-flex">
+                <span>Item Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="description">
+              <div class="d-flex">
+                <span>Description</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="unitOfMeasurement">
+              <div class="d-flex">
+                <span>Unit Of Measurement</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="quantity">
+              <div class="d-flex">
+                <span>Quantity</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="itemCost">
+              <div class="d-flex">
+                <span>Item Cost</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="itemPrice">
+              <div class="d-flex">
+                <span>Item Price</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="discount">
+              <div class="d-flex">
+                <span>Discount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="tax">
+              <div class="d-flex">
+                <span>Tax</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="sellingPrice">
+              <div class="d-flex">
+                <span>Selling Price</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lineTotal">
+              <div class="d-flex">
+                <span>Line Total</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lmu">
+              <div class="d-flex">
+                <span>Lmu</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lmd">
+              <div class="d-flex">
+                <span>Lmd</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="nbt">
+              <div class="d-flex">
+                <span>Nbt</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="vat">
+              <div class="d-flex">
+                <span>Vat</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (salesInvoiceLinesDummy of salesInvoiceLinesDummies; track trackId(salesInvoiceLinesDummy)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/sales-invoice-lines-dummy', salesInvoiceLinesDummy.id, 'view']">{{ salesInvoiceLinesDummy.id }}</a>
+              </td>
+              <td>{{ salesInvoiceLinesDummy.invoiceId }}</td>
+              <td>{{ salesInvoiceLinesDummy.lineId }}</td>
+              <td>{{ salesInvoiceLinesDummy.itemId }}</td>
+              <td>{{ salesInvoiceLinesDummy.itemCode }}</td>
+              <td>{{ salesInvoiceLinesDummy.itemName }}</td>
+              <td>{{ salesInvoiceLinesDummy.description }}</td>
+              <td>{{ salesInvoiceLinesDummy.unitOfMeasurement }}</td>
+              <td>{{ salesInvoiceLinesDummy.quantity }}</td>
+              <td>{{ salesInvoiceLinesDummy.itemCost }}</td>
+              <td>{{ salesInvoiceLinesDummy.itemPrice }}</td>
+              <td>{{ salesInvoiceLinesDummy.discount }}</td>
+              <td>{{ salesInvoiceLinesDummy.tax }}</td>
+              <td>{{ salesInvoiceLinesDummy.sellingPrice }}</td>
+              <td>{{ salesInvoiceLinesDummy.lineTotal }}</td>
+              <td>{{ salesInvoiceLinesDummy.lmu }}</td>
+              <td>{{ salesInvoiceLinesDummy.lmd | formatMediumDatetime }}</td>
+              <td>{{ salesInvoiceLinesDummy.nbt }}</td>
+              <td>{{ salesInvoiceLinesDummy.vat }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/sales-invoice-lines-dummy', salesInvoiceLinesDummy.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline">View</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/sales-invoice-lines-dummy', salesInvoiceLinesDummy.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(salesInvoiceLinesDummy)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (salesInvoiceLinesDummies && salesInvoiceLinesDummies.length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

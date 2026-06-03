@@ -1,0 +1,409 @@
+<div>
+  <h2 id="page-heading" data-cy="ReceiptpaymentsdetailsHeading">
+    <span>Receiptpaymentsdetails</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span>Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-receiptpaymentsdetails"
+        [routerLink]="['/receiptpaymentsdetails/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span>Create a new Receiptpaymentsdetails</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (receiptpaymentsdetails?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span>No Receiptpaymentsdetails found</span>
+    </div>
+  }
+
+  @if (receiptpaymentsdetails && receiptpaymentsdetails.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span>Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lineid">
+              <div class="d-flex">
+                <span>Lineid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="paymentamount">
+              <div class="d-flex">
+                <span>Paymentamount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="totalreceiptamount">
+              <div class="d-flex">
+                <span>Totalreceiptamount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="checkqueamount">
+              <div class="d-flex">
+                <span>Checkqueamount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="checkqueno">
+              <div class="d-flex">
+                <span>Checkqueno</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="checkquedate">
+              <div class="d-flex">
+                <span>Checkquedate</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="checkqueexpiredate">
+              <div class="d-flex">
+                <span>Checkqueexpiredate</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="bankname">
+              <div class="d-flex">
+                <span>Bankname</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="bankid">
+              <div class="d-flex">
+                <span>Bankid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="bankbranchname">
+              <div class="d-flex">
+                <span>Bankbranchname</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="bankbranchid">
+              <div class="d-flex">
+                <span>Bankbranchid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="creditcardno">
+              <div class="d-flex">
+                <span>Creditcardno</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="creditcardamount">
+              <div class="d-flex">
+                <span>Creditcardamount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="reference">
+              <div class="d-flex">
+                <span>Reference</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="otherdetails">
+              <div class="d-flex">
+                <span>Otherdetails</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lmu">
+              <div class="d-flex">
+                <span>Lmu</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lmd">
+              <div class="d-flex">
+                <span>Lmd</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="termid">
+              <div class="d-flex">
+                <span>Termid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="termname">
+              <div class="d-flex">
+                <span>Termname</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="accountno">
+              <div class="d-flex">
+                <span>Accountno</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="accountnumber">
+              <div class="d-flex">
+                <span>Accountnumber</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="chequereturndate">
+              <div class="d-flex">
+                <span>Chequereturndate</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isdeposit">
+              <div class="d-flex">
+                <span>Isdeposit</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="depositeddate">
+              <div class="d-flex">
+                <span>Depositeddate</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="chequestatuschangeddate">
+              <div class="d-flex">
+                <span>Chequestatuschangeddate</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="returnchequesttledate">
+              <div class="d-flex">
+                <span>Returnchequesttledate</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="chequestatusid">
+              <div class="d-flex">
+                <span>Chequestatusid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isPdCheque">
+              <div class="d-flex">
+                <span>Is Pd Cheque</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="depositdate">
+              <div class="d-flex">
+                <span>Depositdate</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="accountid">
+              <div class="d-flex">
+                <span>Accountid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="accountcode">
+              <div class="d-flex">
+                <span>Accountcode</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="bankdepositbankname">
+              <div class="d-flex">
+                <span>Bankdepositbankname</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="bankdepositbankid">
+              <div class="d-flex">
+                <span>Bankdepositbankid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="bankdepositbankbranchname">
+              <div class="d-flex">
+                <span>Bankdepositbankbranchname</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="bankdepositbankbranchid">
+              <div class="d-flex">
+                <span>Bankdepositbankbranchid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="returnchequefine">
+              <div class="d-flex">
+                <span>Returnchequefine</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="companybankid">
+              <div class="d-flex">
+                <span>Companybankid</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isbankreconciliation">
+              <div class="d-flex">
+                <span>Isbankreconciliation</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (receiptpaymentsdetails of receiptpaymentsdetails; track trackId(receiptpaymentsdetails)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/receiptpaymentsdetails', receiptpaymentsdetails.id, 'view']">{{ receiptpaymentsdetails.id }}</a>
+              </td>
+              <td>{{ receiptpaymentsdetails.lineid }}</td>
+              <td>{{ receiptpaymentsdetails.paymentamount }}</td>
+              <td>{{ receiptpaymentsdetails.totalreceiptamount }}</td>
+              <td>{{ receiptpaymentsdetails.checkqueamount }}</td>
+              <td>{{ receiptpaymentsdetails.checkqueno }}</td>
+              <td>{{ receiptpaymentsdetails.checkquedate | formatMediumDatetime }}</td>
+              <td>{{ receiptpaymentsdetails.checkqueexpiredate | formatMediumDatetime }}</td>
+              <td>{{ receiptpaymentsdetails.bankname }}</td>
+              <td>{{ receiptpaymentsdetails.bankid }}</td>
+              <td>{{ receiptpaymentsdetails.bankbranchname }}</td>
+              <td>{{ receiptpaymentsdetails.bankbranchid }}</td>
+              <td>{{ receiptpaymentsdetails.creditcardno }}</td>
+              <td>{{ receiptpaymentsdetails.creditcardamount }}</td>
+              <td>{{ receiptpaymentsdetails.reference }}</td>
+              <td>{{ receiptpaymentsdetails.otherdetails }}</td>
+              <td>{{ receiptpaymentsdetails.lmu }}</td>
+              <td>{{ receiptpaymentsdetails.lmd | formatMediumDatetime }}</td>
+              <td>{{ receiptpaymentsdetails.termid }}</td>
+              <td>{{ receiptpaymentsdetails.termname }}</td>
+              <td>{{ receiptpaymentsdetails.accountno }}</td>
+              <td>{{ receiptpaymentsdetails.accountnumber }}</td>
+              <td>{{ receiptpaymentsdetails.chequereturndate | formatMediumDatetime }}</td>
+              <td>{{ receiptpaymentsdetails.isdeposit }}</td>
+              <td>{{ receiptpaymentsdetails.depositeddate | formatMediumDatetime }}</td>
+              <td>{{ receiptpaymentsdetails.chequestatuschangeddate | formatMediumDatetime }}</td>
+              <td>{{ receiptpaymentsdetails.returnchequesttledate | formatMediumDatetime }}</td>
+              <td>{{ receiptpaymentsdetails.chequestatusid }}</td>
+              <td>{{ receiptpaymentsdetails.isPdCheque }}</td>
+              <td>{{ receiptpaymentsdetails.depositdate | formatMediumDatetime }}</td>
+              <td>{{ receiptpaymentsdetails.accountid }}</td>
+              <td>{{ receiptpaymentsdetails.accountcode }}</td>
+              <td>{{ receiptpaymentsdetails.bankdepositbankname }}</td>
+              <td>{{ receiptpaymentsdetails.bankdepositbankid }}</td>
+              <td>{{ receiptpaymentsdetails.bankdepositbankbranchname }}</td>
+              <td>{{ receiptpaymentsdetails.bankdepositbankbranchid }}</td>
+              <td>{{ receiptpaymentsdetails.returnchequefine }}</td>
+              <td>{{ receiptpaymentsdetails.companybankid }}</td>
+              <td>{{ receiptpaymentsdetails.isbankreconciliation }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/receiptpaymentsdetails', receiptpaymentsdetails.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline">View</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/receiptpaymentsdetails', receiptpaymentsdetails.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(receiptpaymentsdetails)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (receiptpaymentsdetails && receiptpaymentsdetails.length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

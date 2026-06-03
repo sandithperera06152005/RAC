@@ -1,0 +1,66 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (workshopVehicleWorkList(); as workshopVehicleWorkListRef) {
+      <div>
+        <h2 data-cy="workshopVehicleWorkListDetailsHeading"><span>Workshop Vehicle Work List</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ workshopVehicleWorkListRef.id }}</span>
+          </dd>
+          <dt><span>Vehicleworkid</span></dt>
+          <dd>
+            <span>{{ workshopVehicleWorkListRef.vehicleworkid }}</span>
+          </dd>
+          <dt><span>Lineid</span></dt>
+          <dd>
+            <span>{{ workshopVehicleWorkListRef.lineid }}</span>
+          </dd>
+          <dt><span>Workid</span></dt>
+          <dd>
+            <span>{{ workshopVehicleWorkListRef.workid }}</span>
+          </dd>
+          <dt><span>Workshopwork</span></dt>
+          <dd>
+            <span>{{ workshopVehicleWorkListRef.workshopwork }}</span>
+          </dd>
+          <dt><span>Isjobdone</span></dt>
+          <dd>
+            <span>{{ workshopVehicleWorkListRef.isjobdone }}</span>
+          </dd>
+          <dt><span>Jobdonedate</span></dt>
+          <dd>
+            <span>{{ workshopVehicleWorkListRef.jobdonedate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Jobnumber</span></dt>
+          <dd>
+            <span>{{ workshopVehicleWorkListRef.jobnumber }}</span>
+          </dd>
+          <dt><span>Jobvalue</span></dt>
+          <dd>
+            <span>{{ workshopVehicleWorkListRef.jobvalue }}</span>
+          </dd>
+          <dt><span>Estimatevalue</span></dt>
+          <dd>
+            <span>{{ workshopVehicleWorkListRef.estimatevalue }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/workshop-vehicle-work-list', workshopVehicleWorkListRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

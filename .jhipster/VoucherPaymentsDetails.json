@@ -1,0 +1,118 @@
+{
+  "annotations": {
+    "changelogDate": "20250211044512"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "lineID",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "paymentAmount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "totalVoucherAmount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "checkqueAmount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "checkqueNo",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "checkqueDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "checkqueExpireDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "bankName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "bankID",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "creditCardNo",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "creditCardAmount",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "reference",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "otherDetails",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "lmu",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "lmd",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "termID",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "termName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "accountNo",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "accountNumber",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "accountId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "accountCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "chequeStatusId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "isDeposit",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "depositedDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "companyBankId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "isBankReconciliation",
+      "fieldType": "Boolean"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "VoucherPaymentsDetails",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}
