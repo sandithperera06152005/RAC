@@ -499,8 +499,29 @@ export class SalesinvoiceUpdateComponent implements OnInit {
     itemcost?: number;
     discount?: number;
     description?: string;
+    discountEntryType?: 'percentage' | 'value';
+    discountPercentage?: number;
     lineid?: number;
   }[] = [];
+
+  /** Autojob/advisor-care lines use Dis(%); saved sales lines may use [PCT]/[VAL] in description. */
+  private resolveFetchedLineDiscountEntryType(
+    description: string,
+    discount: number,
+    quantity: number,
+    sellingprice: number,
+  ): 'percentage' | 'value' | undefined {
+    if (description.startsWith('[VAL]')) {
+      return 'value';
+    }
+    if (description.startsWith('[PCT]')) {
+      return 'percentage';
+    }
+    if (discount > 0 && quantity > 0 && sellingprice > 0) {
+      return 'percentage';
+    }
+    return undefined;
+  }
 
   private invoicelines(ids: number[]): void {
     if (!ids || ids.length === 0) return;
@@ -510,17 +531,28 @@ export class SalesinvoiceUpdateComponent implements OnInit {
         responses.forEach(res => {
           if (res.body && res.body.length > 0) {
             res.body.forEach((item: any) => {
+              const quantity = Number(item.quantity ?? 0);
+              const sellingprice = Number(item.sellingprice ?? 0);
+              const discount = Number(item.discount ?? item.discountamount ?? item.discountAmount ?? item.totaldiscount ?? 0);
+              const description = String(item.description ?? '');
+              const discountEntryType = this.resolveFetchedLineDiscountEntryType(description, discount, quantity, sellingprice);
+              const discountPercentage =
+                discountEntryType === 'percentage' && discount > 0 && sellingprice > 0 && quantity > 0
+                  ? Number(((discount / quantity / sellingprice) * 100).toFixed(4))
+                  : undefined;
               this.fetchedItems.push({
                 id: item.id,
                 itemid: item.itemid,
                 itemcode: item.itemcode ?? '',
                 itemname: item.itemname ?? '',
                 unitofmeasurement: item.unitofmeasurement ?? '',
-                quantity: item.quantity ?? 0,
-                sellingprice: item.sellingprice ?? 0,
+                quantity,
+                sellingprice,
                 itemcost: item.itemcost ?? item.lastcost ?? 0,
-                discount: item.discount ?? item.discountamount ?? item.discountAmount ?? item.totaldiscount ?? 0,
+                discount,
                 description: item.description,
+                discountEntryType,
+                discountPercentage,
                 lineid: item.lineid,
               });
             });

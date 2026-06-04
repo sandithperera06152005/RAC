@@ -238,9 +238,16 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
       const val = Number(Number(explicitValue).toFixed(2));
       return { discountPercentage: null, discountValue: val > 0 ? val : null };
     }
+    const derivedPct = this.percentageFromStoredLineDiscount(item, totalLineDiscount);
+    if (derivedPct != null && derivedPct > 0) {
+      return {
+        discountPercentage: Number(derivedPct.toFixed(2)),
+        discountValue: null,
+      };
+    }
     return {
       discountPercentage: null,
-      discountValue: totalLineDiscount > 0 ? totalLineDiscount : null,
+      discountValue: totalLineDiscount > 0 ? Number(totalLineDiscount.toFixed(2)) : null,
     };
   }
 
@@ -331,6 +338,14 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
     }
     if (item.discountOption === 'value' || item.itemDiscountOption === 'value') {
       return 'value';
+    }
+    const totalDiscount = Number(item.discount ?? 0);
+    if (totalDiscount > 0 && fromDescription !== 'value') {
+      const quantity = Number(item.quantity ?? item.availablequantity ?? 0);
+      const sellingPrice = Number(item.sellingprice ?? item.lastsellingprice ?? item.itemprice ?? 0);
+      if (quantity > 0 && sellingPrice > 0) {
+        return 'percentage';
+      }
     }
     return undefined;
   }
