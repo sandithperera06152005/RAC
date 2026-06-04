@@ -1,4 +1,4 @@
-import { AfterViewInit, Directive, ElementRef, HostListener, inject } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, HostListener, Input, inject } from '@angular/core';
 import { NgControl } from '@angular/forms';
 
 /**
@@ -11,6 +11,9 @@ import { NgControl } from '@angular/forms';
   standalone: true,
 })
 export class DecimalInputDirective implements AfterViewInit {
+  /** When true, empty/null values stay blank instead of showing 0.00. */
+  @Input() appDecimalAllowEmpty = false;
+
   private el = inject(ElementRef<HTMLInputElement>);
   private ngControl = inject(NgControl, { optional: true, self: true });
 
@@ -30,12 +33,16 @@ export class DecimalInputDirective implements AfterViewInit {
   }
 
   private formatDisplay(): void {
-    const raw = this.el.nativeElement.value;
+    const controlVal = this.ngControl?.value;
+    const raw =
+      controlVal === null || controlVal === undefined || controlVal === ''
+        ? ''
+        : String(controlVal !== undefined ? controlVal : this.el.nativeElement.value);
     const num = parseFloat(raw);
-    if (!isNaN(num)) {
+    if (!isNaN(num) && raw !== '') {
       this.el.nativeElement.value = num.toFixed(2);
     } else if (raw === '' || raw == null) {
-      this.el.nativeElement.value = '0.00';
+      this.el.nativeElement.value = this.appDecimalAllowEmpty ? '' : '0.00';
     }
   }
 }

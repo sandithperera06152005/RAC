@@ -682,6 +682,7 @@ export class SalesinvoiceUpdateComponent implements OnInit {
     lastsellingprice: number;
     discount?: number;
     discountOption?: string;
+    discountEntryType?: 'percentage' | 'value';
     itemDiscountValue?: number;
     isNew?: boolean;
   } | null = null;
@@ -746,9 +747,10 @@ export class SalesinvoiceUpdateComponent implements OnInit {
       availablequantity: this.buyquantity,
       lastcost: this.selectedInventoryItem?.lastcost ?? 0,
       lastsellingprice: this.lastsellingprice,
-      discount: itemDiscount * this.buyquantity, // Total discount for the line
+      discount: itemDiscount * this.buyquantity, // Total line discount saved to SalesInvoiceLines.discount
       discountOption: this.itemDiscountOption,
       itemDiscountValue: this.itemDiscountValue,
+      discountEntryType: this.itemDiscountOption === 'percentage' ? 'percentage' : 'value',
       isNew: true,
     };
 

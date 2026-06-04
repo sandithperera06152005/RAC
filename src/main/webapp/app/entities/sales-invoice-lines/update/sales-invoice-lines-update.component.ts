@@ -95,6 +95,13 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
     const totalLineDiscount = Number(item.discount ?? 0);
     const discountEntryType = this.getDiscountEntryTypeForItem(item);
     const { discountPercentage, discountValue } = this.resolveDiscountDisplayFields(item, discountEntryType, totalLineDiscount);
+    const discountValueIsPerUnit =
+      discountEntryType === 'value' &&
+      item.itemDiscountValue != null &&
+      item.itemDiscountValue !== '' &&
+      totalLineDiscount > 0 &&
+      quantity > 0 &&
+      Math.abs(totalLineDiscount - Number(item.itemDiscountValue) * quantity) < 0.01;
     const newItem = this.fb.group({
       itemid: [item.itemid ?? item.id ?? null],
       itemcode: [item.code || item.itemcode || ''], // Match template
@@ -111,6 +118,7 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
       discountpercentage: [discountPercentage],
       discountvalue: [discountValue],
       discountEntryType: [discountEntryType ?? null],
+      discountValueIsPerUnit: [discountValueIsPerUnit],
       isNew: [item.isNew ?? false],
       sourceLineId: [item.lineid ?? null],
     });
@@ -155,13 +163,30 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
 
   onDiscountValueChange(index: number): void {
     const salesInvoiceLineGroup = this.salesInvoiceLinesArray.at(index) as FormGroup;
-    const discountValue = Number(salesInvoiceLineGroup.get('discountvalue')?.value || 0);
+    const raw = salesInvoiceLineGroup.get('discountvalue')?.value;
+    if (raw === null || raw === undefined || raw === '') {
+      salesInvoiceLineGroup.patchValue(
+        {
+          discountpercentage: null,
+          discountvalue: null,
+          discount: 0,
+          discountEntryType: 'value',
+          discountValueIsPerUnit: false,
+        },
+        { emitEvent: false },
+      );
+      this.updateLineTotal(salesInvoiceLineGroup);
+      return;
+    }
+    const discountValue = Number(Number(raw).toFixed(2));
 
     salesInvoiceLineGroup.patchValue(
       {
         discountpercentage: null,
+        discountvalue: discountValue > 0 ? discountValue : null,
         discount: discountValue,
         discountEntryType: 'value',
+        discountValueIsPerUnit: false,
       },
       { emitEvent: false },
     );
@@ -184,9 +209,23 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
       };
     }
     if (discountEntryType === 'value') {
+      if (item.itemDiscountValue != null && item.itemDiscountValue !== '') {
+        const perUnit = Number(item.itemDiscountValue);
+        return {
+          discountPercentage: null,
+          discountValue: perUnit > 0 ? Number(perUnit.toFixed(2)) : null,
+        };
+      }
+      const quantity = Number(item.quantity ?? item.availablequantity ?? 0);
+      if (totalLineDiscount > 0 && quantity > 0) {
+        return {
+          discountPercentage: null,
+          discountValue: Number((totalLineDiscount / quantity).toFixed(2)),
+        };
+      }
       return {
         discountPercentage: null,
-        discountValue: totalLineDiscount > 0 ? totalLineDiscount : null,
+        discountValue: totalLineDiscount > 0 ? Number(totalLineDiscount.toFixed(2)) : null,
       };
     }
     const explicitPercentage = item.discountpercentage ?? item.discountPercentage;
@@ -196,7 +235,7 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
     }
     const explicitValue = item.discountvalue ?? item.discountValue;
     if (explicitValue != null && explicitValue !== '') {
-      const val = Number(explicitValue);
+      const val = Number(Number(explicitValue).toFixed(2));
       return { discountPercentage: null, discountValue: val > 0 ? val : null };
     }
     return {
@@ -222,7 +261,45 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
     return pct !== null && pct !== undefined && pct !== '';
   }
 
+  /** Line total discount for the Discount column (matches [SalesInvoiceLines].discount). */
+  getLineDiscountDisplay(index: number): number | null {
+    const formGroup = this.salesInvoiceLinesArray.at(index) as FormGroup;
+    if (!formGroup) {
+      return null;
+    }
+
+    const totalLineDiscount = Number(formGroup.get('discount')?.value || 0);
+    if (totalLineDiscount > 0) {
+      return Number(totalLineDiscount.toFixed(2));
+    }
+
+    const sellingPrice = Number(formGroup.get('sellingprice')?.value || 0);
+    const quantity = Number(formGroup.get('quantity')?.value || 0);
+    const pctRaw = formGroup.get('discountpercentage')?.value;
+    const hasPct = pctRaw !== null && pctRaw !== undefined && pctRaw !== '';
+
+    if (hasPct && sellingPrice > 0 && quantity > 0) {
+      return Number(((quantity * sellingPrice * Number(pctRaw)) / 100).toFixed(2));
+    }
+
+    const valRaw = formGroup.get('discountvalue')?.value;
+    const hasVal = valRaw !== null && valRaw !== undefined && valRaw !== '';
+    if (hasVal && formGroup.get('discountValueIsPerUnit')?.value && quantity > 0) {
+      return Number((Number(valRaw) * quantity).toFixed(2));
+    }
+
+    return null;
+  }
+
+  formatLineDiscountDisplay(index: number): string {
+    const value = this.getLineDiscountDisplay(index);
+    return value == null ? '' : value.toFixed(2);
+  }
+
   private ensureDiscountControls(formGroup: FormGroup): void {
+    if (!formGroup.get('discount')) {
+      formGroup.addControl('discount', new FormControl(0));
+    }
     if (!formGroup.get('discountpercentage')) {
       formGroup.addControl('discountpercentage', new FormControl(null));
     }
@@ -231,6 +308,9 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
     }
     if (!formGroup.get('discountEntryType')) {
       formGroup.addControl('discountEntryType', new FormControl(null));
+    }
+    if (!formGroup.get('discountValueIsPerUnit')) {
+      formGroup.addControl('discountValueIsPerUnit', new FormControl(false));
     }
   }
 
@@ -504,6 +584,16 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
     const salesInvoiceLineGroup = this.salesInvoiceLinesDummyArray.at(index) as FormGroup;
     if (this.hasDiscountPercentage(salesInvoiceLineGroup)) {
       this.onDiscountPercentageChange(index);
+    } else if (salesInvoiceLineGroup.get('discountValueIsPerUnit')?.value) {
+      const perUnit = Number(salesInvoiceLineGroup.get('discountvalue')?.value || 0);
+      const quantity = Number(salesInvoiceLineGroup.get('quantity')?.value || 0);
+      salesInvoiceLineGroup.patchValue(
+        {
+          discount: Number((perUnit * quantity).toFixed(2)),
+        },
+        { emitEvent: false },
+      );
+      this.updateLineTotal(salesInvoiceLineGroup);
     } else {
       this.updateLineTotal(salesInvoiceLineGroup);
     }
@@ -599,7 +689,13 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
     salesInvoiceLines = salesInvoiceLines.map((line, index) => {
       const formGroup = this.salesInvoiceLinesArray.at(index) as FormGroup;
       const entryType = formGroup ? this.inferDiscountEntryTypeFromForm(formGroup) : null;
-      const { discountpercentage: _dp, discountvalue: _dv, discountEntryType: _de, ...lineForApi } = line as any;
+      const {
+        discountpercentage: _dp,
+        discountvalue: _dv,
+        discountEntryType: _de,
+        discountValueIsPerUnit: _dvpu,
+        ...lineForApi
+      } = line as any;
       return {
         ...lineForApi,
         invoiceid: inid,
@@ -704,13 +800,21 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
       this.ensureDiscountControls(formGroup);
 
       const totalLineDiscount = Number(formGroup.get('discount')?.value || 0);
+      const quantity = Number(formGroup.get('quantity')?.value || 0);
       const discountEntryType = this.getDiscountEntryTypeForItem(line);
       const { discountPercentage, discountValue } = this.resolveDiscountDisplayFields(line, discountEntryType, totalLineDiscount);
+      const discountValueIsPerUnit =
+        discountEntryType === 'value' &&
+        discountValue != null &&
+        totalLineDiscount > 0 &&
+        quantity > 0 &&
+        Math.abs(totalLineDiscount - Number(discountValue) * quantity) < 0.01;
       (formGroup as FormGroup).patchValue(
         {
           discountpercentage: discountPercentage,
           discountvalue: discountValue,
           discountEntryType: discountEntryType ?? null,
+          discountValueIsPerUnit,
         },
         { emitEvent: false },
       );

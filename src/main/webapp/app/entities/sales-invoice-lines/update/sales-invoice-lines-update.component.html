@@ -28,6 +28,7 @@
             <th *ngIf="showCodeField" style="width: 150px">Item Price</th>
             <th style="width: 120px">Discount %</th>
             <th style="width: 120px">Discount Value</th>
+            <th style="width: 120px">Discount</th>
             <th *ngIf="showCodeField" style="width: 120px">Tax</th>
             <th style="width: 150px">Selling Price</th>
             <th style="width: 150px">Line Total</th>
@@ -90,7 +91,20 @@
             <td>
               <input type="number" class="form-control" formControlName="discountpercentage" (input)="onDiscountPercentageChange(i)" />
             </td>
-            <td><input type="number" class="form-control" formControlName="discountvalue" (input)="onDiscountValueChange(i)" /></td>
+            <td class="text-end">
+              <input
+                type="text"
+                inputmode="decimal"
+                appDecimal
+                [appDecimalAllowEmpty]="true"
+                class="form-control text-end"
+                formControlName="discountvalue"
+                (input)="onDiscountValueChange(i)"
+              />
+            </td>
+            <td class="text-end">
+              <input type="text" class="form-control text-end" readonly [value]="formatLineDiscountDisplay(i)" />
+            </td>
             <td *ngIf="showCodeField"><input type="number" class="form-control" formControlName="tax" /></td>
             <td class="text-end">
               <input type="text" inputmode="decimal" appDecimal class="form-control text-end" formControlName="sellingprice" readonly />
