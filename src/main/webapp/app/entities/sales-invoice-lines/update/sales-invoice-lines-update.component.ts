@@ -183,15 +183,7 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
       return;
     }
 
-    salesInvoiceLineGroup.patchValue(
-      {
-        discountpercentage: null,
-        discount: discountValue,
-        discountEntryType: 'value',
-        discountValueIsPerUnit: false,
-      },
-      { emitEvent: false },
-    );
+    this.applyPerUnitDiscountValue(salesInvoiceLineGroup, discountValue);
     this.updateLineTotal(salesInvoiceLineGroup);
   }
 
@@ -207,6 +199,7 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
         {
           discountvalue: null,
           discount: 0,
+          discountValueIsPerUnit: false,
         },
         { emitEvent: false },
       );
@@ -215,17 +208,33 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
     }
     const formatted = discountValue.toFixed(2);
     const rounded = Number(formatted);
+    const quantity = Number(salesInvoiceLineGroup.get('quantity')?.value || 0);
     salesInvoiceLineGroup.patchValue(
       {
         // Store as a formatted string so the input keeps 2 decimal places after blur
         discountvalue: rounded > 0 ? formatted : null,
-        discount: rounded,
+        discount: rounded > 0 ? Number((rounded * quantity).toFixed(2)) : 0,
+        discountpercentage: null,
         discountEntryType: 'value',
-        discountValueIsPerUnit: false,
+        discountValueIsPerUnit: rounded > 0,
       },
       { emitEvent: false },
     );
     this.updateLineTotal(salesInvoiceLineGroup);
+  }
+
+  /** discountvalue is per-unit; discount stores total line discount (per-unit × quantity). */
+  private applyPerUnitDiscountValue(salesInvoiceLineGroup: FormGroup, perUnitDiscount: number): void {
+    const quantity = Number(salesInvoiceLineGroup.get('quantity')?.value || 0);
+    salesInvoiceLineGroup.patchValue(
+      {
+        discountpercentage: null,
+        discount: Number((perUnitDiscount * quantity).toFixed(2)),
+        discountEntryType: 'value',
+        discountValueIsPerUnit: true,
+      },
+      { emitEvent: false },
+    );
   }
 
   private parseDiscountInputValue(raw: string | number | null | undefined): number | null {
