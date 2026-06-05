@@ -178,12 +178,14 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
       this.updateLineTotal(salesInvoiceLineGroup);
       return;
     }
-    const discountValue = Number(Number(raw).toFixed(2));
+    const discountValue = this.parseDiscountInputValue(raw);
+    if (discountValue === null) {
+      return;
+    }
 
     salesInvoiceLineGroup.patchValue(
       {
         discountpercentage: null,
-        discountvalue: discountValue > 0 ? discountValue : null,
         discount: discountValue,
         discountEntryType: 'value',
         discountValueIsPerUnit: false,
@@ -191,6 +193,51 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
       { emitEvent: false },
     );
     this.updateLineTotal(salesInvoiceLineGroup);
+  }
+
+  onDiscountValueBlur(index: number, event: FocusEvent): void {
+    const salesInvoiceLineGroup = this.salesInvoiceLinesArray.at(index) as FormGroup;
+    const raw = (event.target as HTMLInputElement).value;
+    if (raw === null || raw === undefined || raw === '') {
+      return;
+    }
+    const discountValue = this.parseDiscountInputValue(raw);
+    if (discountValue === null) {
+      salesInvoiceLineGroup.patchValue(
+        {
+          discountvalue: null,
+          discount: 0,
+        },
+        { emitEvent: false },
+      );
+      this.updateLineTotal(salesInvoiceLineGroup);
+      return;
+    }
+    const formatted = discountValue.toFixed(2);
+    const rounded = Number(formatted);
+    salesInvoiceLineGroup.patchValue(
+      {
+        // Store as a formatted string so the input keeps 2 decimal places after blur
+        discountvalue: rounded > 0 ? formatted : null,
+        discount: rounded,
+        discountEntryType: 'value',
+        discountValueIsPerUnit: false,
+      },
+      { emitEvent: false },
+    );
+    this.updateLineTotal(salesInvoiceLineGroup);
+  }
+
+  private parseDiscountInputValue(raw: string | number | null | undefined): number | null {
+    if (raw === null || raw === undefined || raw === '') {
+      return null;
+    }
+    const trimmed = String(raw).trim();
+    if (!trimmed || trimmed === '.' || trimmed === '-') {
+      return null;
+    }
+    const num = parseFloat(trimmed);
+    return isNaN(num) ? null : num;
   }
 
   private resolveDiscountDisplayFields(

@@ -97,9 +97,11 @@
                 inputmode="decimal"
                 appDecimal
                 [appDecimalAllowEmpty]="true"
+                [appDecimalDeferFormat]="true"
                 class="form-control text-end"
                 formControlName="discountvalue"
                 (input)="onDiscountValueChange(i)"
+                (blur)="onDiscountValueBlur(i, $event)"
               />
             </td>
             <td class="text-end">
