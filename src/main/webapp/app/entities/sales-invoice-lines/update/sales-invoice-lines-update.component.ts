@@ -359,6 +359,12 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
     return value == null ? '' : value.toFixed(2);
   }
 
+  formatLineTotalDisplay(index: number): string {
+    const formGroup = this.salesInvoiceLinesArray.at(index) as FormGroup;
+    const value = Number(formGroup?.get('linetotal')?.value || 0);
+    return value.toFixed(2);
+  }
+
   private ensureDiscountControls(formGroup: FormGroup): void {
     if (!formGroup.get('discount')) {
       formGroup.addControl('discount', new FormControl(0));
@@ -509,7 +515,7 @@ export class SalesInvoiceLinesUpdateComponent implements OnInit {
 
     // Calculate line total: (sellingPrice * quantity) - totalDiscount
     // This is mathematically identical to (sellingPrice - discountPerUnit) * quantity
-    const lineTotal = sellingPrice * quantity - totalLineItemDiscount;
+    const lineTotal = Number((sellingPrice * quantity - totalLineItemDiscount).toFixed(2));
     lineTotalControl?.setValue(lineTotal, { emitEvent: false }); // Set the value without emitting the event to avoid infinite loop
 
     // Calculate the total of all lineTotals in the form array

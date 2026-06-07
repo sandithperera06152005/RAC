@@ -112,7 +112,7 @@
               <input type="text" inputmode="decimal" appDecimal class="form-control text-end" formControlName="sellingprice" readonly />
             </td>
             <td class="text-end">
-              <input type="text" inputmode="decimal" appDecimal class="form-control text-end" formControlName="linetotal" />
+              <input type="text" class="form-control text-end" readonly [value]="formatLineTotalDisplay(i)" />
             </td>
             <td *ngIf="showCodeField"><input type="number" class="form-control" formControlName="lmu" /></td>
             <td *ngIf="showCodeField"><input type="datetime-local" class="form-control" formControlName="lmd" /></td>
