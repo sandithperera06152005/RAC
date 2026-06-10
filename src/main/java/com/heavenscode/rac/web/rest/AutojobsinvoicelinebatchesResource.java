@@ -175,6 +175,18 @@ public class AutojobsinvoicelinebatchesResource {
         return ResponseEntity.ok(autojobsinvoicelinebatchesReadService.findByParentInvoiceLineIds(ids));
     }
 
+    @PostMapping("/cancel")
+    public ResponseEntity<Autojobsinvoicelinebatches> cancelAutojobsinvoicelinebatch(
+        @RequestBody Autojobsinvoicelinebatches autojobsinvoicelinebatches
+    ) throws URISyntaxException {
+        LOG.debug("REST request to cancel Autojobsinvoicelinebatches : {}", autojobsinvoicelinebatches);
+        autojobsinvoicelinebatches = autojobsChildInsertService.cancelInvoiceLineBatch(autojobsinvoicelinebatches);
+        String identifier = creationIdentifier(autojobsinvoicelinebatches);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, identifier))
+            .body(autojobsinvoicelinebatches);
+    }
+
     /**
      * {@code GET  /autojobsinvoicelinebatches/count} : count all the autojobsinvoicelinebatches.
      *

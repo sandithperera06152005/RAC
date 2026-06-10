@@ -31,6 +31,9 @@ public class AutojobsinvoicelinebatchesReadService {
         String itemIdColumn = requireColumn(columns, "itemid");
         String codeColumn = requireColumn(columns, "code");
         String issuedColumn = requireColumn(columns, "issued");
+        String cancelOptIdColumn = requireColumn(columns, "canceloptid");
+        String cancelOptColumn = requireColumn(columns, "cancelopt");
+        String cancelByColumn = requireColumn(columns, "cancelby");
 
         String sql =
             "SELECT " +
@@ -43,7 +46,13 @@ public class AutojobsinvoicelinebatchesReadService {
             bracket(codeColumn) +
             " AS [code], " +
             bracket(issuedColumn) +
-            " AS [issued] " +
+            " AS [issued], " +
+            bracket(cancelOptIdColumn) +
+            " AS [canceloptid], " +
+            bracket(cancelOptColumn) +
+            " AS [cancelopt], " +
+            bracket(cancelByColumn) +
+            " AS [cancelby] " +
             "FROM " +
             qualifiedTableName +
             " WHERE " +
@@ -72,6 +81,15 @@ public class AutojobsinvoicelinebatchesReadService {
                 boolean issued = rs.getBoolean("issued");
                 if (!rs.wasNull()) {
                     batch.setIssued(issued);
+                }
+                int canceloptid = rs.getInt("canceloptid");
+                if (!rs.wasNull()) {
+                    batch.setCanceloptid(canceloptid);
+                }
+                batch.setCancelopt(rs.getString("cancelopt"));
+                int cancelby = rs.getInt("cancelby");
+                if (!rs.wasNull()) {
+                    batch.setCancelby(cancelby);
                 }
                 return batch;
             },

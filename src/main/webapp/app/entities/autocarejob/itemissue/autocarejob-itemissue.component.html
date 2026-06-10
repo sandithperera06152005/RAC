@@ -57,8 +57,8 @@
                     <th>Price</th>
                     <th>Unit Total</th>
                     <th>Issue</th>
-                    <th>Cancel</th>
-                    <!-- Added Cancel Column -->
+                    <th>Cancel Reason</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -69,25 +69,32 @@
                     <td style="font-size: 0.75rem">{{ line.sellingprice }}</td>
                     <td style="font-size: 0.75rem">{{ line.linetotal }}</td>
                     <td style="font-size: 0.75rem">
-                      <button class="btn btn-success btn-sm" (click)="issueItem(line)">
+                      <button
+                        class="btn btn-success btn-sm"
+                        (click)="issueItem(line)"
+                        [disabled]="isLineCancelled(line)"
+                        [title]="isLineCancelled(line) ? 'This item has been cancelled' : ''"
+                      >
                         <i *ngIf="line.issued" class="bi bi-check-circle"></i> Issue
                       </button>
                     </td>
                     <td>
-                      <select [(ngModel)]="line.selectedAction" class="form-select form-select-sm">
-                        <option value="return">By Customer</option>
-                        <option value="Service advicer">Service advicer</option>
-                        <option value="manager">Manager</option>
-                        <option value="product defect">product defect</option>
-                        <option value="not available">not available</option>
+                      <select
+                        [(ngModel)]="line.selectedCancelOptId"
+                        [ngModelOptions]="{ standalone: true }"
+                        class="form-select form-select-sm"
+                        [disabled]="isLineCancelled(line)"
+                      >
+                        <option [ngValue]="null">Select reason</option>
+                        <option *ngFor="let opt of cancelOptions" [ngValue]="opt.id">{{ opt.canceloption }}</option>
                       </select>
                     </td>
                     <td style="font-size: 0.75rem">
-                      <button class="btn btn-danger btn-sm" (click)="removeAvailableItem(line)">Cancel</button>
+                      <button class="btn btn-danger btn-sm" (click)="cancelItem(line)" [disabled]="isLineCancelled(line)">Cancel</button>
                     </td>
                   </tr>
                   <tr *ngIf="allInvoiceLines.length === 0">
-                    <td colspan="7" class="text-center">No records to display</td>
+                    <td colspan="8" class="text-center">No records to display</td>
                   </tr>
                 </tbody>
               </table>
@@ -111,9 +118,7 @@
                     <td style="font-size: 0.75rem">{{ issuedItem.quantity }}</td>
                     <td style="font-size: 0.75rem">{{ issuedItem.sellingprice }}</td>
                     <td style="font-size: 0.75rem">{{ issuedItem.linetotal }}</td>
-                    <td>
-                      <button class="btn btn-danger btn-sm" (click)="cancelIssuedItem(issuedItem)">Cancel</button>
-                    </td>
+                    <td class="text-muted" style="font-size: 0.75rem">—</td>
                   </tr>
                   <tr *ngIf="issuedItems.length === 0">
                     <td colspan="6" class="text-center">No issued items</td>

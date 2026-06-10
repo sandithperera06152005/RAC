@@ -38,6 +38,7 @@ import { CustomervehicleService } from 'app/entities/customervehicle/service/cus
 import { ICustomervehicle } from 'app/entities/customervehicle/customervehicle.model';
 import { CustomerService } from 'app/entities/customer/service/customer.service';
 import { ICustomer } from 'app/entities/customer/customer.model';
+import { AutojobsinvoicelinebatchesService } from 'app/entities/autojobsinvoicelinebatches/service/autojobsinvoicelinebatches.service';
 @Component({
   standalone: true,
   selector: 'jhi-salesinvoice-update',
@@ -79,6 +80,7 @@ export class SalesinvoiceUpdateComponent implements OnInit {
   protected customerService = inject(CustomerService);
   protected autocareappointmentService = inject(AutocareappointmentService);
   protected cdr = inject(ChangeDetectorRef);
+  protected jobInvoiceLineBatches = inject(AutojobsinvoicelinebatchesService);
 
   filteredVehicles: any[] = [];
   filteredCustomers: ICustomer[] = [];
@@ -523,49 +525,61 @@ export class SalesinvoiceUpdateComponent implements OnInit {
     return undefined;
   }
 
+  private buildIssuedItemKey(item: any): string {
+    return `${item.invocieid ?? item.id ?? ''}|${item.lineid ?? ''}|${item.itemid ?? ''}|${item.itemcode ?? item.code ?? ''}`;
+  }
+
   private invoicelines(ids: number[]): void {
     if (!ids || ids.length === 0) return;
-    forkJoin(ids.map(id => this.salesInvoiceService.fetchInvoiceLines(id))).subscribe(
-      responses => {
+    forkJoin({
+      lineResponses: forkJoin(ids.map(id => this.salesInvoiceService.fetchInvoiceLines(id))),
+      batchResponse: this.jobInvoiceLineBatches.queryByParentLineIds(ids),
+    }).subscribe({
+      next: ({ lineResponses, batchResponse }) => {
+        const issuedKeys = new Set(
+          (batchResponse.body ?? []).filter(batch => batch.issued === true).map(batch => this.buildIssuedItemKey(batch)),
+        );
         this.fetchedItems = [];
-        responses.forEach(res => {
+        lineResponses.forEach(res => {
           if (res.body && res.body.length > 0) {
-            res.body.forEach((item: any) => {
-              const quantity = Number(item.quantity ?? 0);
-              const sellingprice = Number(item.sellingprice ?? 0);
-              const discount = Number(item.discount ?? item.discountamount ?? item.discountAmount ?? item.totaldiscount ?? 0);
-              const description = String(item.description ?? '');
-              const discountEntryType = this.resolveFetchedLineDiscountEntryType(description, discount, quantity, sellingprice);
-              const discountPercentage =
-                discountEntryType === 'percentage' && discount > 0 && sellingprice > 0 && quantity > 0
-                  ? Number(((discount / quantity / sellingprice) * 100).toFixed(4))
-                  : undefined;
-              this.fetchedItems.push({
-                id: item.id,
-                itemid: item.itemid,
-                itemcode: item.itemcode ?? '',
-                itemname: item.itemname ?? '',
-                unitofmeasurement: item.unitofmeasurement ?? '',
-                quantity,
-                sellingprice,
-                itemcost: item.itemcost ?? item.lastcost ?? 0,
-                discount,
-                description: item.description,
-                discountEntryType,
-                discountPercentage,
-                lineid: item.lineid,
+            res.body
+              .filter((item: any) => issuedKeys.has(this.buildIssuedItemKey(item)))
+              .forEach((item: any) => {
+                const quantity = Number(item.quantity ?? 0);
+                const sellingprice = Number(item.sellingprice ?? 0);
+                const discount = Number(item.discount ?? item.discountamount ?? item.discountAmount ?? item.totaldiscount ?? 0);
+                const description = String(item.description ?? '');
+                const discountEntryType = this.resolveFetchedLineDiscountEntryType(description, discount, quantity, sellingprice);
+                const discountPercentage =
+                  discountEntryType === 'percentage' && discount > 0 && sellingprice > 0 && quantity > 0
+                    ? Number(((discount / quantity / sellingprice) * 100).toFixed(4))
+                    : undefined;
+                this.fetchedItems.push({
+                  id: item.id,
+                  itemid: item.itemid,
+                  itemcode: item.itemcode ?? '',
+                  itemname: item.itemname ?? '',
+                  unitofmeasurement: item.unitofmeasurement ?? '',
+                  quantity,
+                  sellingprice,
+                  itemcost: item.itemcost ?? item.lastcost ?? 0,
+                  discount,
+                  description: item.description,
+                  discountEntryType,
+                  discountPercentage,
+                  lineid: item.lineid,
+                });
               });
-            });
           }
         });
         this.fetchedItems = [...this.fetchedItems];
         this.enrichFetchedItemsFromSavedSalesLines();
         console.log('Fetched Items:', this.fetchedItems);
       },
-      error => {
+      error: error => {
         console.error('Error fetching invoice lines:', error);
       },
-    );
+    });
   }
 
   /** Merge discount-entry markers from previously saved SalesInvoiceLines (description [PCT]/[VAL] prefixes). */

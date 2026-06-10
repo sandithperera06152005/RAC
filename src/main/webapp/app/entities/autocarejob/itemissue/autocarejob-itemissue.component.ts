@@ -33,6 +33,8 @@ import { AlertService } from 'app/core/util/alert.service';
 import { AlertMuteService } from 'app/core/util/alert-mute.service';
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
+import { AutocarecancelitemoptService } from 'app/entities/autocarecancelitemopt/service/autocarecancelitemopt.service';
+import { IAutocarecancelitemopt } from 'app/entities/autocarecancelitemopt/autocarecancelitemopt.model';
 
 @Component({
   standalone: true,
@@ -68,10 +70,13 @@ export class AutocarejobitemissueComponent implements OnInit {
   protected autocareappointmentService = inject(AutocareappointmentService);
   protected alertService = inject(AlertService);
   protected alertMuteService = inject(AlertMuteService);
+  protected autocarecancelitemoptService = inject(AutocarecancelitemoptService);
   issuedItems: any[] = []; // Items that are issued
   allBatches: any[] = []; // Store all batches (issued and non-issued)
   availableItems: any[] = [];
+  cancelOptions: IAutocarecancelitemopt[] = [];
   persistedIssuedKeys = new Set<string>();
+  persistedCancelledKeys = new Set<string>();
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: AutocarejobFormGroup = this.autocarejobFormService.createAutocarejobFormGroup();
@@ -102,6 +107,18 @@ export class AutocarejobitemissueComponent implements OnInit {
         this.updateForm(autocarejob);
       }
       this.fetchhistory();
+    });
+    this.loadCancelOptions();
+  }
+
+  loadCancelOptions(): void {
+    this.autocarecancelitemoptService.query({ size: 1000 }).subscribe({
+      next: (res: HttpResponse<IAutocarecancelitemopt[]>) => {
+        this.cancelOptions = res.body ?? [];
+      },
+      error: err => {
+        console.error('Error loading cancel options:', err);
+      },
     });
   }
 
@@ -173,6 +190,10 @@ export class AutocarejobitemissueComponent implements OnInit {
       next: res => {
         this.allBatches = res.body ?? [];
         this.persistedIssuedKeys = new Set(this.allBatches.filter(batch => batch.issued).map(batch => this.buildLineKey(batch)));
+        this.persistedCancelledKeys = new Set(
+          this.allBatches.filter(batch => batch.canceloptid != null && batch.canceloptid > 0).map(batch => this.buildLineKey(batch)),
+        );
+        this.applyCancelledStateToLines();
         this.loadIssuedItems();
       },
       error: err => {
@@ -190,10 +211,88 @@ export class AutocarejobitemissueComponent implements OnInit {
     return line?.issued === true || this.persistedIssuedKeys.has(this.buildLineKey(line));
   }
 
+  isLineCancelled(line: any): boolean {
+    return line?.cancelled === true || this.persistedCancelledKeys.has(this.buildLineKey(line));
+  }
+
+  applyCancelledStateToLines(): void {
+    Object.values(this.autojobsInvoicesMap).forEach(invoice => {
+      invoice.invoiceLines.forEach(line => {
+        if (this.isLineCancelled(line)) {
+          line.cancelled = true;
+          const batch = this.allBatches.find(b => this.buildLineKey(b) === this.buildLineKey(line));
+          if (batch?.canceloptid != null) {
+            line.selectedCancelOptId = batch.canceloptid;
+          }
+        }
+      });
+    });
+  }
+
+  cancelItem(line: any): void {
+    if (!line) {
+      return;
+    }
+    if (this.isLineCancelled(line)) {
+      return;
+    }
+    if (line.selectedCancelOptId == null || line.selectedCancelOptId === '') {
+      this.alertService.addAlert({ type: 'warning', message: 'Please select a cancel reason before cancelling.', timeout: 3000 });
+      return;
+    }
+
+    const cancelOptId = Number(line.selectedCancelOptId);
+    const selectedCancelOption = this.cancelOptions.find(opt => opt.id === cancelOptId);
+    const cancelReasonLabel = selectedCancelOption?.canceloption ?? 'the selected reason';
+    const itemLabel = line.itemname ?? line.itemcode ?? 'this item';
+    const confirmed = window.confirm(
+      `Are you sure you want to cancel "${itemLabel}" with reason "${cancelReasonLabel}"? This action cannot be undone.`,
+    );
+    if (!confirmed) {
+      return;
+    }
+
+    const parentInvoiceId = line.invocieid ?? null;
+    const parentLineId = line.lineid ?? null;
+    if (parentInvoiceId == null || parentLineId == null) {
+      console.error('Missing parent invoice line key for cancelled item:', line);
+      return;
+    }
+
+    const payload = {
+      id: parentInvoiceId,
+      lineid: parentLineId,
+      itemid: line.itemid,
+      code: line.itemcode ?? '',
+      canceloptid: cancelOptId,
+      cancelopt: String(cancelOptId),
+      cancelby: this.currentUserId,
+    };
+
+    this.alertMuteService.mute();
+    this.jobinvoicelinebatches.cancelBatch(payload).subscribe({
+      next: () => {
+        line.cancelled = true;
+        this.persistedCancelledKeys.add(this.buildLineKey(line));
+        this.alertMuteService.unmute();
+        this.alertService.addAlert({ type: 'success', message: 'Item Cancelled Successfully', timeout: 3000 });
+      },
+      error: (err: unknown) => {
+        console.error('Error cancelling item:', err);
+        this.alertMuteService.unmute();
+        this.alertService.addAlert({ type: 'danger', message: 'Failed to cancel item', timeout: 3000 });
+      },
+    });
+  }
+
   //issue an item
   issueItem(issuedItem: any): void {
     if (!issuedItem) {
       console.warn('Invalid item selection.');
+      return;
+    }
+    if (this.isLineCancelled(issuedItem)) {
+      this.alertService.addAlert({ type: 'warning', message: 'This item has been cancelled and cannot be issued.', timeout: 3000 });
       return;
     }
 
@@ -256,18 +355,6 @@ export class AutocarejobitemissueComponent implements OnInit {
     });
 
     console.log('Issued Items:', this.itemsArray);
-  }
-
-  //Cancel issued item
-  cancelIssuedItem(item: any): void {
-    this.issuedItems = this.issuedItems.filter(i => i.id !== item.id);
-  }
-
-  removeAvailableItem(line: any) {
-    const index = this.allInvoiceLines.indexOf(line);
-    if (index !== -1) {
-      this.allInvoiceLines.splice(index, 1);
-    }
   }
 
   itemsArray: Array<{

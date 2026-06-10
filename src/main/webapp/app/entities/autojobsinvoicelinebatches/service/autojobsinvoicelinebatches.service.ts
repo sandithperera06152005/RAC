@@ -89,6 +89,14 @@ export class AutojobsinvoicelinebatchesService {
       .pipe(map(res => this.convertResponseArrayFromServer(res)));
   }
 
+  cancelBatch(
+    batch: Pick<IAutojobsinvoicelinebatches, 'id' | 'lineid' | 'itemid' | 'code' | 'canceloptid' | 'cancelopt' | 'cancelby'>,
+  ): Observable<EntityResponseType> {
+    return this.http
+      .post<RestAutojobsinvoicelinebatches>(`${this.resourceUrl}/cancel`, batch, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
+  }
+
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }

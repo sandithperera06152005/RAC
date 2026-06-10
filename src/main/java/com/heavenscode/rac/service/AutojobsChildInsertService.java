@@ -277,6 +277,129 @@ public class AutojobsChildInsertService {
         }
     }
 
+    public Autojobsinvoicelinebatches cancelInvoiceLineBatch(Autojobsinvoicelinebatches entity) {
+        try {
+            InvoiceLineKey invoiceLineKey = resolveInvoiceLineKey(entity);
+            entity.setId(invoiceLineKey.id());
+            entity.setLineid(invoiceLineKey.lineId());
+            String tableName = resolveQualifiedTableName("autojobsinvoicelinebatches");
+
+            Integer existingCount = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM " +
+                tableName +
+                " WHERE " +
+                bracket("id") +
+                " = ? AND " +
+                bracket("lineid") +
+                " = ? AND " +
+                bracket("itemid") +
+                " = ?",
+                Integer.class,
+                entity.getId(),
+                entity.getLineid(),
+                entity.getItemid()
+            );
+
+            if (existingCount != null && existingCount > 0) {
+                String updateSql =
+                    "UPDATE " +
+                    tableName +
+                    " SET " +
+                    bracket("canceloptid") +
+                    " = ?, " +
+                    bracket("cancelopt") +
+                    " = ?, " +
+                    bracket("cancelby") +
+                    " = ?, " +
+                    bracket("lmd") +
+                    " = ? WHERE " +
+                    bracket("id") +
+                    " = ? AND " +
+                    bracket("lineid") +
+                    " = ? AND " +
+                    bracket("itemid") +
+                    " = ?";
+                jdbcTemplate.update(
+                    updateSql,
+                    entity.getCanceloptid(),
+                    entity.getCancelopt(),
+                    entity.getCancelby(),
+                    toTimestamp(Instant.now()),
+                    entity.getId(),
+                    entity.getLineid(),
+                    entity.getItemid()
+                );
+                return entity;
+            }
+
+            entity.setIssued(false);
+            entity.setBatchlineid(resolveNextBatchLineId(tableName, entity.getId(), entity.getLineid(), entity.getBatchlineid()));
+            GeneratedKey generatedKey = insertWithDetectedKey(
+                tableName,
+                mapOf(
+                    "id",
+                    entity.getId(),
+                    "lineid",
+                    entity.getLineid(),
+                    "batchlineid",
+                    entity.getBatchlineid(),
+                    "itemid",
+                    entity.getItemid(),
+                    "code",
+                    entity.getCode(),
+                    "batchid",
+                    entity.getBatchid(),
+                    "batchcode",
+                    entity.getBatchcode(),
+                    "txdate",
+                    toTimestamp(entity.getTxdate() != null ? entity.getTxdate() : Instant.now()),
+                    "manufacturedate",
+                    toTimestamp(entity.getManufacturedate() != null ? entity.getManufacturedate() : Instant.now()),
+                    "expireddate",
+                    toTimestamp(entity.getExpireddate() != null ? entity.getExpireddate() : Instant.now()),
+                    "qty",
+                    entity.getQty() != null ? entity.getQty() : 1f,
+                    "cost",
+                    entity.getCost() != null ? entity.getCost() : 0f,
+                    "price",
+                    entity.getPrice() != null ? entity.getPrice() : 0f,
+                    "notes",
+                    entity.getNotes(),
+                    "lmu",
+                    entity.getLmu() != null ? entity.getLmu() : 0,
+                    "lmd",
+                    toTimestamp(Instant.now()),
+                    "nbt",
+                    entity.getNbt() != null ? entity.getNbt() : false,
+                    "vat",
+                    entity.getVat() != null ? entity.getVat() : false,
+                    "discount",
+                    entity.getDiscount() != null ? entity.getDiscount() : 0f,
+                    "total",
+                    entity.getTotal() != null ? entity.getTotal() : 0f,
+                    "issued",
+                    false,
+                    "issuedby",
+                    0,
+                    "issueddatetime",
+                    toTimestamp(Instant.now()),
+                    "addedbyid",
+                    entity.getAddedbyid() != null ? entity.getAddedbyid() : 0,
+                    "canceloptid",
+                    entity.getCanceloptid(),
+                    "cancelopt",
+                    entity.getCancelopt(),
+                    "cancelby",
+                    entity.getCancelby()
+                )
+            );
+            applyGeneratedKey(entity, generatedKey);
+            return entity;
+        } catch (DataAccessException ex) {
+            throw rethrowWithSqlDetails("autojobsinvoicelinebatches", entity, ex);
+        }
+    }
+
     private Integer resolveNextBatchLineId(
         String qualifiedTableName,
         Integer parentId,
