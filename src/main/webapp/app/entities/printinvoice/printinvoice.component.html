@@ -447,9 +447,7 @@
       <tr class="total-row">
         <td class="total-label"></td>
 
-        <td class="total-value">
-          {{ salesInvoice.subtotal | number: '1.2-2' }}
-        </td>
+        <td class="total-value">{{ isVatInvoice ? '(EX VAT)' : '' }} {{ displaySubtotal | number: '1.2-2' }}</td>
       </tr>
 
       <tr class="total-row">
@@ -463,9 +461,7 @@
       <tr class="total-row">
         <td class="total-label"></td>
 
-        <td class="total-value">
-          {{ salesInvoice.vatamount | number: '1.2-2' }}
-        </td>
+        <td class="total-value">{{ vatLabel }} {{ displayVatAmount | number: '1.2-2' }}</td>
       </tr>
 
       <tr class="total-row">

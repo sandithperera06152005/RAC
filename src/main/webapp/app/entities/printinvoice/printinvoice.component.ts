@@ -2,6 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SalesInvoiceDummyService } from '../sales-invoice-dummy/service/sales-invoice-dummy.service';
+import { TaxesService } from '../taxes/service/taxes.service';
+
+const VAT_TAX_ID = 1002;
 
 @Component({
   selector: 'jhi-printinvoice',
@@ -15,19 +18,19 @@ export class PrintinvoiceComponent implements OnInit {
   invoiceLines: any[] = [];
   serviceLines: any[] = [];
   commonServiceLines: any[] = [];
+  vatPercentage: number | null = null;
 
   protected salesInvoiceDummyService = inject(SalesInvoiceDummyService);
+  protected taxesService = inject(TaxesService);
 
-  private totalRequests = 4;
+  private expectedRequests = 4;
   private completedRequests = 0;
 
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    // Get 'id' from the query params
     this.route.queryParams.subscribe(params => {
-      const id = params['id']; // Extract the ID
-      console.log('ID from URL:', id);
+      const id = params['id'];
 
       if (id) {
         const numericId = Number(id);
@@ -39,12 +42,40 @@ export class PrintinvoiceComponent implements OnInit {
     });
   }
 
-  // Function to fetch invoice data
+  get isVatInvoice(): boolean {
+    return !!this.salesInvoice?.isvatinvoice;
+  }
+
+  get displaySubtotal(): number {
+    if (!this.isVatInvoice || this.vatPercentage == null) {
+      return this.salesInvoice?.subtotal ?? 0;
+    }
+    const nettotal = this.salesInvoice?.nettotal ?? 0;
+    return (nettotal * 100) / (100 + this.vatPercentage);
+  }
+
+  get displayVatAmount(): number {
+    if (!this.isVatInvoice || this.vatPercentage == null) {
+      return this.salesInvoice?.vatamount ?? 0;
+    }
+    return this.displaySubtotal * (this.vatPercentage / 100);
+  }
+
+  get vatLabel(): string {
+    if (!this.isVatInvoice || this.vatPercentage == null) {
+      return '';
+    }
+    return `(${this.vatPercentage}%)`;
+  }
+
   getSalesInvoice(id: number): void {
     this.salesInvoiceDummyService.find(id).subscribe({
       next: response => {
-        console.log('Sales Invoice Data:', response.body);
         this.salesInvoice = response.body;
+        if (this.salesInvoice?.isvatinvoice) {
+          this.expectedRequests++;
+          this.loadVatTaxPercentage();
+        }
         this.checkAndPrint();
       },
       error: err => {
@@ -54,10 +85,25 @@ export class PrintinvoiceComponent implements OnInit {
     });
   }
 
+  private loadVatTaxPercentage(): void {
+    this.taxesService.find(VAT_TAX_ID).subscribe({
+      next: response => {
+        const tax = response.body;
+        if (tax?.isactive && tax.percentage != null) {
+          this.vatPercentage = tax.percentage;
+        }
+        this.checkAndPrint();
+      },
+      error: err => {
+        console.error('Error fetching VAT tax rate:', err);
+        this.checkAndPrint();
+      },
+    });
+  }
+
   getSalesInvoicelines(id: number): void {
     this.salesInvoiceDummyService.fetchInvoiceLines(id).subscribe({
       next: response => {
-        console.log('Sales Invoice lines Data:', response.body);
         this.invoiceLines = response.body || [];
         this.checkAndPrint();
       },
@@ -71,7 +117,6 @@ export class PrintinvoiceComponent implements OnInit {
   getSalesServicelines(id: number): void {
     this.salesInvoiceDummyService.fetchService(id).subscribe({
       next: response => {
-        console.log('Sales Service lines Data:', response.body);
         this.serviceLines = response.body || [];
         this.checkAndPrint();
       },
@@ -85,7 +130,6 @@ export class PrintinvoiceComponent implements OnInit {
   getSalesSercolines(id: number): void {
     this.salesInvoiceDummyService.fetchServiceCommon(id).subscribe({
       next: response => {
-        console.log('Sales Service common Data:', response.body);
         this.commonServiceLines = response.body || [];
         this.checkAndPrint();
       },
@@ -98,11 +142,10 @@ export class PrintinvoiceComponent implements OnInit {
 
   private checkAndPrint(): void {
     this.completedRequests++;
-    if (this.completedRequests === this.totalRequests) {
-      console.log('All data loaded, triggering print...');
+    if (this.completedRequests === this.expectedRequests) {
       setTimeout(() => {
         window.print();
-      }, 1000); // Small delay to ensure rendering is complete
+      }, 1000);
     }
   }
 }

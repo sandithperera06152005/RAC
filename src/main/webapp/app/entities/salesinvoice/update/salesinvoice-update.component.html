@@ -293,17 +293,6 @@
                       formControlName="nbtamount"
                     />
                   </div>
-
-                  <div class="col-6 mb-3">
-                    <label class="form-label" for="field_vatAmount">VAT</label>
-                    <input
-                      type="number"
-                      class="form-control form-control-sm"
-                      name="vatAmount"
-                      id="field_vatAmount"
-                      formControlName="vatamount"
-                    />
-                  </div>
                 </div>
 
                 <div class="mb-3">
@@ -317,10 +306,20 @@
                   />
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-3 d-flex gap-4">
                   <div class="form-check">
                     <input type="checkbox" class="form-check-input" name="tax" id="field_tax" formControlName="totaltax" />
                     <label class="form-check-label" for="field_tax">Apply Tax</label>
+                  </div>
+                  <div class="form-check">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      name="isvatinvoice"
+                      id="field_isvatinvoice"
+                      formControlName="isvatinvoice"
+                    />
+                    <label class="form-check-label" for="field_isvatinvoice">VAT</label>
                   </div>
                 </div>
 
