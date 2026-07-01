@@ -156,6 +156,7 @@ export class AutocarejobInstructionComponent implements OnInit {
 
   subcategoriesVisible = true; // Show service options by default
   showPrintSummary = false; // Controls whether the print summary is shown on screen
+  itemsOnlyMode = false;
   toggleSubcategories() {
     this.subcategoriesVisible = !this.subcategoriesVisible;
   }
@@ -174,6 +175,18 @@ export class AutocarejobInstructionComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.activatedRoute.queryParamMap.subscribe(params => {
+      this.itemsOnlyMode = params.get('itemsOnly') === 'true';
+      if (this.itemsOnlyMode) {
+        this.accountService.identity().subscribe(() => {
+          if (!this.accountService.canUpdateAdvisorInstructionItems()) {
+            this.router.navigate(['/autocarejob/autocareopenjob']);
+          }
+        });
+      }
+      this.cdr.detectChanges();
+    });
+
     this.activatedRoute.data.subscribe(({ autocarejob }) => {
       this.autocarejob = autocarejob;
       if (autocarejob) {
@@ -1124,6 +1137,9 @@ export class AutocarejobInstructionComponent implements OnInit {
   }
 
   canNavigateToOtherTabs(): boolean {
+    if (this.itemsOnlyMode) {
+      return true;
+    }
     return !this.editForm.get('nextmillage')?.invalid;
   }
 
@@ -1137,6 +1153,9 @@ export class AutocarejobInstructionComponent implements OnInit {
   }
 
   onTabNavigationAttempt(event: Event): void {
+    if (this.itemsOnlyMode) {
+      return;
+    }
     if (this.editForm.get('nextmillage')?.invalid) {
       event.preventDefault();
       event.stopPropagation();
@@ -1327,6 +1346,69 @@ export class AutocarejobInstructionComponent implements OnInit {
       this.autojobsinvoiceComponent.save();
     }
     // Job and lines will be saved after invoice via onInvoiceSaved
+  }
+
+  goBackToOpenJobs(): void {
+    this.router.navigate(['/autocarejob/autocareopenjob']);
+  }
+
+  saveItemsOnly(): void {
+    this.syncItemsArrayFromSelection();
+
+    if (this.invoiceId == null) {
+      alert('No advisor invoice found for this job. Save instructions first.');
+      return;
+    }
+
+    const effectiveInvoiceId = this.invoiceId;
+    const itemsToSave = this.itemsArray.map(item => ({
+      ...item,
+      invocieid: effectiveInvoiceId,
+    }));
+
+    const itemsToCreate = itemsToSave.filter(item => item.id == null && item.itemid != null && typeof item.itemid === 'number');
+
+    if (itemsToCreate.length === 0) {
+      alert('Advisor instructions item list is updated.');
+      return;
+    }
+
+    let completed = 0;
+    let hasError = false;
+    const totalOperations = itemsToCreate.length;
+
+    const finishIfDone = (): void => {
+      completed++;
+      if (completed >= totalOperations && !hasError) {
+        alert('Advisor instructions item list is updated.');
+      }
+    };
+
+    itemsToCreate.forEach((item, index) => {
+      setTimeout(() => {
+        const itemWithDayjsLmd = {
+          ...item,
+          id: null,
+          lmd: this.localDate(item.lmd),
+        };
+
+        this.jobinvoicelines.create(itemWithDayjsLmd).subscribe({
+          next: createResponse => {
+            const savedItem = createResponse.body;
+            item.id = savedItem?.id ?? effectiveInvoiceId;
+            item.invocieid = savedItem?.invocieid ?? effectiveInvoiceId;
+            item.lineid = savedItem?.lineid ?? item.lineid;
+            this.createInvoiceLineBatch(item);
+            finishIfDone();
+          },
+          error: () => {
+            hasError = true;
+            alert('Failed to update advisor care instruction items.');
+            finishIfDone();
+          },
+        });
+      }, index * 500);
+    });
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IAutocarejob>>): void {

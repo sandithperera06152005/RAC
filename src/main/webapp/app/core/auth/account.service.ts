@@ -71,6 +71,10 @@ export class AccountService {
     return userIdentity.authorities.some((authority: string) => authorities.includes(authority));
   }
 
+  canUpdateAdvisorInstructionItems(): boolean {
+    return this.userIdentity()?.canUpdateAdvisorInstructionItems === true;
+  }
+
   identity(force?: boolean): Observable<Account | null> {
     if (!this.accountCache$ || force) {
       this.accountCache$ = this.fetch().pipe(

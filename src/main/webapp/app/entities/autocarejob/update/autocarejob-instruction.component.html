@@ -4,9 +4,9 @@
   <!-- Row for Form and Summary -->
   <div class="row">
     <!-- Left Side: Form -->
-    <div class="col-md-8">
+    <div [class]="itemsOnlyMode ? 'col-md-12' : 'col-md-8'">
       <!-- Tab Navigation -->
-      <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <ul class="nav nav-tabs" id="myTab" role="tablist" *ngIf="!itemsOnlyMode">
         <li class="nav-item" role="presentation">
           <button
             class="nav-link active"
@@ -86,7 +86,7 @@
       <!-- Tab Content -->
       <div class="tab-content" id="myTabContent">
         <!-- Form 1 -->
-        <div class="tab-pane fade show active" id="form1" role="tabpanel" aria-labelledby="form1-tab">
+        <div class="tab-pane fade show active" id="form1" role="tabpanel" aria-labelledby="form1-tab" *ngIf="!itemsOnlyMode">
           <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
             <!-- <h2 id="jhi-autocarejob-heading" data-cy="AutocarejobCreateUpdateHeading"> Autocarejob Instruction</h2> -->
 
@@ -375,7 +375,7 @@
         </div>
 
         <!-- Form 2 -->
-        <div class="tab-pane fade" id="form2" role="tabpanel" aria-labelledby="form2-tab">
+        <div class="tab-pane fade" id="form2" role="tabpanel" aria-labelledby="form2-tab" *ngIf="!itemsOnlyMode">
           <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
             <div class="row align-items-center mt-3 mb-3" *ngIf="editForm.controls.id.value !== null" style="display: none">
               <label class="col-auto form-label" for="field_id">ID</label>
@@ -529,7 +529,14 @@
         </div>
 
         <!-- Form 3 -->
-        <div class="tab-pane fade" id="form3" role="tabpanel" aria-labelledby="form3-tab">
+        <div
+          class="tab-pane fade"
+          id="form3"
+          role="tabpanel"
+          aria-labelledby="form3-tab"
+          [class.show]="itemsOnlyMode"
+          [class.active]="itemsOnlyMode"
+        >
           <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
             @if (editForm.controls.id.value !== null) {
               <div class="row align-items-center mt-3 mb-3" style="display: none">
@@ -537,6 +544,14 @@
                 <div class="col">
                   <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
                 </div>
+              </div>
+            }
+            @if (itemsOnlyMode) {
+              <div class="d-flex justify-content-end mb-2">
+                <button type="button" class="btn btn-info btn-sm" (click)="goBackToOpenJobs()" data-cy="itemsOnlyBackButton">
+                  <fa-icon icon="arrow-left"></fa-icon>
+                  <span class="ms-1">Back</span>
+                </button>
               </div>
             }
             <div class="container border p-3 bg-light">
@@ -657,12 +672,20 @@
                 </div>
               </div>
               <jhi-autojobsinvoicelines-update></jhi-autojobsinvoicelines-update>
+
+              @if (itemsOnlyMode) {
+                <div class="d-flex justify-content-end mt-3">
+                  <button type="button" class="btn btn-primary px-4" (click)="saveItemsOnly()" data-cy="itemsOnlyUpdateButton">
+                    Update Items
+                  </button>
+                </div>
+              }
             </div>
           </form>
         </div>
 
         <!-- Form 4 -->
-        <div class="tab-pane fade" id="form4" role="tabpanel" aria-labelledby="form4-tab">
+        <div class="tab-pane fade" id="form4" role="tabpanel" aria-labelledby="form4-tab" *ngIf="!itemsOnlyMode">
           <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
             @if (editForm.controls.id.value !== null) {
               <div class="row align-items-center mt-3 mb-3" style="display: none">
@@ -734,7 +757,7 @@
         </div>
 
         <!-- Form 5 -->
-        <div class="tab-pane fade" id="form5" role="tabpanel" aria-labelledby="form5-tab">
+        <div class="tab-pane fade" id="form5" role="tabpanel" aria-labelledby="form5-tab" *ngIf="!itemsOnlyMode">
           <jhi-workshopvehiclework-update [formData]="mapFormTowork(editForm.value)"></jhi-workshopvehiclework-update>
           <div class="d-flex justify-content-end mt-2 me-3">
             <!-- <button
@@ -750,7 +773,7 @@
       </div>
     </div>
     <!-- Right Side: Summary -->
-    <div class="col-md-4">
+    <div class="col-md-4" *ngIf="!itemsOnlyMode">
       <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
         @if (editForm.controls.id.value !== null) {
           <div class="row align-items-center mt-2 mb-2" style="display: none">

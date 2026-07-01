@@ -1,6 +1,7 @@
 package com.heavenscode.rac.web.rest;
 
 import com.heavenscode.rac.domain.User;
+import com.heavenscode.rac.repository.EmpRoleFunctionPermissionRepository;
 import com.heavenscode.rac.repository.UserRepository;
 import com.heavenscode.rac.security.SecurityUtils;
 import com.heavenscode.rac.service.MailService;
@@ -25,6 +26,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class AccountResource {
 
+    private static final int ADVISOR_ITEMS_UPDATE_ROLE_ID = 6;
+    private static final int ADVISOR_ITEMS_UPDATE_FUNCTION_ID = 1135;
+
     private static class AccountResourceException extends RuntimeException {
 
         private AccountResourceException(String message) {
@@ -40,10 +44,18 @@ public class AccountResource {
 
     private final MailService mailService;
 
-    public AccountResource(UserRepository userRepository, UserService userService, MailService mailService) {
+    private final EmpRoleFunctionPermissionRepository empRoleFunctionPermissionRepository;
+
+    public AccountResource(
+        UserRepository userRepository,
+        UserService userService,
+        MailService mailService,
+        EmpRoleFunctionPermissionRepository empRoleFunctionPermissionRepository
+    ) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.mailService = mailService;
+        this.empRoleFunctionPermissionRepository = empRoleFunctionPermissionRepository;
     }
 
     /**
@@ -88,8 +100,17 @@ public class AccountResource {
     public AdminUserDTO getAccount() {
         return userService
             .getUserWithAuthorities()
-            .map(AdminUserDTO::new)
+            .map(user -> new AdminUserDTO(user, hasAdvisorInstructionItemsUpdatePermission(user)))
             .orElseThrow(() -> new AccountResourceException("User could not be found"));
+    }
+
+    private boolean hasAdvisorInstructionItemsUpdatePermission(User user) {
+        Integer roleId = user.getRoleId();
+        return (
+            roleId != null &&
+            roleId.equals(ADVISOR_ITEMS_UPDATE_ROLE_ID) &&
+            empRoleFunctionPermissionRepository.existsByRoleIdAndFunctionId(ADVISOR_ITEMS_UPDATE_ROLE_ID, ADVISOR_ITEMS_UPDATE_FUNCTION_ID)
+        );
     }
 
     /**

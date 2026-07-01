@@ -27,7 +27,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
             [Surname] as [surname],
             [Email] as [email],
             [IsActive] as [is_active],
-            [ImagePath] as [image_path]
+            [ImagePath] as [image_path],
+            [RoleId] as [role_id]
         from dbo.[Employee]
         where lower([UserName]) = lower(:login)
         """,

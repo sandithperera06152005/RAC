@@ -19,6 +19,7 @@ import { AutocarejobDeleteDialogComponent } from '../delete/autocarejob-delete-d
 import { AutocareclosejobComponent } from '../list/autocareclosejob.component';
 import { AutojobsinvoiceService } from 'app/entities/autojobsinvoice/service/autojobsinvoice.service';
 import { IAutojobsinvoice } from 'app/entities/autojobsinvoice/autojobsinvoice.model';
+import { AccountService } from 'app/core/auth/account.service';
 
 @Component({
   standalone: true,
@@ -43,6 +44,7 @@ export class AutocareopenjobComponent implements OnInit {
   isLoading = false;
   filteredAutocarejobs: IAutocarejob[] = [];
   searchText: string = '';
+  canUpdateAdvisorInstructionItems = false;
 
   sortState = sortStateSignal({});
 
@@ -57,10 +59,15 @@ export class AutocareopenjobComponent implements OnInit {
   protected sortService = inject(SortService);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
+  protected accountService = inject(AccountService);
 
   trackId = (_index: number, item: IAutocarejob): number => this.autocarejobService.getAutocarejobIdentifier(item);
 
   ngOnInit(): void {
+    this.accountService.identity().subscribe(account => {
+      this.canUpdateAdvisorInstructionItems = this.accountService.canUpdateAdvisorInstructionItems();
+    });
+
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])
       .pipe(
         tap(([params, data]) => this.fillComponentAttributeFromRoute(params, data)),

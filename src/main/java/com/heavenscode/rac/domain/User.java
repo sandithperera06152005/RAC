@@ -63,6 +63,9 @@ public class User implements Serializable {
     @Column(name = "`ImagePath`", length = 256)
     private String imageUrl;
 
+    @Column(name = "`RoleId`")
+    private Integer roleId;
+
     @Transient
     private String createdBy;
 
@@ -152,6 +155,14 @@ public class User implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Integer getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
     }
 
     public boolean isActivated() {

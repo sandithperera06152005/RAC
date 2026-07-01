@@ -51,6 +51,10 @@ public class AdminUserDTO implements Serializable {
 
     private Set<String> authorities;
 
+    private Integer roleId;
+
+    private boolean canUpdateAdvisorInstructionItems;
+
     public AdminUserDTO() {
         // Empty constructor needed for Jackson.
     }
@@ -69,6 +73,12 @@ public class AdminUserDTO implements Serializable {
         this.lastModifiedBy = user.getLastModifiedBy();
         this.lastModifiedDate = user.getLastModifiedDate();
         this.authorities = user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet());
+        this.roleId = user.getRoleId();
+    }
+
+    public AdminUserDTO(User user, boolean canUpdateAdvisorInstructionItems) {
+        this(user);
+        this.canUpdateAdvisorInstructionItems = canUpdateAdvisorInstructionItems;
     }
 
     public Long getId() {
@@ -173,6 +183,22 @@ public class AdminUserDTO implements Serializable {
 
     public void setAuthorities(Set<String> authorities) {
         this.authorities = authorities;
+    }
+
+    public Integer getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
+    }
+
+    public boolean isCanUpdateAdvisorInstructionItems() {
+        return canUpdateAdvisorInstructionItems;
+    }
+
+    public void setCanUpdateAdvisorInstructionItems(boolean canUpdateAdvisorInstructionItems) {
+        this.canUpdateAdvisorInstructionItems = canUpdateAdvisorInstructionItems;
     }
 
     // prettier-ignore

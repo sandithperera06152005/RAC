@@ -9,5 +9,7 @@ export class Account {
     public login: string,
     public imageUrl: string | null,
     public id?: number | null,
+    public roleId?: number | null,
+    public canUpdateAdvisorInstructionItems?: boolean | null,
   ) {}
 }

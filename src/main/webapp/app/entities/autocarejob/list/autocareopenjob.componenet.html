@@ -490,6 +490,18 @@
                       <!-- <span class="d-none d-md-inline">instruction</span> -->
                     </a>
 
+                    @if (canUpdateAdvisorInstructionItems) {
+                    <a
+                      [routerLink]="['/autocarejob', autocarejob.id, 'instructions']"
+                      [queryParams]="{ tab: 'items', itemsOnly: 'true' }"
+                      class="btn btn-secondary btn-sm"
+                      data-cy="entityUpdateItemsButton"
+                      title="Update Items"
+                    >
+                      <fa-icon icon="list"></fa-icon>
+                    </a>
+                    }
+
                     <a
                       [routerLink]="['/autocarejob', autocarejob.id, 'history']"
                       class="btn btn-success btn-sm"
