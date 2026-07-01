@@ -160,6 +160,17 @@
     height: 5mm;
   }
 
+  .vat-invoice-banner {
+    height: 6mm;
+  }
+
+  .vat-invoice-title {
+    text-align: center !important;
+    white-space: normal !important;
+    padding: 1mm 0 !important;
+    font-weight: bold !important;
+  }
+
   /* ITEM CODE */
 
   .line-code {
@@ -349,6 +360,10 @@
     </colgroup>
 
     <tbody>
+      <tr class="vat-invoice-banner" *ngIf="isVatInvoice">
+        <td colspan="6" class="vat-invoice-title">TAX INVOICE - VAT Reg No. 100956993-7000</td>
+      </tr>
+
       <!-- INVENTORY ITEMS -->
 
       <tr class="line-row" *ngFor="let line of invoiceLines">
