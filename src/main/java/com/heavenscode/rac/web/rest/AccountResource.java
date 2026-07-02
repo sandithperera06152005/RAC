@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class AccountResource {
 
-    private static final int ADVISOR_ITEMS_UPDATE_ROLE_ID = 6;
     private static final int ADVISOR_ITEMS_UPDATE_FUNCTION_ID = 1135;
 
     private static class AccountResourceException extends RuntimeException {
@@ -106,11 +105,10 @@ public class AccountResource {
 
     private boolean hasAdvisorInstructionItemsUpdatePermission(User user) {
         Integer roleId = user.getRoleId();
-        return (
-            roleId != null &&
-            roleId.equals(ADVISOR_ITEMS_UPDATE_ROLE_ID) &&
-            empRoleFunctionPermissionRepository.existsByRoleIdAndFunctionId(ADVISOR_ITEMS_UPDATE_ROLE_ID, ADVISOR_ITEMS_UPDATE_FUNCTION_ID)
-        );
+        if (roleId == null) {
+            return false;
+        }
+        return empRoleFunctionPermissionRepository.existsByRoleIdAndFunctionId(roleId, ADVISOR_ITEMS_UPDATE_FUNCTION_ID);
     }
 
     /**
