@@ -3,7 +3,7 @@ import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { forkJoin, Observable, of } from 'rxjs';
 import { debounceTime, finalize } from 'rxjs/operators';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormArray } from '@angular/forms';
 
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -27,6 +27,9 @@ import { NewAutojobsalesinvoiceservicechargeline } from 'app/entities/autojobsal
   imports: [SharedModule, FormsModule, ReactiveFormsModule, DecimalInputDirective],
 })
 export class SalesInvoiceServiceChargeLineUpdateComponent implements OnInit {
+  private static readonly DISCOUNT_ENTRY_PCT_MARKER = '[PCT]';
+  private static readonly DISCOUNT_ENTRY_VAL_MARKER = '[VAL]';
+
   isSaving = false;
   showCodeField: boolean = true;
   salesInvoiceServiceChargeLine: ISalesInvoiceServiceChargeLine[] = [];
@@ -37,6 +40,7 @@ export class SalesInvoiceServiceChargeLineUpdateComponent implements OnInit {
   protected fb = inject(FormBuilder);
 
   @Output() totalUpdated = new EventEmitter<number>(); // Emit total to parent
+  @Output() totalDiscountUpdated = new EventEmitter<number>();
   protected vehicletypesService = inject(VehicletypeService);
   protected autojobsalesinvoiceservicechargelineService = inject(AutojobsalesinvoiceservicechargelineService);
   @Input() fetchedServices: any;
@@ -78,24 +82,9 @@ export class SalesInvoiceServiceChargeLineUpdateComponent implements OnInit {
     }
   }
   addItemToFormArray(item: any): void {
-    // Create a new form group for the item
-    const newItem = this.fb.group({
-      id: [null],
-      serviceName: [item.itemname],
-      value: [item.sellingprice],
-      isCustomerService: [false],
-      optionId: [item.optionId || 0],
-      serviceDescription: [item.serviceDescription || ''],
-      discount: [item.discount || 0],
-      servicePrice: [item.servicePrice || item.sellingprice || 0],
-      sourceAutoJobLineId: [item.id ?? null],
-      sourceAutoJobInvoiceId: [item.sourceAutoJobInvoiceId ?? null],
-      sourceAutoJobLineNumber: [item.sourceAutoJobLineNumber ?? null],
-    });
-
-    // Add the new form group to the form array
-    this.serviceChargeLinesArray.push(newItem);
-    this.totalvalue(newItem);
+    const formGroup = this.createServiceChargeLineFormGroup(item);
+    this.serviceChargeLinesArray.push(formGroup);
+    this.totalvalue(formGroup);
   }
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ salesInvoiceServiceChargeLines }) => {
@@ -107,24 +96,265 @@ export class SalesInvoiceServiceChargeLineUpdateComponent implements OnInit {
     this.loadVehicleTypes();
   }
   totalvalue(formGroup: FormGroup): void {
-    const value = formGroup.get('value');
+    const discountControl = formGroup.get('discount');
+    discountControl?.valueChanges.pipe(debounceTime(300)).subscribe(() => this.updateLineTotal());
 
-    // Update the line total when the value changes
-    value?.valueChanges.pipe(debounceTime(300)).subscribe(() => this.updateLineTotal());
-
-    // Initialize the line total when the form is added
     this.updateLineTotal();
   }
 
+  onDiscountPercentageChange(index: number): void {
+    const formGroup = this.serviceChargeLinesArray.at(index) as FormGroup;
+    const servicePrice = Number(formGroup.get('servicePrice')?.value || 0);
+    const discountPercentage = Number(formGroup.get('discountpercentage')?.value || 0);
+    const discount = Number(((servicePrice * discountPercentage) / 100).toFixed(2));
+
+    formGroup.patchValue(
+      {
+        discountvalue: null,
+        discount,
+        discountEntryType: 'percentage',
+      },
+      { emitEvent: false },
+    );
+    this.applyNetValueFromDiscount(formGroup);
+    this.updateLineTotal();
+  }
+
+  onDiscountValueChange(index: number): void {
+    const formGroup = this.serviceChargeLinesArray.at(index) as FormGroup;
+    const raw = formGroup.get('discountvalue')?.value;
+    if (raw === null || raw === undefined || raw === '') {
+      formGroup.patchValue(
+        {
+          discountpercentage: null,
+          discountvalue: null,
+          discount: 0,
+          discountEntryType: 'value',
+        },
+        { emitEvent: false },
+      );
+      this.applyNetValueFromDiscount(formGroup);
+      this.updateLineTotal();
+      return;
+    }
+
+    const discountValue = this.parseDiscountInputValue(raw);
+    if (discountValue === null) {
+      return;
+    }
+
+    formGroup.patchValue(
+      {
+        discountpercentage: null,
+        discount: discountValue,
+        discountEntryType: 'value',
+      },
+      { emitEvent: false },
+    );
+    this.applyNetValueFromDiscount(formGroup);
+    this.updateLineTotal();
+  }
+
+  onDiscountValueBlur(index: number, event: FocusEvent): void {
+    const formGroup = this.serviceChargeLinesArray.at(index) as FormGroup;
+    const raw = (event.target as HTMLInputElement).value;
+    if (raw === null || raw === undefined || raw === '') {
+      return;
+    }
+
+    const discountValue = this.parseDiscountInputValue(raw);
+    if (discountValue === null) {
+      formGroup.patchValue(
+        {
+          discountvalue: null,
+          discount: 0,
+        },
+        { emitEvent: false },
+      );
+      this.applyNetValueFromDiscount(formGroup);
+      this.updateLineTotal();
+      return;
+    }
+
+    const formatted = discountValue.toFixed(2);
+    const rounded = Number(formatted);
+    formGroup.patchValue(
+      {
+        discountvalue: rounded > 0 ? formatted : null,
+        discount: rounded > 0 ? rounded : 0,
+        discountpercentage: null,
+        discountEntryType: 'value',
+      },
+      { emitEvent: false },
+    );
+    this.applyNetValueFromDiscount(formGroup);
+    this.updateLineTotal();
+  }
+
+  formatLineDiscountDisplay(index: number): string {
+    const formGroup = this.serviceChargeLinesArray.at(index) as FormGroup;
+    const discount = Number(formGroup?.get('discount')?.value || 0);
+    return discount > 0 ? discount.toFixed(2) : '';
+  }
+
   updateLineTotal(): void {
-    // Calculate the total by summing up all values in the serviceChargeLines array
     const total = this.serviceChargeLinesArray.controls
       .map(control => Number(control.get('value')?.value || 0))
       .reduce((acc, value) => acc + value, 0);
 
-    // Emit the total to the parent component
+    const totalLineDiscount = this.serviceChargeLinesArray.controls
+      .map(control => Number(control.get('discount')?.value || 0))
+      .reduce((acc, value) => acc + value, 0);
+
     this.totalUpdated.emit(total);
-    console.log('Updated Total ssssssssssser:', total); // Log the updated total
+    this.totalDiscountUpdated.emit(totalLineDiscount);
+  }
+
+  private createServiceChargeLineFormGroup(item: any): FormGroup {
+    const servicePrice = this.resolveServicePrice(item);
+    const discount = Number(item.discount ?? 0);
+    const { discountPercentage, discountValue } = this.resolveDiscountDisplayFields(item, discount, servicePrice);
+    const netValue = Number((servicePrice - Math.min(Math.max(discount, 0), servicePrice)).toFixed(2));
+
+    const formGroup = this.fb.group({
+      id: [item.id ?? null],
+      invoiceId: [item.invoiceId ?? null],
+      lineId: [item.lineId ?? null],
+      serviceName: [item.serviceName ?? item.itemname ?? ''],
+      value: [item.value != null && item.value !== '' ? Number(item.value) : netValue],
+      isCustomerService: [item.isCustomerService ?? false],
+      optionId: [item.optionId ?? 0],
+      serviceDescription: [item.serviceDescription ?? ''],
+      discount: [discount],
+      servicePrice: [servicePrice],
+      discountpercentage: [discountPercentage],
+      discountvalue: [discountValue],
+      discountEntryType: [item.discountEntryType ?? null],
+      sourceAutoJobLineId: [item.sourceAutoJobLineId ?? item.id ?? null],
+      sourceAutoJobInvoiceId: [item.sourceAutoJobInvoiceId ?? null],
+      sourceAutoJobLineNumber: [item.sourceAutoJobLineNumber ?? null],
+    });
+
+    this.ensureDiscountControls(formGroup);
+    this.applyNetValueFromDiscount(formGroup);
+    return formGroup;
+  }
+
+  /** Match pre-discount behaviour: autocare lines often have value in sellingprice while serviceprice is 0/null. */
+  private resolveServicePrice(item: any): number {
+    const explicitPrice = item.servicePrice ?? item.serviceprice;
+    if (explicitPrice != null && Number(explicitPrice) > 0) {
+      return Number(explicitPrice);
+    }
+    return Number(item.sellingprice ?? item.value ?? 0);
+  }
+
+  private ensureDiscountControls(formGroup: FormGroup): void {
+    if (!formGroup.get('discountpercentage')) {
+      formGroup.addControl('discountpercentage', new FormControl(null));
+    }
+    if (!formGroup.get('discountvalue')) {
+      formGroup.addControl('discountvalue', new FormControl(null));
+    }
+    if (!formGroup.get('discountEntryType')) {
+      formGroup.addControl('discountEntryType', new FormControl(null));
+    }
+  }
+
+  private resolveDiscountDisplayFields(
+    item: any,
+    discount: number,
+    servicePrice: number,
+  ): { discountPercentage: number | null; discountValue: number | null } {
+    const entryType = item.discountEntryType ?? this.parseDiscountEntryTypeFromDescription(item.serviceDescription);
+    if (entryType === 'percentage') {
+      const pct = Number(item.discountPercentage ?? item.discountpercentage ?? 0);
+      const resolvedPct = pct > 0 ? pct : servicePrice > 0 && discount > 0 ? Number(((discount / servicePrice) * 100).toFixed(4)) : 0;
+      return {
+        discountPercentage: resolvedPct > 0 ? resolvedPct : null,
+        discountValue: null,
+      };
+    }
+    if (entryType === 'value') {
+      return {
+        discountPercentage: null,
+        discountValue: discount > 0 ? Number(discount.toFixed(2)) : null,
+      };
+    }
+    if (discount > 0 && servicePrice > 0) {
+      return {
+        discountPercentage: Number(((discount / servicePrice) * 100).toFixed(4)),
+        discountValue: null,
+      };
+    }
+    return { discountPercentage: null, discountValue: null };
+  }
+
+  private parseDiscountEntryTypeFromDescription(description: string | null | undefined): 'percentage' | 'value' | undefined {
+    if (!description) {
+      return undefined;
+    }
+    if (description.startsWith(SalesInvoiceServiceChargeLineUpdateComponent.DISCOUNT_ENTRY_PCT_MARKER)) {
+      return 'percentage';
+    }
+    if (description.startsWith(SalesInvoiceServiceChargeLineUpdateComponent.DISCOUNT_ENTRY_VAL_MARKER)) {
+      return 'value';
+    }
+    return undefined;
+  }
+
+  private buildDescriptionWithDiscountEntry(line: any, entryType: 'percentage' | 'value' | null): string | null {
+    const base = String(line.serviceDescription ?? '')
+      .replace(/^\[(?:PCT|VAL)\]/, '')
+      .trim();
+    if (entryType === 'percentage') {
+      return `${SalesInvoiceServiceChargeLineUpdateComponent.DISCOUNT_ENTRY_PCT_MARKER}${base}`;
+    }
+    if (entryType === 'value') {
+      return `${SalesInvoiceServiceChargeLineUpdateComponent.DISCOUNT_ENTRY_VAL_MARKER}${base}`;
+    }
+    return line.serviceDescription ?? null;
+  }
+
+  private inferDiscountEntryTypeFromForm(formGroup: FormGroup): 'percentage' | 'value' | null {
+    const explicit = formGroup.get('discountEntryType')?.value;
+    if (explicit === 'percentage' || explicit === 'value') {
+      return explicit;
+    }
+    const pct = formGroup.get('discountpercentage')?.value;
+    const hasPct = pct !== null && pct !== undefined && pct !== '';
+    const val = formGroup.get('discountvalue')?.value;
+    const hasVal = val !== null && val !== undefined && val !== '';
+    if (hasPct && !hasVal) {
+      return 'percentage';
+    }
+    if (hasVal && !hasPct) {
+      return 'value';
+    }
+    return null;
+  }
+
+  private parseDiscountInputValue(raw: string | number | null | undefined): number | null {
+    if (raw === null || raw === undefined || raw === '') {
+      return null;
+    }
+    const parsed = Number(String(raw).replace(/,/g, ''));
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  private applyNetValueFromDiscount(formGroup: FormGroup): void {
+    const servicePrice = Number(formGroup.get('servicePrice')?.value || 0);
+    const discount = Number(formGroup.get('discount')?.value || 0);
+    const cappedDiscount = Math.min(Math.max(discount, 0), servicePrice);
+    const netValue = Number((servicePrice - cappedDiscount).toFixed(2));
+
+    formGroup.patchValue(
+      {
+        discount: cappedDiscount,
+        value: netValue,
+      },
+      { emitEvent: false },
+    );
   }
 
   loadVehicleTypes(): void {
@@ -200,13 +430,13 @@ export class SalesInvoiceServiceChargeLineUpdateComponent implements OnInit {
           const billingValues = response.body;
           const fetchedValue = billingValues && billingValues.length > 0 ? billingValues[0].value : 0;
 
-          const formGroup = this.fb.group({
-            serviceName: [servicename],
-            value: [fetchedValue],
-            isCustomerService: [false],
-            optionId: [id],
-            discount: [0],
-            servicePrice: [fetchedValue],
+          const formGroup = this.createServiceChargeLineFormGroup({
+            serviceName: servicename,
+            value: fetchedValue,
+            isCustomerService: false,
+            optionId: id,
+            discount: 0,
+            servicePrice: fetchedValue,
           });
 
           // Check if we can reuse an empty row
@@ -335,11 +565,13 @@ export class SalesInvoiceServiceChargeLineUpdateComponent implements OnInit {
 
     const serviceChargeLines = this.serviceChargeLinesArray.controls.map((control, index) => {
       const line = (control as FormGroup).getRawValue();
+      const entryType = this.inferDiscountEntryTypeFromForm(control as FormGroup);
       return {
         ...line,
-        invoiceId: inid, // Assign invoice ID
-        lineId: index + 1, // Ensure unique line ID for this invoice
+        invoiceId: inid,
+        lineId: index + 1,
         optionId: line.optionId,
+        serviceDescription: this.buildDescriptionWithDiscountEntry(line, entryType),
       };
     });
 
@@ -411,7 +643,15 @@ export class SalesInvoiceServiceChargeLineUpdateComponent implements OnInit {
   }
 
   private toSalesInvoiceServiceChargeLinePayload(line: any): ISalesInvoiceServiceChargeLine | NewSalesInvoiceServiceChargeLine {
-    const { sourceAutoJobLineId, sourceAutoJobInvoiceId, sourceAutoJobLineNumber, ...payload } = line;
+    const {
+      sourceAutoJobLineId,
+      sourceAutoJobInvoiceId,
+      sourceAutoJobLineNumber,
+      discountpercentage,
+      discountvalue,
+      discountEntryType,
+      ...payload
+    } = line;
     return payload as ISalesInvoiceServiceChargeLine | NewSalesInvoiceServiceChargeLine;
   }
 
@@ -434,8 +674,9 @@ export class SalesInvoiceServiceChargeLineUpdateComponent implements OnInit {
     this.isSaving = false;
   }
   addServiceChargeLine(): void {
-    const newDummy = this.salesInvoiceServiceChargeLineFormService.createSalesInvoiceServiceChargeLineFormGroup();
-    this.serviceChargeLinesArray.push(newDummy);
+    const formGroup = this.createServiceChargeLineFormGroup({});
+    this.serviceChargeLinesArray.push(formGroup);
+    this.totalvalue(formGroup);
   }
 
   removeServiceChargeLine(index: number): void {
@@ -446,7 +687,9 @@ export class SalesInvoiceServiceChargeLineUpdateComponent implements OnInit {
   protected updateForm(salesInvoiceServiceChargeLines: ISalesInvoiceServiceChargeLine[]): void {
     this.serviceChargeLinesArray.clear();
     salesInvoiceServiceChargeLines.forEach(line => {
-      this.serviceChargeLinesArray.push(this.salesInvoiceServiceChargeLineFormService.createSalesInvoiceServiceChargeLineFormGroup(line));
+      const formGroup = this.createServiceChargeLineFormGroup(line);
+      this.serviceChargeLinesArray.push(formGroup);
+      this.totalvalue(formGroup);
     });
   }
 }

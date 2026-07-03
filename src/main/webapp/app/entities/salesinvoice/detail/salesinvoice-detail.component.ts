@@ -66,4 +66,60 @@ export class SalesinvoiceDetailComponent implements OnInit {
       window.open('/printinvoice?id=' + id, '_blank');
     }
   }
+
+  getServiceChargeDiscountAmount(service: any): number {
+    return Number(service.discount ?? 0);
+  }
+
+  getServiceChargeBasePrice(service: any): number {
+    const servicePrice = Number(service.servicePrice ?? service.serviceprice ?? 0);
+    if (servicePrice > 0) {
+      return servicePrice;
+    }
+    const discount = this.getServiceChargeDiscountAmount(service);
+    const value = Number(service.value ?? 0);
+    return Number((value + discount).toFixed(2));
+  }
+
+  getServiceChargeDiscountPercentage(service: any): string {
+    const discount = this.getServiceChargeDiscountAmount(service);
+    const basePrice = this.getServiceChargeBasePrice(service);
+    const entryType = this.parseServiceChargeDiscountEntryType(service);
+    if (discount <= 0) {
+      return '-';
+    }
+    if (entryType === 'value') {
+      return '-';
+    }
+    if (basePrice <= 0) {
+      return '-';
+    }
+    return `${((discount / basePrice) * 100).toFixed(2)}%`;
+  }
+
+  getServiceChargeDiscountValue(service: any): string {
+    const discount = this.getServiceChargeDiscountAmount(service);
+    const entryType = this.parseServiceChargeDiscountEntryType(service);
+    if (discount <= 0) {
+      return '-';
+    }
+    if (entryType === 'percentage') {
+      return '-';
+    }
+    return discount.toFixed(2);
+  }
+
+  private parseServiceChargeDiscountEntryType(service: any): 'percentage' | 'value' | undefined {
+    const description = service.serviceDescription ?? service.servicediscription;
+    if (!description) {
+      return undefined;
+    }
+    if (description.startsWith('[PCT]')) {
+      return 'percentage';
+    }
+    if (description.startsWith('[VAL]')) {
+      return 'value';
+    }
+    return undefined;
+  }
 }

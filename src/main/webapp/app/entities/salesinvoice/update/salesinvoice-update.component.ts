@@ -99,7 +99,8 @@ export class SalesinvoiceUpdateComponent implements OnInit {
   itemDiscountValue: number = 0;
   subTotal: number = 0;
   totalamount: number = 0;
-  totalLineDiscount: number = 0; // Tracks sum of (discount × qty) from billing lines
+  totalLineDiscount: number = 0; // Tracks sum of line discounts from billing lines
+  totalServiceChargeDiscount: number = 0; // Tracks sum of discounts from service charge lines
   i: number = 0;
   customername: string = '';
   customeraddress: string = '';
@@ -297,10 +298,11 @@ export class SalesinvoiceUpdateComponent implements OnInit {
     const netTotal = Number((subtotal - invoiceLevelDiscount).toFixed(2));
 
     // totaldiscount saved to DB = invoice-level discount + sum of all line-level discounts (for reporting)
-    const totalDiscount = Number((invoiceLevelDiscount + this.totalLineDiscount).toFixed(2));
+    const totalDiscount = Number((invoiceLevelDiscount + this.totalLineDiscount + this.totalServiceChargeDiscount).toFixed(2));
 
     console.log('Invoice-level Discount:', invoiceLevelDiscount);
     console.log('Total Line Discount:', this.totalLineDiscount);
+    console.log('Total Service Charge Discount:', this.totalServiceChargeDiscount);
     console.log('Total Discount (for DB):', totalDiscount);
     console.log('Net Total:', netTotal);
 
@@ -344,6 +346,12 @@ export class SalesinvoiceUpdateComponent implements OnInit {
   receiveTotalLineDiscount(lineDiscount: number): void {
     this.totalLineDiscount = lineDiscount;
     console.log('Received Total Line Discount from child:', lineDiscount);
+    this.calculateDiscount();
+  }
+
+  receiveTotalServiceChargeDiscount(serviceChargeDiscount: number): void {
+    this.totalServiceChargeDiscount = serviceChargeDiscount;
+    console.log('Received Total Service Charge Discount from child:', serviceChargeDiscount);
     this.calculateDiscount();
   }
 

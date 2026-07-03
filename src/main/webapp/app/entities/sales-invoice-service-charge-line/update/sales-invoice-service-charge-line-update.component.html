@@ -53,6 +53,31 @@
           .cursor-pointer {
             cursor: pointer;
           }
+          .service-charge-table th {
+            vertical-align: middle;
+            white-space: nowrap;
+          }
+          .service-charge-table .col-discount-pct,
+          .service-charge-table .col-discount,
+          .service-charge-table .col-value {
+            width: 110px;
+            min-width: 110px;
+          }
+          .service-charge-table .col-discount-value {
+            width: 130px;
+            min-width: 130px;
+          }
+          .service-charge-table .col-customer-service {
+            width: 1%;
+            min-width: 140px;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+          }
+          .service-charge-table .col-actions {
+            width: 1%;
+            min-width: 70px;
+            padding-left: 0.5rem;
+          }
         </style>
 
         <div class="services-container p-3 rounded-3 bg-light mb-3" *ngIf="flattenedBillingOptions.length > 0">
@@ -88,7 +113,7 @@
         </div>
 
         <div class="table-responsive rounded-3 shadow-sm mt-4 border">
-          <table class="table table-hover align-middle mb-0">
+          <table class="table table-hover align-middle mb-0 service-charge-table">
             <thead class="bg-light">
               <tr>
                 <th *ngIf="false">ID</th>
@@ -97,9 +122,12 @@
                 <th *ngIf="false">Option Id</th>
                 <th class="ps-3 py-3">Service Name</th>
                 <th *ngIf="false">Service Description</th>
-                <th class="text-end">Value</th>
-                <th class="text-center">Is Customer Service</th>
-                <th class="text-center pe-3">Actions</th>
+                <th class="text-end col-discount-pct">Discount %</th>
+                <th class="text-end col-discount-value">Discount Value</th>
+                <th class="text-end col-discount">Discount</th>
+                <th class="text-end col-value">Value</th>
+                <th class="text-center col-customer-service">Is Customer Service</th>
+                <th class="text-center col-actions pe-3">Actions</th>
               </tr>
             </thead>
             <tbody formArrayName="serviceChargeLines">
@@ -145,7 +173,31 @@
                 <td *ngIf="false">
                   <input type="text" class="form-control form-control-sm" formControlName="serviceDescription" />
                 </td>
-                <td class="text-end" style="width: 150px">
+                <td class="text-end col-discount-pct">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm text-end"
+                    formControlName="discountpercentage"
+                    (input)="onDiscountPercentageChange(i)"
+                  />
+                </td>
+                <td class="text-end col-discount-value">
+                  <input
+                    type="text"
+                    inputmode="decimal"
+                    appDecimal
+                    [appDecimalAllowEmpty]="true"
+                    [appDecimalDeferFormat]="true"
+                    class="form-control form-control-sm text-end"
+                    formControlName="discountvalue"
+                    (input)="onDiscountValueChange(i)"
+                    (blur)="onDiscountValueBlur(i, $event)"
+                  />
+                </td>
+                <td class="text-end col-discount">
+                  <input type="text" class="form-control form-control-sm text-end" readonly [value]="formatLineDiscountDisplay(i)" />
+                </td>
+                <td class="text-end col-value">
                   <div class="input-group input-group-sm justify-content-end">
                     <span class="input-group-text bg-white border-end-0 text-muted small">Rs.</span>
                     <input
@@ -156,22 +208,23 @@
                       class="form-control text-end border-start-0 fw-bold"
                       formControlName="value"
                       style="max-width: 100px"
+                      readonly
                     />
                   </div>
                 </td>
-                <td class="text-center">
-                  <div class="form-check form-switch d-inline-block">
+                <td class="text-center col-customer-service">
+                  <div class="form-check form-switch d-inline-block mb-0">
                     <input type="checkbox" class="form-check-input cursor-pointer" formControlName="isCustomerService" />
                   </div>
                 </td>
-                <td class="text-center pe-3">
+                <td class="text-center col-actions pe-3">
                   <button type="button" class="btn btn-link text-danger p-0" (click)="removeServiceChargeLine(i)" title="Delete line">
                     <fa-icon icon="trash-alt" size="lg"></fa-icon>
                   </button>
                 </td>
               </tr>
               <tr *ngIf="serviceChargeLinesArray.controls.length === 0">
-                <td colspan="4" class="text-center py-4 text-muted small">
+                <td colspan="7" class="text-center py-4 text-muted small">
                   <fa-icon icon="receipt" size="2x" class="d-block mb-2 opacity-50"></fa-icon>
                   No service charges added yet.
                 </td>

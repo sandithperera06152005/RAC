@@ -346,6 +346,9 @@
                   <thead class="table-light text-primary">
                     <tr>
                       <th>Service Name</th>
+                      <th class="text-end">Discount %</th>
+                      <th class="text-end">Discount Value</th>
+                      <th class="text-end">Discount</th>
                       <th class="text-end">Charge Value</th>
                     </tr>
                   </thead>
@@ -353,11 +356,14 @@
                     @for (service of serviceCharges(); track service.id) {
                       <tr>
                         <td>{{ service.serviceName }}</td>
+                        <td class="text-end">{{ getServiceChargeDiscountPercentage(service) }}</td>
+                        <td class="text-end">{{ getServiceChargeDiscountValue(service) }}</td>
+                        <td class="text-end text-danger">{{ getServiceChargeDiscountAmount(service) | currency: 'Rs. ' }}</td>
                         <td class="text-end fw-bold text-success">{{ service.value | currency: 'Rs. ' }}</td>
                       </tr>
                     } @empty {
                       <tr>
-                        <td colspan="2" class="text-center text-muted py-3">No service charges found.</td>
+                        <td colspan="5" class="text-center text-muted py-3">No service charges found.</td>
                       </tr>
                     }
                   </tbody>
