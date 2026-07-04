@@ -2,6 +2,7 @@ package com.heavenscode.rac.web.rest;
 
 import com.heavenscode.rac.domain.Salesinvoice;
 import com.heavenscode.rac.repository.SalesinvoiceRepository;
+import com.heavenscode.rac.service.SalesInvoiceCodeService;
 import com.heavenscode.rac.service.SalesinvoiceQueryService;
 import com.heavenscode.rac.service.SalesinvoiceService;
 import com.heavenscode.rac.service.criteria.SalesinvoiceCriteria;
@@ -9,6 +10,7 @@ import com.heavenscode.rac.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -44,14 +46,18 @@ public class SalesinvoiceResource {
 
     private final SalesinvoiceQueryService salesinvoiceQueryService;
 
+    private final SalesInvoiceCodeService salesInvoiceCodeService;
+
     public SalesinvoiceResource(
         SalesinvoiceService salesinvoiceService,
         SalesinvoiceRepository salesinvoiceRepository,
-        SalesinvoiceQueryService salesinvoiceQueryService
+        SalesinvoiceQueryService salesinvoiceQueryService,
+        SalesInvoiceCodeService salesInvoiceCodeService
     ) {
         this.salesinvoiceService = salesinvoiceService;
         this.salesinvoiceRepository = salesinvoiceRepository;
         this.salesinvoiceQueryService = salesinvoiceQueryService;
+        this.salesInvoiceCodeService = salesInvoiceCodeService;
     }
 
     /**
@@ -140,6 +146,28 @@ public class SalesinvoiceResource {
             result,
             HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, salesinvoice.getId().toString())
         );
+    }
+
+    /**
+     * {@code GET  /salesinvoices/next-code} : preview the next standard sales invoice code.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the next code in body.
+     */
+    @GetMapping("/next-code")
+    public ResponseEntity<Map<String, String>> getNextStandardInvoiceCode() {
+        LOG.debug("REST request to get next standard sales invoice code");
+        return ResponseEntity.ok(Map.of("code", salesInvoiceCodeService.peekNextStandardInvoiceCode()));
+    }
+
+    /**
+     * {@code GET  /salesinvoices/next-vat-code} : preview the next VAT sales invoice code.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the next code in body.
+     */
+    @GetMapping("/next-vat-code")
+    public ResponseEntity<Map<String, String>> getNextVatInvoiceCode() {
+        LOG.debug("REST request to get next VAT sales invoice code");
+        return ResponseEntity.ok(Map.of("code", salesInvoiceCodeService.peekNextVatInvoiceCode()));
     }
 
     /**

@@ -18,9 +18,11 @@ public class SalesinvoiceService {
     private static final Logger LOG = LoggerFactory.getLogger(SalesinvoiceService.class);
 
     private final SalesinvoiceRepository salesinvoiceRepository;
+    private final SalesInvoiceCodeService salesInvoiceCodeService;
 
-    public SalesinvoiceService(SalesinvoiceRepository salesinvoiceRepository) {
+    public SalesinvoiceService(SalesinvoiceRepository salesinvoiceRepository, SalesInvoiceCodeService salesInvoiceCodeService) {
         this.salesinvoiceRepository = salesinvoiceRepository;
+        this.salesInvoiceCodeService = salesInvoiceCodeService;
     }
 
     /**
@@ -31,6 +33,7 @@ public class SalesinvoiceService {
      */
     public Salesinvoice save(Salesinvoice salesinvoice) {
         LOG.debug("Request to save Salesinvoice : {}", salesinvoice);
+        salesInvoiceCodeService.assignInvoiceCode(salesinvoice);
         return salesinvoiceRepository.save(salesinvoice);
     }
 

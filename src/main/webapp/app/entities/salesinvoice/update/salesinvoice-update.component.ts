@@ -158,6 +158,14 @@ export class SalesinvoiceUpdateComponent implements OnInit {
     this.loadVehicleTypes();
     this.fetchReceiptCode();
 
+    this.editForm.get('isvatinvoice')?.valueChanges.subscribe(isVatInvoice => {
+      if (isVatInvoice) {
+        this.fetchVatReceiptCode();
+      } else {
+        this.fetchReceiptCode();
+      }
+    });
+
     // Subscribe to form control valueChanges
     this.editForm.get('valuediscount')?.valueChanges.subscribe(() => this.calculateDiscount());
     this.editForm.get('subtotal')?.valueChanges.subscribe(() => this.calculateDiscount());
@@ -173,28 +181,37 @@ export class SalesinvoiceUpdateComponent implements OnInit {
 
   fetchReceiptCode(): void {
     this.salesInvoiceService.fetchReceiptCode().subscribe(
-      (response: HttpResponse<any>) => {
-        let originalCode = response.body[0]?.code || 'SI00000';
-
-        // If the code doesn't start with SI, force it to a default SI format
-        if (!originalCode.startsWith('SI')) {
-          originalCode = 'SI00000';
+      (response: HttpResponse<{ code: string }>) => {
+        const newCode = response.body?.code;
+        if (newCode) {
+          console.log('Updated Sales Invoice Code:', newCode);
+          this.applyInvoiceCode(newCode);
         }
-
-        // Extract the numeric part and increment by 1, preserving padding
-        let newCode = originalCode.replace(/\d+$/, (match: string) => {
-          const incremented = Number(match) + 1;
-          return String(incremented).padStart(match.length, '0');
-        });
-
-        console.log('Updated Sales Invoice Code:', newCode);
-        this.newcode = newCode;
-        this.editForm.patchValue({ code: newCode });
       },
       error => {
         console.error('Error fetching invoice code:', error);
       },
     );
+  }
+
+  fetchVatReceiptCode(): void {
+    this.salesInvoiceService.fetchNextVatCode().subscribe(
+      (response: HttpResponse<{ code: string }>) => {
+        const newCode = response.body?.code;
+        if (newCode) {
+          console.log('Updated VAT Sales Invoice Code:', newCode);
+          this.applyInvoiceCode(newCode);
+        }
+      },
+      error => {
+        console.error('Error fetching VAT invoice code:', error);
+      },
+    );
+  }
+
+  private applyInvoiceCode(newCode: string): void {
+    this.newcode = newCode;
+    this.editForm.patchValue({ code: newCode });
   }
   fetchaccountid(name: string): void {
     this.salesInvoiceService.fetchReceiptAccountId(name).subscribe(
