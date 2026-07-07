@@ -11,7 +11,6 @@ const VAT_TAX_ID = 1002;
   standalone: true,
   imports: [CommonModule],
   templateUrl: './printinvoice.component.html',
-  styleUrl: './printinvoice.component.scss',
 })
 export class PrintinvoiceComponent implements OnInit {
   salesInvoice: any = null;
