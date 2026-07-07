@@ -388,7 +388,7 @@
         </td>
 
         <td class="line-total">
-          {{ line.linetotal || line.quantity * line.sellingprice - line.discount | number: '1.2-2' }}
+          {{ getInventoryLineTotalBeforeDiscount(line) | number: '1.2-2' }}
         </td>
       </tr>
 
@@ -410,11 +410,11 @@
         <td class="line-qty">1.00</td>
 
         <td class="line-price">
-          {{ line.value ?? line.servicePrice | number: '1.2-2' }}
+          {{ getServicePrice(line) | number: '1.2-2' }}
         </td>
 
         <td class="line-total">
-          {{ line.value ?? line.servicePrice | number: '1.2-2' }}
+          {{ getServicePrice(line) | number: '1.2-2' }}
         </td>
       </tr>
 
@@ -436,11 +436,11 @@
         <td class="line-qty">1.00</td>
 
         <td class="line-price">
-          {{ line.value ?? line.servicePrice | number: '1.2-2' }}
+          {{ getServicePrice(line) | number: '1.2-2' }}
         </td>
 
         <td class="line-total">
-          {{ line.value ?? line.servicePrice | number: '1.2-2' }}
+          {{ getServicePrice(line) | number: '1.2-2' }}
         </td>
       </tr>
     </tbody>

@@ -62,10 +62,16 @@
           .service-charge-table .col-value {
             width: 110px;
             min-width: 110px;
+            text-align: left;
+            padding-left: 0.1rem;
+            padding-right: 0.35rem;
           }
           .service-charge-table .col-discount-value {
             width: 130px;
             min-width: 130px;
+            text-align: left;
+            padding-left: 0.75rem;
+            padding-right: 0.25rem;
           }
           .service-charge-table .col-customer-service {
             width: 1%;
@@ -122,10 +128,10 @@
                 <th *ngIf="false">Option Id</th>
                 <th class="ps-3 py-3">Service Name</th>
                 <th *ngIf="false">Service Description</th>
-                <th class="text-end col-discount-pct">Discount %</th>
-                <th class="text-end col-discount-value">Discount Value</th>
-                <th class="text-end col-discount">Discount</th>
-                <th class="text-end col-value">Value</th>
+                <th class="col-discount-pct">Discount %</th>
+                <th class="col-discount-value">Discount Value</th>
+                <th class="col-discount">Discount</th>
+                <th class="col-value">Value</th>
                 <th class="text-center col-customer-service">Is Customer Service</th>
                 <th class="text-center col-actions pe-3">Actions</th>
               </tr>
@@ -173,39 +179,39 @@
                 <td *ngIf="false">
                   <input type="text" class="form-control form-control-sm" formControlName="serviceDescription" />
                 </td>
-                <td class="text-end col-discount-pct">
+                <td class="col-discount-pct">
                   <input
                     type="number"
-                    class="form-control form-control-sm text-end"
+                    class="form-control form-control-sm"
                     formControlName="discountpercentage"
                     (input)="onDiscountPercentageChange(i)"
                   />
                 </td>
-                <td class="text-end col-discount-value">
+                <td class="col-discount-value">
                   <input
                     type="text"
                     inputmode="decimal"
                     appDecimal
                     [appDecimalAllowEmpty]="true"
                     [appDecimalDeferFormat]="true"
-                    class="form-control form-control-sm text-end"
+                    class="form-control form-control-sm"
                     formControlName="discountvalue"
                     (input)="onDiscountValueChange(i)"
                     (blur)="onDiscountValueBlur(i, $event)"
                   />
                 </td>
-                <td class="text-end col-discount">
-                  <input type="text" class="form-control form-control-sm text-end" readonly [value]="formatLineDiscountDisplay(i)" />
+                <td class="col-discount">
+                  <input type="text" class="form-control form-control-sm" readonly [value]="formatLineDiscountDisplay(i)" />
                 </td>
-                <td class="text-end col-value">
-                  <div class="input-group input-group-sm justify-content-end">
+                <td class="col-value">
+                  <div class="input-group input-group-sm">
                     <span class="input-group-text bg-white border-end-0 text-muted small">Rs.</span>
                     <input
                       type="text"
                       inputmode="decimal"
                       appDecimal
                       [appDecimalDeferFormat]="true"
-                      class="form-control text-end border-start-0 fw-bold"
+                      class="form-control border-start-0 fw-bold"
                       formControlName="value"
                       style="max-width: 100px"
                       readonly

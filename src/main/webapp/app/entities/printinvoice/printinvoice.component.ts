@@ -46,12 +46,27 @@ export class PrintinvoiceComponent implements OnInit {
     return !!this.salesInvoice?.isvatinvoice;
   }
 
+  getServicePrice(line: any): number {
+    return Number(line?.servicePrice ?? line?.serviceprice ?? 0);
+  }
+
+  getInventoryLineTotalBeforeDiscount(line: any): number {
+    return Number((Number(line?.quantity ?? 0) * Number(line?.sellingprice ?? 0)).toFixed(2));
+  }
+
+  get lineItemsSubtotal(): number {
+    const inventoryTotal = this.invoiceLines.reduce((sum, line) => sum + this.getInventoryLineTotalBeforeDiscount(line), 0);
+    const serviceTotal = this.serviceLines.reduce((sum, line) => sum + this.getServicePrice(line), 0);
+    const commonTotal = this.commonServiceLines.reduce((sum, line) => sum + this.getServicePrice(line), 0);
+    return inventoryTotal + serviceTotal + commonTotal;
+  }
+
   get displaySubtotal(): number {
+    const subtotal = this.lineItemsSubtotal;
     if (!this.isVatInvoice || this.vatPercentage == null) {
-      return this.salesInvoice?.subtotal ?? 0;
+      return subtotal;
     }
-    const nettotal = this.salesInvoice?.nettotal ?? 0;
-    return (nettotal * 100) / (100 + this.vatPercentage);
+    return (subtotal * 100) / (100 + this.vatPercentage);
   }
 
   get displayVatAmount(): number {
