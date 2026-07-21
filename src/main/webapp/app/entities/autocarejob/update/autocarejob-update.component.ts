@@ -39,8 +39,14 @@ export class AutocarejobUpdateComponent implements OnInit {
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: AutocarejobFormGroup = this.autocarejobFormService.createAutocarejobFormGroup();
+  saveAttempted = false;
 
   todayAppointments: IAutocareappointment[] = []; // New property for today's appointments
+
+  isRequiredInvalid(controlName: string): boolean {
+    const control = this.editForm.get(controlName);
+    return !!control && control.hasError('required') && (control.touched || this.saveAttempted);
+  }
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ autocarejob }) => {
@@ -204,6 +210,12 @@ export class AutocarejobUpdateComponent implements OnInit {
   }
 
   save(): void {
+    if (this.editForm.invalid) {
+      this.saveAttempted = true;
+      this.editForm.markAllAsTouched();
+      return;
+    }
+
     this.isSaving = true;
     const autocarejob = this.autocarejobFormService.getAutocarejob(this.editForm);
 

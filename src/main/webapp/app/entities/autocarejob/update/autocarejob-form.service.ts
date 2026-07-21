@@ -115,15 +115,19 @@ export class AutocarejobFormService {
       ),
       jobnumber: new FormControl(autocarejobRawValue.jobnumber ?? 1),
       vehicleid: new FormControl(autocarejobRawValue.vehicleid),
-      vehiclenumber: new FormControl(autocarejobRawValue.vehiclenumber),
-      millage: new FormControl(autocarejobRawValue.millage),
-      nextmillage: new FormControl(autocarejobRawValue.nextmillage, {
+      vehiclenumber: new FormControl(autocarejobRawValue.vehiclenumber, {
         validators: [Validators.required],
       }),
+      millage: new FormControl(autocarejobRawValue.millage, {
+        validators: [Validators.required],
+      }),
+      nextmillage: new FormControl(autocarejobRawValue.nextmillage),
       nextservicedate: new FormControl(autocarejobRawValue.nextservicedate),
       vehicletypeid: new FormControl(autocarejobRawValue.vehicletypeid),
       jobtypeid: new FormControl(autocarejobRawValue.jobtypeid),
-      jobtypename: new FormControl(autocarejobRawValue.jobtypename),
+      jobtypename: new FormControl(autocarejobRawValue.jobtypename, {
+        validators: [Validators.required],
+      }),
       jobopenby: new FormControl(autocarejobRawValue.jobopenby),
       jobopentime: new FormControl(autocarejobRawValue.jobopentime),
       lmu: new FormControl(autocarejobRawValue.lmu),
@@ -139,7 +143,9 @@ export class AutocarejobFormService {
       isjobclose: new FormControl(autocarejobRawValue.isjobclose),
       isfeedback: new FormControl(autocarejobRawValue.isfeedback),
       feedbackstatusid: new FormControl(autocarejobRawValue.feedbackstatusid),
-      customername: new FormControl(autocarejobRawValue.customername),
+      customername: new FormControl(autocarejobRawValue.customername, {
+        validators: [Validators.required],
+      }),
       customertel: new FormControl(autocarejobRawValue.customertel),
       customerid: new FormControl(autocarejobRawValue.customerid),
       advisorfinalcheck: new FormControl(autocarejobRawValue.advisorfinalcheck),

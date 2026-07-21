@@ -158,7 +158,7 @@ export class AutocareopenjobComponent implements OnInit {
       JobId: String(job.id ?? ''),
     });
 
-    return `http://192.168.1.150:81/Sales/customer_profile.aspx?${params}`;
+    return `http://192.168.1.150:91/Sales/customer_profile.aspx?${params}`;
   }
 
   getVehicleRegistrationUrl(job: IAutocarejob): string {
@@ -167,7 +167,7 @@ export class AutocareopenjobComponent implements OnInit {
       cusId: job.customerid != null ? String(job.customerid) : '',
     });
 
-    return `http://192.168.1.150:81/AutoCare/AutoCareVehicle.aspx?${params}`;
+    return `http://192.168.1.150:91/AutoCare/AutoCareVehicle.aspx?${params}`;
   }
 
   protected fillComponentAttributeFromRoute(params: ParamMap, data: Data): void {

@@ -6,7 +6,7 @@ import { finalize } from 'rxjs/operators';
 import dayjs from 'dayjs/esm';
 
 import SharedModule from 'app/shared/shared.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { IAutocarejob } from '../autocarejob.model';
 import { ICustomervehicle } from 'app/entities/customervehicle/customervehicle.model';
@@ -175,6 +175,8 @@ export class AutocarejobInstructionComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.requireNextMillageForInstructions();
+
     this.activatedRoute.queryParamMap.subscribe(params => {
       this.itemsOnlyMode = params.get('itemsOnly') === 'true';
       if (this.itemsOnlyMode) {
@@ -1130,10 +1132,20 @@ export class AutocarejobInstructionComponent implements OnInit {
   nextmillage: number | null = null;
   selectedRadioValue: number | null = null;
   nextMilageSelectionAttempted = false;
+  saveAttempted = false;
+
+  isRequiredInvalid(controlName: string): boolean {
+    const control = this.editForm.get(controlName);
+    return !!control && control.hasError('required') && (control.touched || this.saveAttempted);
+  }
 
   isNextMilageInvalid(): boolean {
     const nextMillageControl = this.editForm.get('nextmillage');
-    return !!nextMillageControl && nextMillageControl.invalid && (nextMillageControl.touched || this.nextMilageSelectionAttempted);
+    return (
+      !!nextMillageControl &&
+      nextMillageControl.hasError('required') &&
+      (nextMillageControl.touched || this.nextMilageSelectionAttempted || this.saveAttempted)
+    );
   }
 
   canNavigateToOtherTabs(): boolean {
@@ -1150,6 +1162,29 @@ export class AutocarejobInstructionComponent implements OnInit {
     nextMillageControl?.markAsDirty();
     nextMillageControl?.updateValueAndValidity();
     this.cdr.detectChanges();
+  }
+
+  private requireNextMillageForInstructions(): void {
+    const nextMillageControl = this.editForm.get('nextmillage');
+    nextMillageControl?.addValidators(Validators.required);
+    nextMillageControl?.updateValueAndValidity();
+  }
+
+  private markRequiredFieldsForSave(): void {
+    this.saveAttempted = true;
+    this.nextMilageSelectionAttempted = true;
+    this.editForm.markAllAsTouched();
+    this.editForm.updateValueAndValidity();
+    this.cdr.detectChanges();
+  }
+
+  private canSaveRequiredFields(): boolean {
+    if (this.editForm.invalid) {
+      this.markRequiredFieldsForSave();
+      return false;
+    }
+
+    return true;
   }
 
   onTabNavigationAttempt(event: Event): void {
@@ -1305,6 +1340,10 @@ export class AutocarejobInstructionComponent implements OnInit {
   }
 
   save(): void {
+    if (!this.canSaveRequiredFields()) {
+      return;
+    }
+
     this.alertMuteService.mute();
     this.isSaving = true;
     let autocarejob = this.autocarejobFormService.getAutocarejob(this.editForm);
@@ -1333,6 +1372,10 @@ export class AutocarejobInstructionComponent implements OnInit {
   }
 
   saveAll(): void {
+    if (!this.canSaveRequiredFields()) {
+      return;
+    }
+
     this.alertMuteService.mute();
     this.syncItemsArrayFromSelection();
 

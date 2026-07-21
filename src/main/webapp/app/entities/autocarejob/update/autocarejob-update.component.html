@@ -27,12 +27,15 @@
                   id="field_vehiclenumber"
                   data-cy="vehiclenumber"
                   formControlName="vehiclenumber"
+                  [class.is-invalid]="isRequiredInvalid('vehiclenumber')"
                   autocomplete="off"
                   list="vehiclenumberList"
                   (change)="onVehicleSelect($event)"
                   (input)="onVehicleSearch($event)"
                   [ngModel]="vehicleNo"
+                  required
                 />
+                <div *ngIf="isRequiredInvalid('vehiclenumber')" class="invalid-feedback">Vehicle Number is required.</div>
                 <datalist id="vehiclenumberList">
                   <option *ngFor="let item of filteredVehicles" [value]="item.vehiclenumber">
                     {{ item.conformdate }}
@@ -42,7 +45,17 @@
 
               <div class="mb-3 col-5">
                 <label class="form-label" for="field_millage">Mileage</label>
-                <input type="number" class="form-control" name="millage" id="field_millage" data-cy="millage" formControlName="millage" />
+                <input
+                  type="number"
+                  class="form-control"
+                  name="millage"
+                  id="field_millage"
+                  data-cy="millage"
+                  formControlName="millage"
+                  [class.is-invalid]="isRequiredInvalid('millage')"
+                  required
+                />
+                <div *ngIf="isRequiredInvalid('millage')" class="invalid-feedback">Mileage is required.</div>
               </div>
             </div>
 
@@ -56,12 +69,15 @@
                 data-cy="jobtypename"
                 formControlName="jobtypename"
                 [ngModel]="jobType"
+                [class.is-invalid]="isRequiredInvalid('jobtypename')"
+                required
               >
                 <option value="Full Service and Other Services">Full Service and Other Services</option>
                 <option value="Detailing services">Detailing services</option>
                 <option value="Performance Care">Performance Care</option>
                 <option value="Other">Other</option>
               </select>
+              <div *ngIf="isRequiredInvalid('jobtypename')" class="invalid-feedback">Job Type is required.</div>
             </div>
 
             <!-- Description -->
@@ -90,7 +106,10 @@
                   data-cy="customername"
                   formControlName="customername"
                   [ngModel]="customername"
+                  [class.is-invalid]="isRequiredInvalid('customername')"
+                  required
                 />
+                <div *ngIf="isRequiredInvalid('customername')" class="invalid-feedback">Customer Name is required.</div>
               </div>
 
               <div class="mb-3 col-5">
