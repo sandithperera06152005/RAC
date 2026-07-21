@@ -145,6 +145,7 @@ export class AutocarejobUpdateComponent implements OnInit {
   }
 
   filteredVehicles: IAutocareappointment[] = [];
+  filteredCustomerVehicles: ICustomervehicle[] = [];
 
   onVehicleSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -156,13 +157,21 @@ export class AutocarejobUpdateComponent implements OnInit {
     const searchTerm = uppercasedValue;
 
     if (searchTerm.length > 2) {
-      // Use the new service method to fetch matching results
       this.autocareappointmentService.findByVehicleNumber(searchTerm).subscribe(response => {
         this.filteredVehicles = this.getFirstCreatedAppointments(response.body || []);
+      });
+      this.customervehicleService.findByVehicleNumber(searchTerm).subscribe(response => {
+        this.filteredCustomerVehicles = this.getFirstCreatedCustomerVehicles(response.body || []);
+
+        const exactVehicle = this.findCustomerVehicleByNumber(searchTerm);
+        if (exactVehicle) {
+          this.patchCustomerVehicleDetails(exactVehicle);
+        }
       });
     } else {
       // Clear the suggestions if input is too short
       this.filteredVehicles = [];
+      this.filteredCustomerVehicles = [];
     }
   }
 
@@ -173,6 +182,7 @@ export class AutocarejobUpdateComponent implements OnInit {
     const selectedVehicleNumber = input.value;
 
     const selectedAppointment = this.filteredVehicles.find(vehicle => vehicle.vehiclenumber === selectedVehicleNumber);
+    const selectedCustomerVehicle = this.findCustomerVehicleByNumber(selectedVehicleNumber);
 
     if (selectedAppointment) {
       console.log('Selected Vehicle:', selectedAppointment);
@@ -189,14 +199,12 @@ export class AutocarejobUpdateComponent implements OnInit {
       });
 
       this.customervehicleService.findByVehicleNumber(selectedVehicleNumber).subscribe(response => {
-        const selectedCustomerVehicle = (response.body || []).find(vehicle => vehicle.vehiclenumber === selectedVehicleNumber);
+        const customerVehicleFromResponse =
+          (response.body || []).find(vehicle => this.isSameVehicleNumber(vehicle.vehiclenumber, selectedVehicleNumber)) ??
+          selectedCustomerVehicle;
 
-        if (selectedCustomerVehicle) {
-          this.editForm.patchValue({
-            vehicleid: selectedCustomerVehicle.id ?? selectedAppointment.vehicleid ?? null,
-            customerid: selectedCustomerVehicle.customerid ?? selectedAppointment.customerid ?? null,
-            vehicletypeid: selectedCustomerVehicle.typeid ?? null,
-          });
+        if (customerVehicleFromResponse) {
+          this.patchCustomerVehicleDetails(customerVehicleFromResponse, selectedAppointment);
         } else {
           this.editForm.patchValue({
             vehicletypeid: null,
@@ -204,9 +212,76 @@ export class AutocarejobUpdateComponent implements OnInit {
           console.error('No matching customer vehicle found for:', selectedVehicleNumber);
         }
       });
+    } else if (selectedCustomerVehicle) {
+      this.patchCustomerVehicleDetails(selectedCustomerVehicle);
     } else {
-      console.error('No matching vehicle found for:', selectedVehicleNumber);
+      this.customervehicleService.findByVehicleNumber(selectedVehicleNumber).subscribe(response => {
+        const customerVehicleFromResponse = (response.body || []).find(vehicle =>
+          this.isSameVehicleNumber(vehicle.vehiclenumber, selectedVehicleNumber),
+        );
+
+        if (customerVehicleFromResponse) {
+          this.patchCustomerVehicleDetails(customerVehicleFromResponse);
+        } else {
+          console.error('No matching vehicle found for:', selectedVehicleNumber);
+        }
+      });
     }
+  }
+
+  private patchCustomerVehicleDetails(customerVehicle: ICustomervehicle, selectedAppointment?: IAutocareappointment): void {
+    this.editForm.patchValue({
+      vehiclenumber: customerVehicle.vehiclenumber ?? selectedAppointment?.vehiclenumber ?? '',
+      vehicleid: customerVehicle.id ?? selectedAppointment?.vehicleid ?? null,
+      customerid: customerVehicle.customerid ?? selectedAppointment?.customerid ?? null,
+      vehicletypeid: customerVehicle.typeid ?? null,
+      millage:
+        customerVehicle.milage != null && customerVehicle.milage !== ''
+          ? Number(customerVehicle.milage)
+          : this.editForm.get('millage')?.value,
+      nextgearoilmilage: customerVehicle.nextgearoilmilage ?? this.editForm.get('nextgearoilmilage')?.value,
+    });
+
+    if (customerVehicle.customerid) {
+      this.customerService.find(customerVehicle.customerid).subscribe(response => {
+        const customer = response.body;
+        if (customer) {
+          this.editForm.patchValue({
+            customername: customer.fullname || customer.businessname || selectedAppointment?.customername || '',
+            customertel:
+              customer.residencephone ||
+              customer.businessphone1 ||
+              customer.businessphone2 ||
+              customer.businessmobile ||
+              selectedAppointment?.contactnumber ||
+              '',
+          });
+        }
+      });
+    }
+  }
+
+  private findCustomerVehicleByNumber(vehicleNumber: string): ICustomervehicle | undefined {
+    return this.filteredCustomerVehicles.find(vehicle => this.isSameVehicleNumber(vehicle.vehiclenumber, vehicleNumber));
+  }
+
+  get customerVehicleOptionsForDatalist(): ICustomervehicle[] {
+    return this.filteredCustomerVehicles.filter(
+      customerVehicle =>
+        !!customerVehicle.vehiclenumber &&
+        !this.filteredVehicles.some(appointment => this.isSameVehicleNumber(appointment.vehiclenumber, customerVehicle.vehiclenumber)),
+    );
+  }
+
+  private isSameVehicleNumber(left: string | null | undefined, right: string | null | undefined): boolean {
+    return (
+      String(left ?? '')
+        .trim()
+        .toUpperCase() ===
+      String(right ?? '')
+        .trim()
+        .toUpperCase()
+    );
   }
 
   save(): void {
@@ -286,5 +361,21 @@ export class AutocarejobUpdateComponent implements OnInit {
       });
 
     return [...uniqueAppointments.values()];
+  }
+
+  private getFirstCreatedCustomerVehicles(customerVehicles: ICustomervehicle[]): ICustomervehicle[] {
+    const uniqueCustomerVehicles = new Map<string, ICustomervehicle>();
+
+    [...customerVehicles]
+      .sort((left, right) => (left.id ?? Number.MAX_SAFE_INTEGER) - (right.id ?? Number.MAX_SAFE_INTEGER))
+      .forEach(customerVehicle => {
+        const vehicleNumber = customerVehicle.vehiclenumber?.trim();
+
+        if (vehicleNumber && !uniqueCustomerVehicles.has(vehicleNumber)) {
+          uniqueCustomerVehicles.set(vehicleNumber, customerVehicle);
+        }
+      });
+
+    return [...uniqueCustomerVehicles.values()];
   }
 }

@@ -40,6 +40,9 @@
                   <option *ngFor="let item of filteredVehicles" [value]="item.vehiclenumber">
                     {{ item.conformdate }}
                   </option>
+                  <option *ngFor="let item of customerVehicleOptionsForDatalist" [value]="item.vehiclenumber">
+                    {{ item.typename || item.makename || item.model }}
+                  </option>
                 </datalist>
               </div>
 
