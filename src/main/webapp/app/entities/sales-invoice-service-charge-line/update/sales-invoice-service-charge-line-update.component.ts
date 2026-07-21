@@ -97,7 +97,9 @@ export class SalesInvoiceServiceChargeLineUpdateComponent implements OnInit {
   }
   totalvalue(formGroup: FormGroup): void {
     const discountControl = formGroup.get('discount');
+    const valueControl = formGroup.get('value');
     discountControl?.valueChanges.pipe(debounceTime(300)).subscribe(() => this.updateLineTotal());
+    valueControl?.valueChanges.pipe(debounceTime(300)).subscribe(() => this.updateLineTotal());
 
     this.updateLineTotal();
   }
