@@ -29,6 +29,7 @@ export class AutocarejobUpdateComponent implements OnInit {
   customervehicles: ICustomervehicle[] = [];
   customerDetails: any | null = null;
   autocareappointments: IAutocareappointment[] = [];
+  selectedAppointmentForJob: IAutocareappointment | null = null;
   @ViewChild(AutocarejobInstructionComponent) autocarejobinstructionComponent!: AutocarejobInstructionComponent;
   protected autocarejobService = inject(AutocarejobService);
   protected autocarejobFormService = inject(AutocarejobFormService);
@@ -55,8 +56,6 @@ export class AutocarejobUpdateComponent implements OnInit {
         this.updateForm(autocarejob);
       }
     });
-    // Fetch all appointments
-    this.loadAllAppointments();
   }
 
   loadAllAppointments(): void {
@@ -93,6 +92,7 @@ export class AutocarejobUpdateComponent implements OnInit {
   loadAppointment(appointment: any): void {
     console.log('Loading appointment:', appointment);
 
+    this.selectedAppointmentForJob = appointment;
     this.customerTel = appointment.contactnumber;
     this.vehicleNo = appointment.vehiclenumber;
     this.customername = appointment.customername;
@@ -150,6 +150,7 @@ export class AutocarejobUpdateComponent implements OnInit {
   onVehicleSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
     const uppercasedValue = input.value.toUpperCase();
+    this.selectedAppointmentForJob = null;
     if (input.value !== uppercasedValue) {
       input.value = uppercasedValue;
       this.editForm.get('vehiclenumber')?.setValue(uppercasedValue, { emitEvent: false });
@@ -186,6 +187,7 @@ export class AutocarejobUpdateComponent implements OnInit {
 
     if (selectedAppointment) {
       console.log('Selected Vehicle:', selectedAppointment);
+      this.selectedAppointmentForJob = selectedAppointment;
 
       const jobTypeText = this.jobTypeMap[selectedAppointment.appointmenttype ?? 0];
       this.editForm.get('jobtypename')?.patchValue(jobTypeText);
@@ -213,8 +215,10 @@ export class AutocarejobUpdateComponent implements OnInit {
         }
       });
     } else if (selectedCustomerVehicle) {
+      this.selectedAppointmentForJob = null;
       this.patchCustomerVehicleDetails(selectedCustomerVehicle);
     } else {
+      this.selectedAppointmentForJob = null;
       this.customervehicleService.findByVehicleNumber(selectedVehicleNumber).subscribe(response => {
         const customerVehicleFromResponse = (response.body || []).find(vehicle =>
           this.isSameVehicleNumber(vehicle.vehiclenumber, selectedVehicleNumber),
@@ -235,10 +239,6 @@ export class AutocarejobUpdateComponent implements OnInit {
       vehicleid: customerVehicle.id ?? selectedAppointment?.vehicleid ?? null,
       customerid: customerVehicle.customerid ?? selectedAppointment?.customerid ?? null,
       vehicletypeid: customerVehicle.typeid ?? null,
-      millage:
-        customerVehicle.milage != null && customerVehicle.milage !== ''
-          ? Number(customerVehicle.milage)
-          : this.editForm.get('millage')?.value,
       nextgearoilmilage: customerVehicle.nextgearoilmilage ?? this.editForm.get('nextgearoilmilage')?.value,
     });
 
@@ -310,7 +310,7 @@ export class AutocarejobUpdateComponent implements OnInit {
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IAutocarejob>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
       next: response => {
-        this.onSaveSuccess(), console.log('Save Successfully:', response.body); // Log the response
+        console.log('Save Successfully:', response.body); // Log the response
         alert('Save Successful! Job ID: ' + response.body?.id); // Display an alert
 
         this.invid = response.body?.id ?? 0;
@@ -322,6 +322,7 @@ export class AutocarejobUpdateComponent implements OnInit {
         // Retrieve from local storage and convert back to a number
         const storedInvid = JSON.parse(localStorage.getItem('invid') || '0'); // Use JSON.parse
         console.log('Retrieved from Local Storage (as number):', storedInvid);
+        this.markSelectedAppointmentArrived(this.invid, () => this.onSaveSuccess());
       },
       error: error => {
         console.error('Save Failed:', error);
@@ -340,6 +341,27 @@ export class AutocarejobUpdateComponent implements OnInit {
 
   protected onSaveFinalize(): void {
     this.isSaving = false;
+  }
+
+  private markSelectedAppointmentArrived(jobId: number, onComplete: () => void): void {
+    if (!this.selectedAppointmentForJob?.id || !jobId) {
+      onComplete();
+      return;
+    }
+
+    this.autocareappointmentService
+      .partialUpdate({
+        id: this.selectedAppointmentForJob.id,
+        isarrived: true,
+        jobid: jobId,
+      })
+      .subscribe({
+        next: () => onComplete(),
+        error: error => {
+          console.error('Failed to mark appointment as arrived:', error);
+          onComplete();
+        },
+      });
   }
 
   protected updateForm(autocarejob: IAutocarejob): void {
