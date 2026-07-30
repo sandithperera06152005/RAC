@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AutocarejobService } from '../autocarejob/service/autocarejob.service';
 import { SalesInvoiceDummyService } from '../sales-invoice-dummy/service/sales-invoice-dummy.service';
 import { TaxesService } from '../taxes/service/taxes.service';
 
@@ -21,6 +22,7 @@ export class PrintinvoiceComponent implements OnInit {
 
   protected salesInvoiceDummyService = inject(SalesInvoiceDummyService);
   protected taxesService = inject(TaxesService);
+  protected autocarejobService = inject(AutocarejobService);
 
   private expectedRequests = 4;
   private completedRequests = 0;
@@ -86,6 +88,10 @@ export class PrintinvoiceComponent implements OnInit {
     this.salesInvoiceDummyService.find(id).subscribe({
       next: response => {
         this.salesInvoice = response.body;
+        if (this.salesInvoice?.autocarejobid && (!this.salesInvoice.currentmeter || !this.salesInvoice.nextmeter)) {
+          this.expectedRequests++;
+          this.loadAutocareJobMeters(Number(this.salesInvoice.autocarejobid));
+        }
         if (this.salesInvoice?.isvatinvoice) {
           this.expectedRequests++;
           this.loadVatTaxPercentage();
@@ -94,6 +100,25 @@ export class PrintinvoiceComponent implements OnInit {
       },
       error: err => {
         console.error('Error fetching Sales Invoice:', err);
+        this.checkAndPrint();
+      },
+    });
+  }
+
+  private loadAutocareJobMeters(jobId: number): void {
+    this.autocarejobService.find(jobId).subscribe({
+      next: response => {
+        const job = response.body;
+        this.salesInvoice = {
+          ...this.salesInvoice,
+          currentmeter: this.salesInvoice?.currentmeter || job?.millage,
+          nextmeter: this.salesInvoice?.nextmeter || job?.nextmillage,
+          vehicleno: this.salesInvoice?.vehicleno || job?.vehiclenumber,
+        };
+        this.checkAndPrint();
+      },
+      error: err => {
+        console.error('Error fetching Autocare Job meters:', err);
         this.checkAndPrint();
       },
     });

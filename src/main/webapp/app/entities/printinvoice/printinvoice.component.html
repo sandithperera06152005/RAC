@@ -37,53 +37,53 @@
     text-overflow: clip;
   }
 
-  /* Header row 1 — customer / vehicle / job / date (docx row 1 + pre-print slots) */
+  /* Header row 1 - customer / vehicle / mileage / date */
   .header-customer {
-    top: 19.04mm; /* mar_top + p1 spacing before */
-    left: 21.81mm; /* mar_left + customer indent 877 twips */
-    max-width: 38mm;
+    top: 11.4mm;
+    left: 23mm;
+    max-width: 37mm;
     text-align: left;
   }
 
   .header-vehicle {
-    top: 19.04mm;
-    left: 64.35mm;
-    max-width: 24mm;
+    top: 11.4mm;
+    left: 88.35mm;
+    max-width: 31mm;
     text-align: left;
   }
 
-  .header-job {
-    top: 19.04mm;
-    left: 91.35mm;
-    max-width: 24mm;
+  .header-mileage {
+    top: 11.4mm;
+    left: 140mm;
+    max-width: 31mm;
     text-align: left;
   }
 
   .header-date {
-    top: 19.04mm;
-    left: 170.27mm; /* tab stop 9653 twips from page edge */
+    top: 11.4mm;
+    left: 171.27mm; /* tab stop 9653 twips from page edge */
     max-width: 33mm;
     text-align: left;
   }
 
-  /* Header row 2 — code / order / payment (docx row 3) */
-  .header-code {
-    top: 27.75mm;
-    left: 103.15mm; /* mar_left + code indent 5488 twips */
+  /* Header row 2 - invoice number / next mileage / invoice type */
+  .header-invoice-number {
+    top: 19.04mm;
+    left: 88.35mm;
     max-width: 32mm;
     text-align: left;
   }
 
-  .header-order {
-    top: 27.75mm;
-    left: 91.35mm;
-    max-width: 24mm;
+  .header-next-mileage {
+    top: 19.04mm;
+    left: 140mm;
+    max-width: 17mm;
     text-align: left;
   }
 
   .header-payment {
-    top: 27.75mm;
-    left: 170.27mm;
+    top: 19.04mm;
+    left: 171.27mm;
     max-width: 33mm;
     text-align: left;
   }
@@ -91,7 +91,7 @@
   /* Lines table — tblInd 210 twips, grid cols from docx */
   .lines-table {
     position: absolute;
-    top: 36.71mm;
+    top: 31.75mm;
     left: 10.05mm; /* mar_left + tblInd 210 twips */
     width: 188.14mm;
     table-layout: fixed;
@@ -142,7 +142,7 @@
 
   .line-code {
     text-align: left;
-    padding-left: 0.88mm; /* cell indent 50 twips */
+    padding-left: 0.2mm;
   }
 
   .line-name {
@@ -152,18 +152,22 @@
   }
 
   .line-discount {
-    text-align: right;
-    padding-right: 2.1mm; /* cell indent right 119 twips */
+    position: relative;
+    left: 5mm;
+    text-align: left;
+    padding-left: 0;
   }
 
   .line-qty {
     text-align: left;
-    padding-left: 2.22mm; /* cell indent 126 twips */
+    padding-left: 4.55mm;
   }
 
   .line-price {
+    position: relative;
+    left: -8.5mm;
     text-align: left;
-    padding-left: 12.17mm; /* cell indent 690 twips */
+    padding-left: 0;
   }
 
   .line-total {
@@ -171,17 +175,17 @@
     padding-right: 0.71mm; /* cell indent right 40 twips */
   }
 
-  /* Totals block — docx right indent 459 twips, vertical spacing 145 + (59/58 twips between rows) */
+  /* Totals block - docx right indent 459 twips, vertical spacing 145 + (59/58 twips between rows) */
   .totals-block {
     position: absolute;
-    top: 179.07mm;
+    top: 163.25mm;
     right: 20.8mm; /* mar_right + totals indent 459 twips */
     width: 40mm;
   }
 
   .total-line {
-    height: 4.23mm; /* body line height 240 twips */
-    margin-bottom: 1.04mm; /* spacing before 59 twips between total rows */
+    height: 4.75mm;
+    margin-bottom: 1.25mm;
     text-align: right;
     white-space: nowrap;
   }
@@ -235,11 +239,11 @@
 <div class="invoice-page" *ngIf="salesInvoice">
   <div class="field header-customer">{{ salesInvoice.customername }}</div>
   <div class="field header-vehicle">{{ salesInvoice.vehicleno }}</div>
-  <div class="field header-job">{{ salesInvoice.autocarejobid }}</div>
+  <div class="field header-mileage">{{ salesInvoice.currentmeter }}</div>
   <div class="field header-date">{{ salesInvoice.invoicedate | date: 'dd/MM/yyyy' }}</div>
 
-  <div class="field header-code">{{ salesInvoice.code }}</div>
-  <div class="field header-order">{{ salesInvoice.orderid || salesInvoice.quoteid }}</div>
+  <div class="field header-invoice-number">{{ salesInvoice.code || salesInvoice.id }}</div>
+  <div class="field header-next-mileage">{{ salesInvoice.nextmeter }}</div>
   <div class="field header-payment">{{ salesInvoice.paymenttype }}</div>
 
   <table class="lines-table">

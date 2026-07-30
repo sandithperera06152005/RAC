@@ -466,8 +466,11 @@
                       <td>
                         <input
                           type="text"
+                          inputmode="decimal"
+                          appDecimal
+                          [appDecimalDeferFormat]="true"
                           class="form-control form-control-sm"
-                          [ngModel]="formatServiceAmount(service.value)"
+                          [ngModel]="service.value"
                           [ngModelOptions]="{ standalone: true }"
                           (ngModelChange)="onAmountChange(service, $event)"
                         />

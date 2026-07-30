@@ -58,6 +58,7 @@ import { IAutocareJobServiceOption } from '../autocare-job-service-option.model'
 import { AlertService } from 'app/core/util/alert.service';
 import { AlertMuteService } from 'app/core/util/alert-mute.service';
 import { AccountService } from 'app/core/auth/account.service';
+import { DecimalInputDirective } from 'app/shared/decimal-input.directive';
 
 @Component({
   standalone: true,
@@ -74,6 +75,7 @@ import { AccountService } from 'app/core/auth/account.service';
     WorkshopvehicleworkUpdateComponent,
 
     AutocarejobUpdateComponent,
+    DecimalInputDirective,
   ],
 })
 export class AutocarejobInstructionComponent implements OnInit {
@@ -393,10 +395,6 @@ export class AutocarejobInstructionComponent implements OnInit {
 
     // const selectedServiceNames = this.selectedServices.map(s => s.servicename);
     // console.log('Selected Service Names:', selectedServiceNames);
-  }
-
-  formatServiceAmount(value: number | null | undefined): string {
-    return (Number(value) || 0).toFixed(2);
   }
 
   onAmountChange(item: IBillingserviceoptionvalues, value: string | number): void {
