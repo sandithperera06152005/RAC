@@ -65,9 +65,8 @@ export class AutocarejobService {
   }
 
   findByVehicleNumber(vehiclenumber: string): Observable<EntityArrayResponseType> {
-    const options = createRequestOption({ 'vehiclenumber.contains': vehiclenumber });
     return this.http
-      .get<RestAutocarejob[]>(this.resourceUrl, { params: options, observe: 'response' })
+      .get<RestAutocarejob[]>(`${this.resourceUrl}/by-vehiclenumber/${encodeURIComponent(vehiclenumber)}`, { observe: 'response' })
       .pipe(map(res => this.convertResponseArrayFromServer(res)));
   }
 

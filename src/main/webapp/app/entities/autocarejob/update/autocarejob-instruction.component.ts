@@ -1002,6 +1002,16 @@ export class AutocarejobInstructionComponent implements OnInit {
         return;
       }
 
+      const alreadyAdded = this.itemsArray.some(
+        item =>
+          (selectedItem.id != null && item.itemid === selectedItem.id) ||
+          (!!selectedItem.code && item.itemcode?.toLowerCase() === selectedItem.code.toLowerCase()),
+      );
+      if (alreadyAdded) {
+        this.itemAddErrorMessage = `"${selectedItem.name}" is already added to the list.`;
+        return;
+      }
+
       this.itemAddErrorMessage = null;
       // Add the selected item to the list with the required fields and default values
       const nextLineId = this.itemsArray.length > 0 ? Math.max(...this.itemsArray.map(item => item.lineid), 0) + 1 : 1;

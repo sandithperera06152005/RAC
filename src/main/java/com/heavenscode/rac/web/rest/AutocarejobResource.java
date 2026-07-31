@@ -299,6 +299,19 @@ public class AutocarejobResource {
     }
 
     /**
+     * {@code GET  /autocarejobs/by-vehiclenumber/:vehiclenumber} : get jobs for a vehicle.
+     *
+     * @param vehiclenumber the vehicle number.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of autocarejobs in body.
+     */
+    @GetMapping("/by-vehiclenumber/{vehiclenumber}")
+    public ResponseEntity<List<Autocarejob>> getAutocarejobsByVehiclenumber(@PathVariable("vehiclenumber") String vehiclenumber) {
+        log.debug("REST request to get Autocarejobs by vehiclenumber : {}", vehiclenumber);
+        List<Autocarejob> jobs = autocarejobRepository.findByVehiclenumberIgnoreCaseOrderByJobdateDesc(vehiclenumber);
+        return ResponseEntity.ok().body(jobs);
+    }
+
+    /**
      * {@code GET  /autocarejobs/:id} : get the "id" autocarejob.
      *
      * @param id the id of the autocarejob to retrieve.

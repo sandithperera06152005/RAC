@@ -3,7 +3,6 @@ const { merge } = require('webpack-merge');
 const path = require('path');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const WebpackNotifierPlugin = require('webpack-notifier');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
@@ -21,10 +20,6 @@ module.exports = async (config, options, targetOptions) => {
           },
         },
       }),
-      new WebpackNotifierPlugin({
-        title: 'Rac',
-        contentImage: path.join(__dirname, 'logo-jhipster.png'),
-      }),
     );
   }
 
@@ -34,12 +29,13 @@ module.exports = async (config, options, targetOptions) => {
     config.devServer.proxy = proxyConfig({ tls });
   }
 
-  if (targetOptions.target === 'serve' || config.watch) {
+  if (config.watch && targetOptions.target !== 'serve') {
     config.plugins.push(
       new BrowserSyncPlugin(
         {
           host: 'localhost',
           port: 9000,
+          open: false,
           https: tls,
           proxy: {
             target: `http${tls ? 's' : ''}://localhost:${targetOptions.target === 'serve' ? '4200' : '8080'}`,

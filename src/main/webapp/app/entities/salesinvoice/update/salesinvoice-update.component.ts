@@ -801,6 +801,19 @@ export class SalesinvoiceUpdateComponent implements OnInit {
       return;
     }
 
+    const existingLines = this.salesInvoiceLinesUpdateComponent?.salesInvoiceLinesArray?.controls ?? [];
+    const selectedItemId = this.selectedInventoryItem?.id ?? null;
+    const selectedItemCode = (this.code ?? '').trim().toLowerCase();
+    const alreadyAdded = existingLines.some(control => {
+      const lineItemId = control.get('itemid')?.value;
+      const lineItemCode = (control.get('itemcode')?.value ?? '').toString().trim().toLowerCase();
+      return (selectedItemId != null && lineItemId === selectedItemId) || (!!selectedItemCode && lineItemCode === selectedItemCode);
+    });
+    if (alreadyAdded) {
+      alert(`"${this.itemname || this.code}" is already added to the list.`);
+      return;
+    }
+
     let itemDiscount = 0;
     if (this.itemDiscountOption === 'percentage') {
       itemDiscount = (this.lastsellingprice * this.itemDiscountValue) / 100;

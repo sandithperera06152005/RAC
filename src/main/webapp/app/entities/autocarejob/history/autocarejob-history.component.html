@@ -262,131 +262,210 @@
         <!-- Second Tab: Job wise -->
         <div class="tab-pane fade" id="service-charges" role="tabpanel" aria-labelledby="service-charges-tab">
           <div id="print-job-wise">
-            <div class="text-end mb-3">
-              <button class="btn btn-primary btn-sm" type="button" (click)="printSection('print-job-wise')">Print Job Wise</button>
-            </div>
+            <fieldset class="job-history-fieldset">
+              <legend class="job-history-legend">Vehicle History</legend>
 
-            <!-- Tab panes -->
-            <div class="tab-content mt-3">
-              <div class="tab-pane fade show active" id="billing" role="tabpanel" aria-labelledby="billing-tab">
-                <div *ngIf="invoiceIds.length > 0; else noData">
-                  <div *ngFor="let invoiceId of invoiceIds" class="card mb-3">
-                    <div class="card-body card mb-3 shadow">
-                      <!-- Invoice Details Table -->
-
-                      <table class="table table-bordered">
-                        <thead>
-                          <tr>
-                            <th>Code</th>
-                            <th>Invoice Date</th>
-                            <th>Customer Name</th>
-                            <th>Address</th>
-                            <th>Sub Total</th>
-                            <th>Net Total</th>
-                            <th>Owing</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td style="font-size: 0.75rem">{{ autojobsInvoicesMap[invoiceId].invoice.id }}</td>
-                            <td style="font-size: 0.75rem">{{ autojobsInvoicesMap[invoiceId].invoice.invoicedate }}</td>
-                            <td style="font-size: 0.75rem">{{ autojobsInvoicesMap[invoiceId].invoice.customername }}</td>
-                            <td style="font-size: 0.75rem">{{ autojobsInvoicesMap[invoiceId].invoice.customeraddress }}</td>
-                            <td style="font-size: 0.75rem">{{ autojobsInvoicesMap[invoiceId].invoice.subtotal }}</td>
-                            <td style="font-size: 0.75rem">{{ autojobsInvoicesMap[invoiceId].invoice.nettotal }}</td>
-                            <td style="font-size: 0.75rem">{{ autojobsInvoicesMap[invoiceId].invoice.amountowing }}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <br />
-                      <!-- Invoice Lines Table -->
-                      <h6>Items:</h6>
-                      <table class="table table-bordered">
-                        <thead>
-                          <tr>
-                            <th>Item Name</th>
-                            <th>Item Code</th>
-                            <th>Description</th>
-                            <th>Quantity</th>
-                            <th>UOM</th>
-                            <th>Price</th>
-                            <th>Unit Total</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr *ngFor="let line of autojobsInvoicesMap[invoiceId].invoiceLines">
-                            <td style="font-size: 0.75rem">{{ line.itemname }}</td>
-                            <td style="font-size: 0.75rem">{{ line.itemcode }}</td>
-                            <td style="font-size: 0.75rem">{{ line.description }}</td>
-                            <td style="font-size: 0.75rem">{{ line.quantity }}</td>
-                            <td style="font-size: 0.75rem">{{ line.unitofmeasurement }}</td>
-                            <td style="font-size: 0.75rem">{{ line.itemprice }}</td>
-                            <td style="font-size: 0.75rem">{{ line.linetotal }}</td>
-                          </tr>
-                          <tr *ngIf="autojobsInvoicesMap[invoiceId].invoiceLines.length === 0">
-                            <td colspan="7" class="text-center">No records to display</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <br />
-                      <!-- Service Charges Table -->
-                      <h6>Service Charges:</h6>
-                      <table class="table table-bordered">
-                        <thead>
-                          <tr>
-                            <th>Service</th>
-                            <th>Description</th>
-                            <th>Value</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr *ngFor="let service of autojobsInvoicesMap[invoiceId].serviceLines">
-                            <td style="font-size: 0.75rem">{{ service.servicename }}</td>
-                            <td style="font-size: 0.75rem">{{ service.servicediscription }}</td>
-                            <td style="font-size: 0.75rem">{{ service.value }}</td>
-                          </tr>
-                          <tr *ngIf="autojobsInvoicesMap[invoiceId].serviceLines.length === 0">
-                            <td colspan="3" class="text-center">No records to display</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <br />
-                      <!-- Common Service Charges Table -->
-                      <h6>Common Service Charges:</h6>
-                      <table class="table table-bordered">
-                        <thead>
-                          <tr>
-                            <th>Service</th>
-                            <th>Description</th>
-                            <th>Value</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr *ngFor="let charge of autojobsInvoicesMap[invoiceId].commonServiceCharges">
-                            <td style="font-size: 0.75rem">{{ charge.name }}</td>
-                            <td style="font-size: 0.75rem">{{ charge.description }}</td>
-                            <td style="font-size: 0.75rem">{{ charge.value }}</td>
-                          </tr>
-                          <tr *ngIf="autojobsInvoicesMap[invoiceId].commonServiceCharges.length === 0">
-                            <td colspan="3" class="text-center">No records to display</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+              <div class="job-history-toolbar d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                  <label class="mb-0 small text-secondary" for="jobHistoryPageSize">Row count:</label>
+                  <select
+                    id="jobHistoryPageSize"
+                    class="form-select form-select-sm job-history-page-size"
+                    [(ngModel)]="jobHistoryPageSize"
+                    [ngModelOptions]="{ standalone: true }"
+                  >
+                    <option [ngValue]="10">10</option>
+                    <option [ngValue]="25">25</option>
+                    <option [ngValue]="50">50</option>
+                    <option [ngValue]="100">100</option>
+                  </select>
                 </div>
-
-                <!-- Show No Data Message When No Invoices Exist -->
-                <ng-template #noData>
-                  <p class="text-center">No invoice history available.</p>
-                </ng-template>
-
-                <div class="tab-pane fade" id="service-charges" role="tabpanel" aria-labelledby="service-charges-tab"></div>
+                <button class="btn btn-primary btn-sm" type="button" (click)="printSection('print-job-wise')">
+                  <fa-icon icon="print"></fa-icon>
+                  Print Job Wise
+                </button>
               </div>
-            </div>
+
+              <div class="table-responsive" *ngIf="jobHistoryList.length > 0; else noJobHistory">
+                <table class="table table-striped table-bordered job-history-table mb-0">
+                  <thead>
+                    <tr>
+                      <th class="text-center">Date</th>
+                      <th>Job Type</th>
+                      <th class="text-center">Millage</th>
+                      <th class="text-center">Next Millage</th>
+                      <th class="text-center">Next Service</th>
+                      <th class="text-center job-history-actions" style="width: 70px"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let job of pagedJobHistory">
+                      <td class="text-center">{{ formatJobDate(job.jobdate || job.jobopentime) }}</td>
+                      <td>{{ job.jobtypename || '-' }}</td>
+                      <td class="text-center">{{ job.millage ?? '-' }}</td>
+                      <td class="text-center">{{ job.nextmillage ?? '-' }}</td>
+                      <td class="text-center">{{ formatJobDate(job.nextservicedate) }}</td>
+                      <td class="text-center job-history-actions">
+                        <button
+                          type="button"
+                          class="btn btn-info btn-sm job-view-btn"
+                          title="View job details"
+                          (click)="openJobDetail(job)"
+                        >
+                          <fa-icon icon="list"></fa-icon>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <ng-template #noJobHistory>
+                <p class="text-center text-muted mb-0 py-4">No job history available for this vehicle.</p>
+              </ng-template>
+            </fieldset>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Job detail modal -->
+<div class="job-detail-modal-backdrop" *ngIf="showJobDetailModal" (click)="closeJobDetail()"></div>
+<div class="job-detail-modal" *ngIf="showJobDetailModal" role="dialog" aria-modal="true">
+  <div class="job-detail-modal-dialog card shadow">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <div>
+        <h5 class="mb-0 text-primary fw-bold">Job Details</h5>
+        <small class="text-muted" *ngIf="selectedJobDetail">
+          {{ selectedJobDetail.job.jobtypename || 'Job' }} ·
+          {{ formatJobDate(selectedJobDetail.job.jobdate || selectedJobDetail.job.jobopentime) }}
+        </small>
+      </div>
+      <button type="button" class="btn-close" aria-label="Close" (click)="closeJobDetail()"></button>
+    </div>
+
+    <div class="card-body job-detail-modal-body">
+      <div *ngIf="isLoadingJobDetail" class="text-center py-5 text-muted">
+        <fa-icon icon="sync" [spin]="true"></fa-icon>
+        <span class="ms-2">Loading job details...</span>
+      </div>
+
+      <div *ngIf="!isLoadingJobDetail && selectedJobDetail">
+        <div class="table-responsive mb-3">
+          <table class="table table-bordered table-sm job-detail-summary-table mb-0">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Invoice Date</th>
+                <th>Customer Name</th>
+                <th>Address</th>
+                <th class="text-end">Sub Total</th>
+                <th class="text-end">Net Total</th>
+                <th class="text-end">Owing</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="selectedJobDetail.invoice; else noInvoiceSummary">
+                <td>{{ selectedJobDetail.invoice.code || selectedJobDetail.invoice.id }}</td>
+                <td>{{ formatJobDate(selectedJobDetail.invoice.invoicedate) }}</td>
+                <td>{{ selectedJobDetail.invoice.customername || '-' }}</td>
+                <td>{{ selectedJobDetail.invoice.customeraddress || '-' }}</td>
+                <td class="text-end">{{ selectedJobDetail.invoice.subtotal ?? 0 | number: '1.2-2' }}</td>
+                <td class="text-end">{{ selectedJobDetail.invoice.nettotal ?? 0 | number: '1.2-2' }}</td>
+                <td class="text-end">{{ selectedJobDetail.invoice.amountowing ?? 0 | number: '1.2-2' }}</td>
+              </tr>
+              <ng-template #noInvoiceSummary>
+                <tr>
+                  <td colspan="7" class="text-center text-muted">No invoice found for this job.</td>
+                </tr>
+              </ng-template>
+            </tbody>
+          </table>
+        </div>
+
+        <h6 class="job-detail-section-title">Items</h6>
+        <div class="table-responsive mb-3">
+          <table class="table table-bordered table-sm table-striped mb-0">
+            <thead>
+              <tr>
+                <th>Item Name</th>
+                <th>Item Code</th>
+                <th>Description</th>
+                <th class="text-center">Quantity</th>
+                <th class="text-center">UOM</th>
+                <th class="text-end">Price</th>
+                <th class="text-end">Unit Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let line of selectedJobDetail.invoiceLines">
+                <td>{{ line.itemname }}</td>
+                <td>{{ line.itemcode }}</td>
+                <td>{{ line.description }}</td>
+                <td class="text-center">{{ line.quantity }}</td>
+                <td class="text-center">{{ line.unitofmeasurement }}</td>
+                <td class="text-end">{{ line.itemprice ?? 0 | number: '1.2-2' }}</td>
+                <td class="text-end">{{ line.linetotal ?? 0 | number: '1.2-2' }}</td>
+              </tr>
+              <tr *ngIf="selectedJobDetail.invoiceLines.length === 0">
+                <td colspan="7" class="text-center text-muted">No records to display</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h6 class="job-detail-section-title">Service Charges</h6>
+        <div class="table-responsive mb-3">
+          <table class="table table-bordered table-sm table-striped mb-0">
+            <thead>
+              <tr>
+                <th>Service</th>
+                <th>Description</th>
+                <th class="text-end">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let service of selectedJobDetail.serviceLines">
+                <td>{{ service.servicename || service.serviceName }}</td>
+                <td>{{ service.servicediscription || service.serviceDescription }}</td>
+                <td class="text-end">{{ service.value ?? 0 | number: '1.2-2' }}</td>
+              </tr>
+              <tr *ngIf="selectedJobDetail.serviceLines.length === 0">
+                <td colspan="3" class="text-center text-muted">No records to display</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h6 class="job-detail-section-title">Common Service Charges</h6>
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm table-striped mb-0">
+            <thead>
+              <tr>
+                <th>Service</th>
+                <th>Description</th>
+                <th class="text-end">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let charge of selectedJobDetail.commonServiceCharges">
+                <td>{{ charge.name }}</td>
+                <td>{{ charge.description }}</td>
+                <td class="text-end">{{ charge.value ?? 0 | number: '1.2-2' }}</td>
+              </tr>
+              <tr *ngIf="selectedJobDetail.commonServiceCharges.length === 0">
+                <td colspan="3" class="text-center text-muted">No records to display</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer text-end">
+      <button type="button" class="btn btn-primary btn-sm" (click)="closeJobDetail()">Ok</button>
     </div>
   </div>
 </div>

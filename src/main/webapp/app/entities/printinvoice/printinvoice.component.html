@@ -141,8 +141,10 @@
   }
 
   .line-code {
+    position: relative;
+    left: -4mm;
     text-align: left;
-    padding-left: 0.2mm;
+    padding-left: 0;
   }
 
   .line-name {
@@ -153,9 +155,9 @@
 
   .line-discount {
     position: relative;
-    left: 5mm;
-    text-align: left;
-    padding-left: 0;
+    left: -2mm;
+    text-align: right;
+    padding-right: 0;
   }
 
   .line-qty {
@@ -165,9 +167,9 @@
 
   .line-price {
     position: relative;
-    left: -8.5mm;
-    text-align: left;
-    padding-left: 0;
+    left: -15mm;
+    text-align: right;
+    padding-right: 100mm; /* increase this to move Unit Price left */
   }
 
   .line-total {
