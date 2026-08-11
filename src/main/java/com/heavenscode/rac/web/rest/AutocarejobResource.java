@@ -2,6 +2,7 @@ package com.heavenscode.rac.web.rest;
 
 import com.heavenscode.rac.domain.Autocarejob;
 import com.heavenscode.rac.repository.AutocarejobRepository;
+import com.heavenscode.rac.service.MobileAppWebhookService;
 import com.heavenscode.rac.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -42,8 +43,11 @@ public class AutocarejobResource {
 
     private final AutocarejobRepository autocarejobRepository;
 
-    public AutocarejobResource(AutocarejobRepository autocarejobRepository) {
+    private final MobileAppWebhookService mobileAppWebhookService;
+
+    public AutocarejobResource(AutocarejobRepository autocarejobRepository, MobileAppWebhookService mobileAppWebhookService) {
         this.autocarejobRepository = autocarejobRepository;
+        this.mobileAppWebhookService = mobileAppWebhookService;
     }
 
     /**
@@ -63,6 +67,7 @@ public class AutocarejobResource {
         autocarejob.setJobdate(jobDate);
         autocarejob.setJobnumber(getNextDailyJobNumber(jobDate));
         autocarejob = autocarejobRepository.save(autocarejob);
+        mobileAppWebhookService.send(MobileAppWebhookService.OPEN_JOB, autocarejob);
         return ResponseEntity.created(new URI("/api/autocarejobs/" + autocarejob.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, autocarejob.getId().toString()))
             .body(autocarejob);
@@ -108,6 +113,7 @@ public class AutocarejobResource {
         }
 
         autocarejob = autocarejobRepository.save(autocarejob);
+        mobileAppWebhookService.send(MobileAppWebhookService.TEMPORY_INVOICE, autocarejob);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, autocarejob.getId().toString()))
             .body(autocarejob);
@@ -278,9 +284,25 @@ public class AutocarejobResource {
             })
             .map(autocarejobRepository::save);
 
+        result.ifPresent(savedAutocarejob -> {
+            if (isAdvisorInstructionPatch(autocarejob)) {
+                mobileAppWebhookService.send(MobileAppWebhookService.TEMPORY_INVOICE, savedAutocarejob);
+            }
+        });
+
         return ResponseUtil.wrapOrNotFound(
             result,
             HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, autocarejob.getId().toString())
+        );
+    }
+
+    private boolean isAdvisorInstructionPatch(Autocarejob autocarejob) {
+        return (
+            autocarejob.getSpecialinstructions() != null ||
+            autocarejob.getNextserviceinstructions() != null ||
+            autocarejob.getLastserviceinstructions() != null ||
+            autocarejob.getIsadvisorchecked() != null ||
+            autocarejob.getAdvisorfinalcheck() != null
         );
     }
 

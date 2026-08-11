@@ -2,6 +2,7 @@ package com.heavenscode.rac.web.rest;
 
 import com.heavenscode.rac.domain.Salesinvoice;
 import com.heavenscode.rac.repository.SalesinvoiceRepository;
+import com.heavenscode.rac.service.MobileAppWebhookService;
 import com.heavenscode.rac.service.SalesInvoiceCodeService;
 import com.heavenscode.rac.service.SalesinvoiceQueryService;
 import com.heavenscode.rac.service.SalesinvoiceService;
@@ -48,16 +49,20 @@ public class SalesinvoiceResource {
 
     private final SalesInvoiceCodeService salesInvoiceCodeService;
 
+    private final MobileAppWebhookService mobileAppWebhookService;
+
     public SalesinvoiceResource(
         SalesinvoiceService salesinvoiceService,
         SalesinvoiceRepository salesinvoiceRepository,
         SalesinvoiceQueryService salesinvoiceQueryService,
-        SalesInvoiceCodeService salesInvoiceCodeService
+        SalesInvoiceCodeService salesInvoiceCodeService,
+        MobileAppWebhookService mobileAppWebhookService
     ) {
         this.salesinvoiceService = salesinvoiceService;
         this.salesinvoiceRepository = salesinvoiceRepository;
         this.salesinvoiceQueryService = salesinvoiceQueryService;
         this.salesInvoiceCodeService = salesInvoiceCodeService;
+        this.mobileAppWebhookService = mobileAppWebhookService;
     }
 
     /**
@@ -74,6 +79,7 @@ public class SalesinvoiceResource {
             throw new BadRequestAlertException("A new salesinvoice cannot already have an ID", ENTITY_NAME, "idexists");
         }
         salesinvoice = salesinvoiceService.save(salesinvoice);
+        mobileAppWebhookService.send(MobileAppWebhookService.INVOICE, salesinvoice);
         return ResponseEntity.created(new URI("/api/salesinvoices/" + salesinvoice.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, salesinvoice.getId().toString()))
             .body(salesinvoice);

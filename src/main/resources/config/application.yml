@@ -213,4 +213,7 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
+  mobile-app-webhook:
+    url: https://rathnaweeraautocare.sandboxkdmobileapp.xyz/invoices/webhook
+    key: 'rR9@gBe#CK2'
