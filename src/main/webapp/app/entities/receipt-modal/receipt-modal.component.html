@@ -157,18 +157,32 @@
                   <!-- FIXED BANK SELECT -->
                   <div class="mb-3">
                     <label class="form-label" for="bank">Bank</label>
-                    <select class="form-control" id="bank" (change)="onItemBankInput($event)">
+                    <select
+                      class="form-control"
+                      id="bank"
+                      [(ngModel)]="selectedCompanyBankAccountId"
+                      [ngModelOptions]="{ standalone: true }"
+                      (change)="onItemBankInput($event)"
+                    >
                       <option value="">--select--</option>
-                      <option *ngFor="let bank of banks" [value]="bank.name">{{ bank.name }}</option>
+                      <option *ngFor="let bank of banks" [value]="bank.id">
+                        {{ bank.accountnumber ? bank.accountnumber + ' - ' : '' }}{{ bank.bankname }}
+                      </option>
                     </select>
                   </div>
 
                   <!-- FIXED BRANCH SELECT -->
                   <div class="mb-3">
                     <label class="form-label" for="branch">Branch</label>
-                    <select class="form-control" id="branch" (change)="onItemChequebranchInput($event)">
+                    <select
+                      class="form-control"
+                      id="branch"
+                      [(ngModel)]="selectedCompanyBankAccountId"
+                      [ngModelOptions]="{ standalone: true }"
+                      (change)="onItemChequebranchInput($event)"
+                    >
                       <option value="">--select branch--</option>
-                      <option *ngFor="let branch of bankbranch" [value]="branch.branchname">
+                      <option *ngFor="let branch of bankbranch" [value]="branch.id">
                         {{ branch.branchname }}
                       </option>
                     </select>
@@ -189,6 +203,19 @@
 
                 <!-- Input Fields for Option 4 -->
                 <div *ngIf="selectedOption === 4">
+                  <div class="mb-3">
+                    <label class="form-label" for="cardAmount">Amount <span class="text-danger">*</span></label>
+                    <input
+                      type="text"
+                      class="form-control text-end"
+                      id="cardAmount"
+                      [value]="cardAmountStr"
+                      (input)="onCardInput($event)"
+                      (blur)="onCardBlur($event)"
+                      (focus)="onCardFocus($event)"
+                    />
+                  </div>
+
                   <div class="mb-3">
                     <label class="form-label" for="field_input8">Ref</label>
                     <input type="text" class="form-control" name="inputH" id="field_input8" data-cy="inputH" />
@@ -244,23 +271,50 @@
                 <!-- Input Fields for Option 5 -->
                 <div *ngIf="selectedOption === 5">
                   <div class="mb-3">
+                    <label class="form-label" for="bankAmount">Amount <span class="text-danger">*</span></label>
+                    <input
+                      type="text"
+                      class="form-control text-end"
+                      id="bankAmount"
+                      [value]="bankAmountStr"
+                      (input)="onBankAmountInput($event)"
+                      (blur)="onBankAmountBlur($event)"
+                      (focus)="onBankAmountFocus($event)"
+                    />
+                  </div>
+
+                  <div class="mb-3">
                     <label class="form-label" for="field_input9">Ref </label>
                     <input type="text" class="form-control" name="inputI" id="field_input9" data-cy="inputI" />
                   </div>
                   <!-- FIXED OPTION 5 BANK AND BRANCH (Assuming you want Bank Deposit to work like Cheque) -->
                   <div class="mb-3">
                     <label class="form-label" for="bankDeposit">Bank</label>
-                    <select class="form-control" id="bankDeposit" (change)="onItemBankInput($event)">
+                    <select
+                      class="form-control"
+                      id="bankDeposit"
+                      [(ngModel)]="selectedCompanyBankAccountId"
+                      [ngModelOptions]="{ standalone: true }"
+                      (change)="onItemBankInput($event)"
+                    >
                       <option value="">--select--</option>
-                      <option *ngFor="let bank of banks" [value]="bank.name">{{ bank.name }}</option>
+                      <option *ngFor="let bank of banks" [value]="bank.id">
+                        {{ bank.accountnumber ? bank.accountnumber + ' - ' : '' }}{{ bank.bankname }}
+                      </option>
                     </select>
                   </div>
 
                   <div class="mb-3">
                     <label class="form-label" for="branchDeposit">Branch</label>
-                    <select class="form-control" id="branchDeposit" (change)="onItemChequebranchInput($event)">
+                    <select
+                      class="form-control"
+                      id="branchDeposit"
+                      [(ngModel)]="selectedCompanyBankAccountId"
+                      [ngModelOptions]="{ standalone: true }"
+                      (change)="onItemChequebranchInput($event)"
+                    >
                       <option value="">--select branch--</option>
-                      <option *ngFor="let branch of bankbranch" [value]="branch.branchname">
+                      <option *ngFor="let branch of bankbranch" [value]="branch.id">
                         {{ branch.branchname }}
                       </option>
                     </select>

@@ -5,10 +5,6 @@ import {
   ReceiptpaymentsdetailsFormService,
   ReceiptpaymentsdetailsFormGroup,
 } from 'app/entities/receiptpaymentsdetails/update/receiptpaymentsdetails-form.service';
-import { IBanks } from 'app/entities/banks/banks.model';
-import { BanksService } from 'app/entities/banks/service/banks.service';
-import { IBankbranch } from 'app/entities/bankbranch/bankbranch.model';
-import { BankbranchService } from 'app/entities/bankbranch/service/bankbranch.service';
 import { HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
 import { finalize } from 'rxjs/operators';
@@ -25,6 +21,8 @@ import { SalesInvoiceLinesService } from '../sales-invoice-lines/service/sales-i
 import { AccountsService } from '../accounts/service/accounts.service';
 import { SalesinvoiceService } from '../salesinvoice/service/salesinvoice.service';
 import { CustomerService } from 'app/entities/customer/service/customer.service';
+import { ICompanybankaccount } from '../companybankaccount/companybankaccount.model';
+import { CompanybankaccountService } from '../companybankaccount/service/companybankaccount.service';
 
 @Component({
   selector: 'app-receipt-modal',
@@ -64,16 +62,22 @@ export class ReceiptModalComponent implements OnChanges {
   selectedOption: number = 0;
   cashAmountStr: string = '0.00';
   chequeAmountStr: string = '0.00';
+  cardAmountStr: string = '0.00';
+  bankAmountStr: string = '0.00';
   chequeAmount: number = 0;
-  banks: IBanks[] = [];
-  bankbranch: IBankbranch[] = [];
+  cardAmount: number = 0;
+  bankAmount: number = 0;
+  banks: ICompanybankaccount[] = [];
+  companyBankAccounts: ICompanybankaccount[] = [];
+  bankbranch: ICompanybankaccount[] = [];
+  selectedCompanyBankAccount: ICompanybankaccount | null = null;
+  selectedCompanyBankAccountId: number | null = null;
 
   salesinvoiceupdate = inject(SalesinvoiceUpdateComponent);
 
   protected receiptpaymentsdetailsService = inject(ReceiptpaymentsdetailsService);
   protected receiptpaymentsdetailsFormService = inject(ReceiptpaymentsdetailsFormService);
-  protected banksService = inject(BanksService);
-  bankbranchService = inject(BankbranchService);
+  protected companybankaccountService = inject(CompanybankaccountService);
   reciptService = inject(ReceiptService);
   autocarejobService = inject(AutocarejobService);
   reciptlines = inject(ReceiptLinesService);
@@ -99,7 +103,7 @@ export class ReceiptModalComponent implements OnChanges {
     if (changes['receiptpaymentsdetails'] && changes['receiptpaymentsdetails'].currentValue) {
       console.log('Updated receiptpaymentsdetails:', changes['receiptpaymentsdetails'].currentValue);
       this.updateForm(this.receiptpaymentsdetails);
-      this.loadBanks();
+      this.loadCompanyBankAccounts();
     }
     if (changes['customername']) {
       const custName = changes['customername'].currentValue;
@@ -113,6 +117,7 @@ export class ReceiptModalComponent implements OnChanges {
   ngOnInit() {
     console.log('selectedOption:', this.selectedOption);
     this.fetchpaymentmethod();
+    this.loadCompanyBankAccounts();
     if (this.customername && this.customername.trim().toUpperCase() === 'CASH') {
       this.onOptionChange(1);
     }
@@ -133,9 +138,10 @@ export class ReceiptModalComponent implements OnChanges {
     return dayjs(d).hour(now.hour()).minute(now.minute()).second(now.second()).add(-new Date().getTimezoneOffset(), 'minute');
   }
 
-  loadBanks(): void {
-    this.banksService.query({ size: 1000 }).subscribe((res: HttpResponse<IBanks[]>) => {
-      this.banks = res.body || [];
+  loadCompanyBankAccounts(): void {
+    this.companybankaccountService.query({ size: 1000 }).subscribe((res: HttpResponse<ICompanybankaccount[]>) => {
+      this.companyBankAccounts = res.body || [];
+      this.banks = this.companyBankAccounts.filter(account => !!account.bankname);
       this.loadBankBranch();
     });
   }
@@ -499,6 +505,65 @@ export class ReceiptModalComponent implements OnChanges {
     }
   }
 
+  onCardInput(event: Event): void {
+    const inputElement = <HTMLInputElement>event.target;
+    const value = this.normalizeAmountInput(inputElement.value);
+    inputElement.value = value;
+    this.cardAmountStr = value;
+    this.cardAmount = parseFloat(value) || 0;
+  }
+
+  onCardBlur(event: Event): void {
+    const inputElement = <HTMLInputElement>event.target;
+    let val = parseFloat(inputElement.value);
+    if (isNaN(val)) val = 0;
+    this.cardAmountStr = val.toFixed(2);
+    inputElement.value = this.cardAmountStr;
+    this.cardAmount = val;
+  }
+
+  onCardFocus(event: Event): void {
+    const inputElement = <HTMLInputElement>event.target;
+    if (parseFloat(inputElement.value) === 0) {
+      this.cardAmountStr = '';
+      inputElement.value = '';
+    }
+  }
+
+  onBankAmountInput(event: Event): void {
+    const inputElement = <HTMLInputElement>event.target;
+    const value = this.normalizeAmountInput(inputElement.value);
+    inputElement.value = value;
+    this.bankAmountStr = value;
+    this.bankAmount = parseFloat(value) || 0;
+  }
+
+  onBankAmountBlur(event: Event): void {
+    const inputElement = <HTMLInputElement>event.target;
+    let val = parseFloat(inputElement.value);
+    if (isNaN(val)) val = 0;
+    this.bankAmountStr = val.toFixed(2);
+    inputElement.value = this.bankAmountStr;
+    this.bankAmount = val;
+  }
+
+  onBankAmountFocus(event: Event): void {
+    const inputElement = <HTMLInputElement>event.target;
+    if (parseFloat(inputElement.value) === 0) {
+      this.bankAmountStr = '';
+      inputElement.value = '';
+    }
+  }
+
+  private normalizeAmountInput(value: string): string {
+    value = value.replace(/[^0-9.]/g, '');
+    const parts = value.split('.');
+    if (parts.length > 2) {
+      value = parts[0] + '.' + parts.slice(1).join('');
+    }
+    return value;
+  }
+
   bankid: number = 0;
   bankname: string = '';
 
@@ -507,27 +572,31 @@ export class ReceiptModalComponent implements OnChanges {
 
     if (!selectedBank) {
       console.log('No bank selected');
-      this.bankbranch = []; // Clear previous branches if nothing is selected
+      this.bankbranch = [];
+      this.selectedCompanyBankAccount = null;
+      this.selectedCompanyBankAccountId = null;
       return;
     }
 
-    const selectedObject = this.banks.find(bank => bank.name === selectedBank);
+    const selectedObject = this.banks.find(bank => String(bank.id) === selectedBank);
 
     if (selectedObject) {
-      this.bankid = Number(selectedObject.id);
-      this.bankname = selectedObject.name ? selectedObject.name.toString() : '';
+      this.bankid = Number(selectedObject.bankid ?? 0);
+      this.bankname = selectedObject.bankname ? selectedObject.bankname.toString() : '';
       this.bank = this.bankname; // sync with input property
+      this.selectedCompanyBankAccount = selectedObject;
+      this.selectedCompanyBankAccountId = selectedObject.id;
+      this.Branch = selectedObject.branchname ?? '';
+      this.branchid = Number(selectedObject.branchid ?? 0);
+      this.applySelectedCompanyBankAccount(selectedObject);
 
-      // Clear previous branches immediately
-      this.bankbranch = [];
-
-      this.bankbranchService.findByBankcode(selectedObject.code || '').subscribe((res: HttpResponse<IBankbranch[]>) => {
-        this.bankbranch = res.body || [];
-        console.log('Bank Branches:', this.bankbranch);
-      });
+      this.bankbranch = [selectedObject];
+      console.log('Bank Branches:', this.bankbranch);
     } else {
       console.log('Selected bank not found in the list');
       this.bankbranch = [];
+      this.selectedCompanyBankAccount = null;
+      this.selectedCompanyBankAccountId = null;
     }
   }
 
@@ -535,30 +604,40 @@ export class ReceiptModalComponent implements OnChanges {
   branchid: number = 0;
 
   onItemChequebranchInput(event: Event): void {
-    const selectedBranchName = (event.target as HTMLSelectElement).value;
-    this.Branch = selectedBranchName;
-    const selectedBranch = this.bankbranch.find(branch => branch.branchname === selectedBranchName);
+    const selectedBranchId = (event.target as HTMLSelectElement).value;
+    const selectedBranch = this.bankbranch.find(branch => String(branch.id) === selectedBranchId);
     if (selectedBranch) {
-      this.branchid = Number(selectedBranch.id);
+      this.Branch = selectedBranch.branchname ?? '';
+      this.branchid = Number(selectedBranch.branchid ?? 0);
+      this.selectedCompanyBankAccount = selectedBranch;
+      this.applySelectedCompanyBankAccount(selectedBranch);
     } else {
+      this.Branch = '';
       this.branchid = 0;
     }
     console.log('Selected Branch:', this.Branch, 'ID:', this.branchid);
   }
 
   loadBankBranch(): void {
+    if (this.selectedCompanyBankAccount) {
+      this.bankbranch = [this.selectedCompanyBankAccount];
+      return;
+    }
     if (!this.bank) {
       this.bankbranch = [];
       return;
     }
-    const selectedObject = this.banks.find(bank => bank.name === this.bank);
-    if (selectedObject && selectedObject.code) {
-      this.bankbranchService.findByBankcode(selectedObject.code).subscribe((res: HttpResponse<IBankbranch[]>) => {
-        this.bankbranch = res.body || [];
-      });
+    const selectedObject = this.banks.find(bank => bank.bankname === this.bank);
+    if (selectedObject) {
+      this.bankbranch = [selectedObject];
     } else {
       this.bankbranch = [];
     }
+  }
+
+  private applySelectedCompanyBankAccount(companyBankAccount: ICompanybankaccount): void {
+    this.accountId = Number(companyBankAccount.accountid ?? 0);
+    this.accountCode = companyBankAccount.accountcode ?? '';
   }
   receipt = {
     code: 'string',
@@ -669,31 +748,45 @@ export class ReceiptModalComponent implements OnChanges {
   }
 
   saveReceiptWithCode(nextReceiptCode: string, finalUserId: number): void {
-    const paymentAmount = this.method === 'Cheque' ? this.chequeAmount || 0 : this.cash || this.totalamount || 0;
-    const safeAccountId = this.accountId && !isNaN(Number(this.accountId)) ? Number(this.accountId) : 0;
+    const paymentAmount = this.getCurrentPaymentAmount();
+    const selectedPaymentBankAccount = this.method === 'Cheque' || this.method === 'Bank' ? this.selectedCompanyBankAccount : null;
+    const paymentAccountId =
+      selectedPaymentBankAccount?.accountid && !isNaN(Number(selectedPaymentBankAccount.accountid))
+        ? Number(selectedPaymentBankAccount.accountid)
+        : this.accountId && !isNaN(Number(this.accountId))
+          ? Number(this.accountId)
+          : 0;
+    const paymentAccountCode = selectedPaymentBankAccount?.accountcode ?? this.accountCode ?? '';
+    const safeAccountId = paymentAccountId;
+    const receiptTotalAmount = this.method === 'Credit' ? 0 : this.totalamount || 0;
 
     this.receipt.code = nextReceiptCode;
     this.receipt.lmu = finalUserId;
     this.receipt.lmd = dayjs().add(-new Date().getTimezoneOffset(), 'minute');
     this.receipt.customername = this.customername ?? '';
-    this.receipt.totalamount = this.totalamount;
+    this.receipt.totalamount = receiptTotalAmount;
     this.receipt.deposited = this.method === 'Cheque' ? false : this.deposited ?? true;
 
     // Calculate amount in words if not already set or to ensure it's current
-    const words = toWords(this.totalamount).replace(/,/g, '').replace(/and/g, 'and');
+    const words = toWords(receiptTotalAmount).replace(/,/g, '').replace(/and/g, 'and');
     this.receipt.totalamountinword = words + ' Rupees Only';
 
     this.subscribeToSaveResponseWithCallback(this.reciptService.create(this.receipt as any), (receiptId: number) => {
+      if (this.method === 'Credit') {
+        this.salesinvoiceupdate.save();
+        return;
+      }
+
       const receiptLinePayload: any = {
         id: receiptId,
         lineid: 1,
         invoicecode: this.invoicecode ?? '',
         invoicetype: 'Sales Invoice',
         originalamount: this.totalamount || 0,
-        amountowing: this.method === 'Bank' ? 0 : this.method === 'Cash' ? 0 : (this.totalamount || 0) - (paymentAmount || 0),
+        amountowing: (this.totalamount || 0) - (paymentAmount || 0),
         discountavailable: 0,
         discounttaken: 0,
-        amountreceived: this.method === 'Bank' ? 0 : this.method === 'Cash' ? this.totalamount || 0 : paymentAmount || 0,
+        amountreceived: paymentAmount || 0,
         lmu: finalUserId,
         lmd: dayjs().add(-new Date().getTimezoneOffset(), 'minute'),
         accountid: safeAccountId,
@@ -716,8 +809,8 @@ export class ReceiptModalComponent implements OnChanges {
         lmd: dayjs().add(-new Date().getTimezoneOffset(), 'minute'),
         termid: this.receipt.termid || 0,
         termname: this.method || '',
-        accountid: safeAccountId,
-        accountcode: this.accountCode || '',
+        accountid: paymentAccountId,
+        accountcode: paymentAccountCode,
         isdeposit: false,
         ispdcheque: false,
 
@@ -733,7 +826,7 @@ export class ReceiptModalComponent implements OnChanges {
         // ==========================================
 
         creditcardno: '',
-        creditcardamount: 0,
+        creditcardamount: this.method === 'Card/Other' ? paymentAmount || 0 : 0,
         reference: 'Sales Invoice',
         otherdetails: '',
         accountno: '',
@@ -744,12 +837,12 @@ export class ReceiptModalComponent implements OnChanges {
         returnchequesttledate: null,
         chequestatusid: this.method === 'Cheque' ? 1 : 0,
         depositdate: null,
-        bankdepositbankname: '',
-        bankdepositbankid: 0,
-        bankdepositbankbranchname: '',
-        bankdepositbankbranchid: 0,
+        bankdepositbankname: this.method === 'Bank' ? this.bankname || this.bank || '' : '',
+        bankdepositbankid: this.method === 'Bank' ? this.bankid : 0,
+        bankdepositbankbranchname: this.method === 'Bank' ? this.Branch : '',
+        bankdepositbankbranchid: this.method === 'Bank' ? this.branchid : 0,
         returnchequefine: 0,
-        companybankid: 0,
+        companybankid: selectedPaymentBankAccount?.id ?? 0,
         isbankreconciliation: false,
       };
       console.log('ReceiptPayments Payload:', receiptPaymentsPayload);
@@ -780,19 +873,7 @@ export class ReceiptModalComponent implements OnChanges {
   save(): void {
     this.isSaving = true;
 
-    let currentPaidAmount = 0;
-    if (this.method === 'Cheque') {
-      currentPaidAmount = this.chequeAmount || 0;
-    } else if (this.method === 'Cash') {
-      currentPaidAmount = this.cash || this.totalamount || 0;
-      if (currentPaidAmount > this.totalamount) {
-        currentPaidAmount = this.totalamount;
-      }
-    } else if (this.method === 'Credit') {
-      currentPaidAmount = 0;
-    } else {
-      currentPaidAmount = this.totalamount || 0;
-    }
+    const currentPaidAmount = this.getCurrentPaymentAmount();
 
     this.salesinvoiceupdate.editForm.patchValue({
       paidamount: currentPaidAmount,
@@ -904,9 +985,21 @@ export class ReceiptModalComponent implements OnChanges {
     console.log('Selected Term ID:', termid);
     this.method = paymentMethod;
     this.accountmethod(paymentMethod);
+    if (paymentMethod !== 'Cheque' && paymentMethod !== 'Bank') {
+      this.selectedCompanyBankAccount = null;
+      this.selectedCompanyBankAccountId = null;
+      this.bankbranch = [];
+      this.bankid = 0;
+      this.bankname = '';
+      this.Branch = '';
+      this.branchid = 0;
+    }
     this.receipt.term = paymentMethod;
     this.receipt.termid = termid;
     this.receipt.deposited = this.method === 'Cheque' ? false : this.deposited ?? true;
+    if (this.method === 'Credit') {
+      this.receipt.totalamount = 0;
+    }
 
     // Sync with main SalesInvoice form
     this.salesinvoiceupdate.editForm.patchValue({
@@ -919,6 +1012,26 @@ export class ReceiptModalComponent implements OnChanges {
     console.log(totalAmountInWords + ' Rupees Only');
     this.receipt.totalamountinword = totalAmountInWords + ' Rupees Only';
     console.log('Updated Receipt:', this.receipt);
+  }
+
+  private getCurrentPaymentAmount(): number {
+    if (this.method === 'Cheque') {
+      return this.chequeAmount || 0;
+    }
+    if (this.method === 'Cash') {
+      const currentPaidAmount = this.cash || this.totalamount || 0;
+      return currentPaidAmount > this.totalamount ? this.totalamount : currentPaidAmount;
+    }
+    if (this.method === 'Credit') {
+      return 0;
+    }
+    if (this.method === 'Card/Other') {
+      return this.cardAmount || 0;
+    }
+    if (this.method === 'Bank') {
+      return this.bankAmount || 0;
+    }
+    return this.totalamount || 0;
   }
 
   protected onSaveSuccess(): void {
