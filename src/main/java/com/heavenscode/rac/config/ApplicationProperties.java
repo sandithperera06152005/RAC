@@ -15,6 +15,8 @@ public class ApplicationProperties {
 
     private final MobileAppWebhook mobileAppWebhook = new MobileAppWebhook();
 
+    private final MobileAppInvoicePdf mobileAppInvoicePdf = new MobileAppInvoicePdf();
+
     // jhipster-needle-application-properties-property
 
     public Liquibase getLiquibase() {
@@ -23,6 +25,10 @@ public class ApplicationProperties {
 
     public MobileAppWebhook getMobileAppWebhook() {
         return mobileAppWebhook;
+    }
+
+    public MobileAppInvoicePdf getMobileAppInvoicePdf() {
+        return mobileAppInvoicePdf;
     }
 
     // jhipster-needle-application-properties-property-getter
@@ -60,6 +66,19 @@ public class ApplicationProperties {
 
         public void setKey(String key) {
             this.key = key;
+        }
+    }
+
+    public static class MobileAppInvoicePdf {
+
+        private String filePath;
+
+        public String getFilePath() {
+            return filePath;
+        }
+
+        public void setFilePath(String filePath) {
+            this.filePath = filePath;
         }
     }
     // jhipster-needle-application-properties-property-class

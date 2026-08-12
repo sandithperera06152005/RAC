@@ -1190,16 +1190,14 @@ export class SalesinvoiceUpdateComponent implements OnInit {
               forkJoin(childSaveObservables).subscribe({
                 next: () => {
                   console.log('All child components saved successfully.');
-                  window.open('/printinvoice?id=' + invoiceId, '_blank');
-                  this.previousState();
+                  this.generateMobileAppPdfAndFinish(invoiceId);
                 },
                 error: err => {
                   console.error('Error saving child components:', err);
                 },
               });
             } else {
-              window.open('/printinvoice?id=' + invoiceId, '_blank');
-              this.previousState();
+              this.generateMobileAppPdfAndFinish(invoiceId);
             }
           }
         }
@@ -1221,6 +1219,21 @@ export class SalesinvoiceUpdateComponent implements OnInit {
 
   protected onSaveFinalize(): void {
     this.isSaving = false;
+  }
+
+  private generateMobileAppPdfAndFinish(invoiceId: number): void {
+    this.salesinvoiceService.generateMobileAppPdf(invoiceId).subscribe({
+      next: response => {
+        console.log('Mobile app invoice PDF saved:', response.body?.filePath);
+        window.open('/printinvoice?id=' + invoiceId, '_blank');
+        this.previousState();
+      },
+      error: err => {
+        console.error('Failed to save mobile app invoice PDF:', err);
+        window.open('/printinvoice?id=' + invoiceId, '_blank');
+        this.previousState();
+      },
+    });
   }
 
   protected updateForm(salesinvoice: ISalesinvoice): void {

@@ -2,6 +2,8 @@ package com.heavenscode.rac.web.rest;
 
 import com.heavenscode.rac.domain.Salesinvoice;
 import com.heavenscode.rac.repository.SalesinvoiceRepository;
+import com.heavenscode.rac.service.MobileAppInvoicePdfService;
+import com.heavenscode.rac.service.MobileAppInvoicePdfService.MobileAppInvoicePdfResult;
 import com.heavenscode.rac.service.MobileAppWebhookService;
 import com.heavenscode.rac.service.SalesInvoiceCodeService;
 import com.heavenscode.rac.service.SalesinvoiceQueryService;
@@ -51,18 +53,22 @@ public class SalesinvoiceResource {
 
     private final MobileAppWebhookService mobileAppWebhookService;
 
+    private final MobileAppInvoicePdfService mobileAppInvoicePdfService;
+
     public SalesinvoiceResource(
         SalesinvoiceService salesinvoiceService,
         SalesinvoiceRepository salesinvoiceRepository,
         SalesinvoiceQueryService salesinvoiceQueryService,
         SalesInvoiceCodeService salesInvoiceCodeService,
-        MobileAppWebhookService mobileAppWebhookService
+        MobileAppWebhookService mobileAppWebhookService,
+        MobileAppInvoicePdfService mobileAppInvoicePdfService
     ) {
         this.salesinvoiceService = salesinvoiceService;
         this.salesinvoiceRepository = salesinvoiceRepository;
         this.salesinvoiceQueryService = salesinvoiceQueryService;
         this.salesInvoiceCodeService = salesInvoiceCodeService;
         this.mobileAppWebhookService = mobileAppWebhookService;
+        this.mobileAppInvoicePdfService = mobileAppInvoicePdfService;
     }
 
     /**
@@ -174,6 +180,12 @@ public class SalesinvoiceResource {
     public ResponseEntity<Map<String, String>> getNextVatInvoiceCode() {
         LOG.debug("REST request to get next VAT sales invoice code");
         return ResponseEntity.ok(Map.of("code", salesInvoiceCodeService.peekNextVatInvoiceCode()));
+    }
+
+    @PostMapping("/{id}/mobile-app-pdf")
+    public ResponseEntity<MobileAppInvoicePdfResult> createMobileAppInvoicePdf(@PathVariable("id") Long id) {
+        LOG.debug("REST request to create mobile app sales invoice PDF : {}", id);
+        return ResponseEntity.ok(mobileAppInvoicePdfService.generate(id));
     }
 
     /**

@@ -217,3 +217,5 @@ application:
   mobile-app-webhook:
     url: https://rathnaweeraautocare.sandboxkdmobileapp.xyz/invoices/webhook
     key: 'rR9@gBe#CK2'
+  mobile-app-invoice-pdf:
+    file-path: 'D:\Geo_Edge_RAC\RAC\Invoices'

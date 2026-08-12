@@ -90,6 +90,14 @@ export class SalesinvoiceService {
       .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
+  generateMobileAppPdf(id: number): Observable<HttpResponse<{ invoiceId: number; invoiceCode: string; filePath: string }>> {
+    return this.http.post<{ invoiceId: number; invoiceCode: string; filePath: string }>(
+      `${this.resourceUrl}/${id}/mobile-app-pdf`,
+      {},
+      { observe: 'response' },
+    );
+  }
+
   getElementsByUserInputCode(userInputCode: string): Observable<EntityArrayResponseType> {
     const url = this.applicationConfigService.getEndpointFor(`api/inventories?code.contains=${userInputCode}&page=0&size=20`);
     return this.http
