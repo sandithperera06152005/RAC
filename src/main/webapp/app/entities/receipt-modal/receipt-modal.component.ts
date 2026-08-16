@@ -886,6 +886,25 @@ export class ReceiptModalComponent implements OnChanges {
     const userIdNumber = storedUserId ? parseInt(storedUserId, 10) : 0;
     const finalUserId = isNaN(userIdNumber) ? 0 : userIdNumber;
 
+    this.salesinvoiceupdate.checkDuplicateActiveInvoice().subscribe({
+      next: response => {
+        if (response.body?.exists) {
+          alert('This sales invoice already exists.');
+          this.onSaveFinalize();
+          return;
+        }
+
+        this.continueBillingSave(finalUserId);
+      },
+      error: err => {
+        console.error('Error checking duplicate sales invoice:', err);
+        this.onSaveError();
+        this.onSaveFinalize();
+      },
+    });
+  }
+
+  private continueBillingSave(finalUserId: number): void {
     if (this.receipt) {
       this.reciptService.query({ page: 0, size: 1, sort: ['id,desc'] }).subscribe({
         next: (res: HttpResponse<any[]>) => {

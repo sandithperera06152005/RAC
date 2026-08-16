@@ -84,6 +84,9 @@ public class SalesinvoiceResource {
         if (salesinvoice.getId() != null) {
             throw new BadRequestAlertException("A new salesinvoice cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        if (hasExistingActiveInvoiceToday(salesinvoice)) {
+            throw new BadRequestAlertException("This sales invoice already exists", ENTITY_NAME, "salesinvoiceexists");
+        }
         salesinvoice = salesinvoiceService.save(salesinvoice);
         mobileAppWebhookService.send(MobileAppWebhookService.INVOICE, salesinvoice);
         return ResponseEntity.created(new URI("/api/salesinvoices/" + salesinvoice.getId()))
@@ -189,6 +192,18 @@ public class SalesinvoiceResource {
     }
 
     /**
+     * {@code POST  /salesinvoices/duplicate-check} : check whether an active sales invoice already exists today.
+     *
+     * @param salesinvoice the sales invoice values to check.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and duplicate status in body.
+     */
+    @PostMapping("/duplicate-check")
+    public ResponseEntity<Map<String, Boolean>> checkDuplicateSalesinvoice(@RequestBody Salesinvoice salesinvoice) {
+        LOG.debug("REST request to check duplicate Salesinvoice : {}", salesinvoice);
+        return ResponseEntity.ok(Map.of("exists", hasExistingActiveInvoiceToday(salesinvoice)));
+    }
+
+    /**
      * {@code GET  /salesinvoices} : get all the salesinvoices.
      *
      * @param pageable the pagination information.
@@ -245,5 +260,20 @@ public class SalesinvoiceResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    private boolean hasExistingActiveInvoiceToday(Salesinvoice salesinvoice) {
+        if (salesinvoice.getAutocarejobid() == null || salesinvoice.getVehicleno() == null || salesinvoice.getNettotal() == null) {
+            return false;
+        }
+
+        return (
+            salesinvoiceRepository.countActiveInvoiceForSameJobVehicleTotalToday(
+                salesinvoice.getAutocarejobid(),
+                salesinvoice.getVehicleno(),
+                salesinvoice.getNettotal()
+            ) >
+            0
+        );
     }
 }

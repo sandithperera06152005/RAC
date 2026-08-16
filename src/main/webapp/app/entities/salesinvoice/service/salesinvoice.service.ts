@@ -90,6 +90,11 @@ export class SalesinvoiceService {
       .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
+  checkDuplicate(salesinvoice: ISalesinvoice | NewSalesinvoice): Observable<HttpResponse<{ exists: boolean }>> {
+    const copy = this.convertDateFromClient(salesinvoice);
+    return this.http.post<{ exists: boolean }>(`${this.resourceUrl}/duplicate-check`, copy, { observe: 'response' });
+  }
+
   generateMobileAppPdf(id: number): Observable<HttpResponse<{ invoiceId: number; invoiceCode: string; filePath: string }>> {
     return this.http.post<{ invoiceId: number; invoiceCode: string; filePath: string }>(
       `${this.resourceUrl}/${id}/mobile-app-pdf`,

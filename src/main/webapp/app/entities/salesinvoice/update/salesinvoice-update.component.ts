@@ -1062,6 +1062,12 @@ export class SalesinvoiceUpdateComponent implements OnInit {
     window.history.back();
   }
 
+  checkDuplicateActiveInvoice(): Observable<HttpResponse<{ exists: boolean }>> {
+    this.calculateDiscount();
+    const salesinvoice = this.salesinvoiceFormService.getSalesinvoice(this.editForm);
+    return this.salesinvoiceService.checkDuplicate(salesinvoice);
+  }
+
   save(): void {
     // Guard: customer must be selected before saving
     const customerId = this.editForm.get('customerid')?.value;
@@ -1137,12 +1143,6 @@ export class SalesinvoiceUpdateComponent implements OnInit {
         }
 
         this.subscribeToSaveResponse(this.salesinvoiceService.create(salesinvoice));
-
-        // Update Autocarejob status
-        const jobId = this.editForm.get('autocarejobid')?.value;
-        if (jobId) {
-          this.autocarejobService.partialUpdate({ id: jobId, isjobclose: true, isjobinvoiced: true }).subscribe();
-        }
       }
     });
   }
@@ -1187,6 +1187,11 @@ export class SalesinvoiceUpdateComponent implements OnInit {
             if (this.SaleInvoiceCommonServiceChargesUpdateComponent) {
               childSaveObservables.push(this.SaleInvoiceCommonServiceChargesUpdateComponent.save(invoiceId));
             }
+            if (response.status === 201 && response.body?.autocarejobid) {
+              childSaveObservables.push(
+                this.autocarejobService.partialUpdate({ id: response.body.autocarejobid, isjobclose: true, isjobinvoiced: true }),
+              );
+            }
 
             if (childSaveObservables.length > 0) {
               forkJoin(childSaveObservables).subscribe({
@@ -1206,7 +1211,7 @@ export class SalesinvoiceUpdateComponent implements OnInit {
       },
       error: err => {
         console.error('Error Response:', err);
-        this.onSaveError();
+        this.onSaveError(err);
       },
     });
   }
@@ -1215,8 +1220,10 @@ export class SalesinvoiceUpdateComponent implements OnInit {
     this.previousState();
   }
 
-  protected onSaveError(): void {
-    // API for inheritance.
+  protected onSaveError(error?: any): void {
+    if (error?.status === 400 && error?.error?.message === 'error.salesinvoiceexists') {
+      alert('This sales invoice already exists.');
+    }
   }
 
   protected onSaveFinalize(): void {
