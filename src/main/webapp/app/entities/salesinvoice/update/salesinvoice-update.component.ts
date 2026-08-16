@@ -39,6 +39,8 @@ import { ICustomervehicle } from 'app/entities/customervehicle/customervehicle.m
 import { CustomerService } from 'app/entities/customer/service/customer.service';
 import { ICustomer } from 'app/entities/customer/customer.model';
 import { AutojobsinvoicelinebatchesService } from 'app/entities/autojobsinvoicelinebatches/service/autojobsinvoicelinebatches.service';
+
+declare const bootstrap: any;
 @Component({
   standalone: true,
   selector: 'jhi-salesinvoice-update',
@@ -1225,15 +1227,40 @@ export class SalesinvoiceUpdateComponent implements OnInit {
     this.salesinvoiceService.generateMobileAppPdf(invoiceId).subscribe({
       next: response => {
         console.log('Mobile app invoice PDF saved:', response.body?.filePath);
+        this.cleanupReceiptModalBackdrop();
         window.open('/printinvoice?id=' + invoiceId, '_blank');
         this.previousState();
       },
       error: err => {
         console.error('Failed to save mobile app invoice PDF:', err);
+        this.cleanupReceiptModalBackdrop();
         window.open('/printinvoice?id=' + invoiceId, '_blank');
         this.previousState();
       },
     });
+  }
+
+  private cleanupReceiptModalBackdrop(): void {
+    const modalElement = document.getElementById('exampleModal');
+    const modalInstance =
+      modalElement && typeof bootstrap !== 'undefined' && bootstrap.Modal ? bootstrap.Modal.getInstance(modalElement) : null;
+
+    if (modalInstance) {
+      modalInstance.hide();
+    }
+
+    if (modalElement) {
+      modalElement.classList.remove('show');
+      modalElement.setAttribute('aria-hidden', 'true');
+      modalElement.removeAttribute('aria-modal');
+      modalElement.removeAttribute('role');
+      modalElement.style.display = 'none';
+    }
+
+    document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+    document.body.classList.remove('modal-open');
+    document.body.style.removeProperty('overflow');
+    document.body.style.removeProperty('padding-right');
   }
 
   protected updateForm(salesinvoice: ISalesinvoice): void {

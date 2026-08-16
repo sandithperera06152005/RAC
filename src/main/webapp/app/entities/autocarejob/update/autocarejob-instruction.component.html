@@ -983,9 +983,7 @@
         <h4>
           <strong
             >TOTAL VALUE:
-            <span class="text-primary">{{
-              totalServiceCharge + calculateTotalWithDiscount() | currency: 'LKR' : 'symbol' : '1.2-2'
-            }}</span></strong
+            <span class="text-primary">LKR&nbsp;{{ totalServiceCharge + calculateTotalWithDiscount() | number: '1.2-2' }}</span></strong
           >
         </h4>
       </div>

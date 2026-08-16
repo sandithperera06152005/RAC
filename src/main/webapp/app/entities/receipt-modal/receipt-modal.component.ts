@@ -24,6 +24,8 @@ import { CustomerService } from 'app/entities/customer/service/customer.service'
 import { ICompanybankaccount } from '../companybankaccount/companybankaccount.model';
 import { CompanybankaccountService } from '../companybankaccount/service/companybankaccount.service';
 
+declare const bootstrap: any;
+
 @Component({
   selector: 'app-receipt-modal',
   standalone: true,
@@ -1035,21 +1037,32 @@ export class ReceiptModalComponent implements OnChanges {
   }
 
   protected onSaveSuccess(): void {
-    // Hide modal and remove backdrop to prevent screen lock (darker screen)
+    this.cleanupModalBackdrop();
+
+    // No navigation here anymore, letting SalesinvoiceUpdateComponent handle it
+  }
+
+  private cleanupModalBackdrop(): void {
     const modalElement = document.getElementById('exampleModal');
+    const modalInstance =
+      modalElement && typeof bootstrap !== 'undefined' && bootstrap.Modal ? bootstrap.Modal.getInstance(modalElement) : null;
+
+    if (modalInstance) {
+      modalInstance.hide();
+    }
+
     if (modalElement) {
       modalElement.classList.remove('show');
       modalElement.setAttribute('aria-hidden', 'true');
+      modalElement.removeAttribute('aria-modal');
+      modalElement.removeAttribute('role');
       modalElement.style.display = 'none';
     }
 
-    // Remove all backdrops and reset body classes
-    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+    document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
     document.body.classList.remove('modal-open');
-    document.body.style.overflow = '';
-    document.body.style.paddingRight = '';
-
-    // No navigation here anymore, letting SalesinvoiceUpdateComponent handle it
+    document.body.style.removeProperty('overflow');
+    document.body.style.removeProperty('padding-right');
   }
 
   protected onSaveError(): void {
