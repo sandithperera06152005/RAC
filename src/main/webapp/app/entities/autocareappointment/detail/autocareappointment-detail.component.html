@@ -1,134 +1,196 @@
-<div class="d-flex justify-content-center">
-  <div class="col-8">
-    @if (autocareappointment()) {
-      <div>
-        <h2 data-cy="autocareappointmentDetailsHeading"><span>Autocareappointment</span></h2>
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      @if (autocareappointment()) {
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-white border-bottom py-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0 text-primary fw-bold">Autocare Appointment Details</h4>
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge px-3 py-2" [ngClass]="statusBadgeClass()">{{ statusLabel() }}</span>
+                <span class="badge bg-primary px-3 py-2"
+                  >Appointment #{{ autocareappointment()!.appointmentnumber || autocareappointment()!.id }}</span
+                >
+              </div>
+            </div>
+          </div>
 
-        <hr />
+          <div class="card-body p-4">
+            <jhi-alert-error></jhi-alert-error>
+            <jhi-alert></jhi-alert>
 
-        <jhi-alert-error></jhi-alert-error>
+            <div class="row g-4">
+              <div class="col-md-6">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Appointment Information</h6>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Appointment ID</div>
+                  <div class="col-7 fw-bold">{{ autocareappointment()!.id }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Appointment Number</div>
+                  <div class="col-7">{{ autocareappointment()!.appointmentnumber || 'Not Set' }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Job Type</div>
+                  <div class="col-7 fw-bold">{{ appointmentTypeLabel(autocareappointment()!.appointmenttype) }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Source</div>
+                  <div class="col-7">{{ autocareappointment()!.ismobileappointment ? 'Mobile Appointment' : 'Workshop Appointment' }}</div>
+                </div>
+              </div>
 
-        <jhi-alert></jhi-alert>
+              <div class="col-md-6">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Vehicle Information</h6>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Vehicle Number</div>
+                  <div class="col-7">
+                    <span class="badge bg-dark">{{ autocareappointment()!.vehiclenumber }}</span>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Vehicle ID</div>
+                  <div class="col-7">{{ autocareappointment()!.vehicleid || 'Not Set' }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Hoist ID</div>
+                  <div class="col-7">{{ autocareappointment()!.hoistid || 'Not Assigned' }}</div>
+                </div>
+              </div>
 
-        <dl class="row-md jh-entity-details">
-          <dt><span>ID</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.id }}</span>
-          </dd>
-          <dt><span>Appointmenttype</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.appointmenttype }}</span>
-          </dd>
-          <dt><span>Appointmentdate</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.appointmentdate | formatMediumDatetime }}</span>
-          </dd>
-          <dt><span>Addeddate</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.addeddate | formatMediumDatetime }}</span>
-          </dd>
-          <dt><span>Conformdate</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.conformdate | formatMediumDatetime }}</span>
-          </dd>
-          <dt><span>Appointmentnumber</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.appointmentnumber }}</span>
-          </dd>
-          <dt><span>Vehiclenumber</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.vehiclenumber }}</span>
-          </dd>
-          <dt><span>Appointmenttime</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.appointmenttime | formatMediumDatetime }}</span>
-          </dd>
-          <dt><span>Isconformed</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.isconformed }}</span>
-          </dd>
-          <dt><span>Conformedby</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.conformedby }}</span>
-          </dd>
-          <dt><span>Lmd</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.lmd | formatMediumDatetime }}</span>
-          </dd>
-          <dt><span>Lmu</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.lmu }}</span>
-          </dd>
-          <dt><span>Customerid</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.customerid }}</span>
-          </dd>
-          <dt><span>Contactnumber</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.contactnumber }}</span>
-          </dd>
-          <dt><span>Customername</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.customername }}</span>
-          </dd>
-          <dt><span>Issued</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.issued }}</span>
-          </dd>
-          <dt><span>Hoistid</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.hoistid }}</span>
-          </dd>
-          <dt><span>Isarrived</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.isarrived }}</span>
-          </dd>
-          <dt><span>Iscancel</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.iscancel }}</span>
-          </dd>
-          <dt><span>Isnoanswer</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.isnoanswer }}</span>
-          </dd>
-          <dt><span>Missedappointmentcall</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.missedappointmentcall }}</span>
-          </dd>
-          <dt><span>Customermobileid</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.customermobileid }}</span>
-          </dd>
-          <dt><span>Customermobilevehicleid</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.customermobilevehicleid }}</span>
-          </dd>
-          <dt><span>Vehicleid</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.vehicleid }}</span>
-          </dd>
-          <dt><span>Ismobileappointment</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.ismobileappointment }}</span>
-          </dd>
-          <dt><span>Advancepayment</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.advancepayment }}</span>
-          </dd>
-          <dt><span>Jobid</span></dt>
-          <dd>
-            <span>{{ autocareappointment()!.jobid }}</span>
-          </dd>
-        </dl>
+              <div class="col-12 mt-4">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Schedule</h6>
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Appointment Date</div>
+                      <div class="h6 mb-0 fw-bold">{{ autocareappointment()!.appointmentdate | formatMediumDatetime }}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Appointment Time</div>
+                      <div class="h6 mb-0 fw-bold">{{ autocareappointment()!.appointmenttime | formatMediumDatetime }}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Confirmed Date</div>
+                      <div class="h6 mb-0 fw-bold">{{ autocareappointment()!.conformdate | formatMediumDatetime }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
-        </button>
+              <div class="col-12 mt-4">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Customer Information</h6>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Customer Name</div>
+                  <div class="col-md-9 fw-bold">{{ autocareappointment()!.customername || 'Not Set' }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Contact Number</div>
+                  <div class="col-md-9">{{ autocareappointment()!.contactnumber || 'Not Set' }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Customer ID</div>
+                  <div class="col-md-9">{{ autocareappointment()!.customerid || 'Not Set' }}</div>
+                </div>
+              </div>
 
-        <button type="button" [routerLink]="['/autocareappointment', autocareappointment()!.id, 'edit']" class="btn btn-primary">
-          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
-        </button>
-      </div>
-    }
+              <div class="col-12 mt-4">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Status & Follow Up</h6>
+                <div class="row g-3">
+                  <div class="col-md-3">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Confirmed</div>
+                      <div class="fw-bold">{{ autocareappointment()!.isconformed ? 'Yes' : 'No' }}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Arrived</div>
+                      <div class="fw-bold">{{ autocareappointment()!.isarrived ? 'Yes' : 'No' }}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Cancelled</div>
+                      <div class="fw-bold">{{ autocareappointment()!.iscancel ? 'Yes' : 'No' }}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">No Answer</div>
+                      <div class="fw-bold">{{ autocareappointment()!.isnoanswer ? 'Yes' : 'No' }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="col-12 mt-4"
+                *ngIf="
+                  autocareappointment()!.jobid || autocareappointment()!.advancepayment || autocareappointment()!.missedappointmentcall
+                "
+              >
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Related Records</h6>
+                <div class="row mb-2" *ngIf="autocareappointment()!.jobid">
+                  <div class="col-md-3 text-secondary">Linked Job</div>
+                  <div class="col-md-9">
+                    <a [routerLink]="['/autocarejob', autocareappointment()!.jobid, 'view']" class="fw-bold">
+                      Job #{{ autocareappointment()!.jobid }}
+                    </a>
+                  </div>
+                </div>
+                <div class="row mb-2" *ngIf="autocareappointment()!.advancepayment">
+                  <div class="col-md-3 text-secondary">Advance Payment</div>
+                  <div class="col-md-9">{{ autocareappointment()!.advancepayment }}</div>
+                </div>
+                <div class="row mb-2" *ngIf="autocareappointment()!.missedappointmentcall">
+                  <div class="col-md-3 text-secondary">Missed Call Note</div>
+                  <div class="col-md-9">{{ autocareappointment()!.missedappointmentcall }}</div>
+                </div>
+              </div>
+
+              <div class="col-12 mt-4">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Audit Information</h6>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Added Date</div>
+                  <div class="col-md-9">{{ autocareappointment()!.addeddate | formatMediumDatetime }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Last Modified</div>
+                  <div class="col-md-9">{{ autocareappointment()!.lmd | formatMediumDatetime }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Confirmed By</div>
+                  <div class="col-md-9">{{ autocareappointment()!.conformedby || 'Not Set' }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-footer bg-white py-3 border-top-0 d-flex gap-2 justify-content-end">
+            <button
+              type="submit"
+              (click)="previousState()"
+              class="btn btn-outline-secondary px-4 shadow-sm"
+              data-cy="entityDetailsBackButton"
+            >
+              <fa-icon icon="arrow-left" class="me-1"></fa-icon> Back
+            </button>
+
+            <button
+              type="button"
+              [routerLink]="['/autocareappointment', autocareappointment()!.id, 'edit']"
+              class="btn btn-primary px-4 shadow-sm"
+            >
+              <fa-icon icon="pencil-alt" class="me-1"></fa-icon> Edit
+            </button>
+          </div>
+        </div>
+      }
+    </div>
   </div>
 </div>

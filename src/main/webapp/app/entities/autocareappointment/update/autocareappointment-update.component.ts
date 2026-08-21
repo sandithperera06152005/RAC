@@ -206,7 +206,12 @@ export class AutocareappointmentUpdateComponent implements OnInit {
 
   onVehicleSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const searchTerm = input.value;
+    const uppercasedValue = input.value.toUpperCase();
+    if (input.value !== uppercasedValue) {
+      input.value = uppercasedValue;
+      this.editForm.get('vehiclenumber')?.setValue(uppercasedValue, { emitEvent: false });
+    }
+    const searchTerm = uppercasedValue;
 
     if (searchTerm.length > 2) {
       // Use the new service method to fetch matching results
@@ -228,7 +233,11 @@ export class AutocareappointmentUpdateComponent implements OnInit {
 
   onVehicleSelect(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const selectedVehicleNumber = input.value;
+    const selectedVehicleNumber = input.value.toUpperCase();
+    if (input.value !== selectedVehicleNumber) {
+      input.value = selectedVehicleNumber;
+      this.editForm.get('vehiclenumber')?.setValue(selectedVehicleNumber, { emitEvent: false });
+    }
 
     // Find the selected vehicle from the filtered list
     const selectedVehicle = this.filteredVehicles.find(vehicle => vehicle.vehiclenumber === selectedVehicleNumber);
@@ -296,12 +305,18 @@ export class AutocareappointmentUpdateComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     const autocareappointment = this.autocareappointmentFormService.getAutocareappointment(this.editForm);
+    const now = dayjs();
+    const selectedAppointmentDate = autocareappointment.appointmentdate;
+    autocareappointment.appointmentdate = selectedAppointmentDate
+      ? selectedAppointmentDate.hour(now.hour()).minute(now.minute()).second(now.second()).millisecond(now.millisecond())
+      : now;
+    autocareappointment.conformdate = now;
     if (autocareappointment.id !== null) {
-      autocareappointment.lmd = dayjs().add(-new Date().getTimezoneOffset(), 'minute');
+      autocareappointment.lmd = now;
       this.subscribeToSaveResponse(this.autocareappointmentService.update(autocareappointment));
     } else {
-      autocareappointment.addeddate = dayjs().add(-new Date().getTimezoneOffset(), 'minute');
-      autocareappointment.lmd = dayjs().add(-new Date().getTimezoneOffset(), 'minute');
+      autocareappointment.addeddate = now;
+      autocareappointment.lmd = now;
       this.subscribeToSaveResponse(this.autocareappointmentService.create(autocareappointment));
     }
   }

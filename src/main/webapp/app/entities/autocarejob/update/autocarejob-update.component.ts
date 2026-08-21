@@ -6,6 +6,7 @@ import { finalize } from 'rxjs/operators';
 import dayjs from 'dayjs/esm'; // Import Dayjs
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormatMediumDatetimePipe } from 'app/shared/date';
 import { AutocarejobInstructionComponent } from './autocarejob-instruction.component';
 import { IAutocarejob } from '../autocarejob.model';
 import { ICustomervehicle } from 'app/entities/customervehicle/customervehicle.model';
@@ -21,7 +22,7 @@ import { AutocarejobFormService, AutocarejobFormGroup } from './autocarejob-form
   standalone: true,
   selector: 'jhi-autocarejob-update',
   templateUrl: './autocarejob-update.component.html',
-  imports: [SharedModule, FormsModule, ReactiveFormsModule, AutocarejobInstructionComponent],
+  imports: [SharedModule, FormsModule, ReactiveFormsModule, FormatMediumDatetimePipe, AutocarejobInstructionComponent],
 })
 export class AutocarejobUpdateComponent implements OnInit {
   isSaving = false;
@@ -43,6 +44,7 @@ export class AutocarejobUpdateComponent implements OnInit {
   saveAttempted = false;
 
   todayAppointments: IAutocareappointment[] = []; // New property for today's appointments
+  isLoadingAppointments = false;
 
   isRequiredInvalid(controlName: string): boolean {
     const control = this.editForm.get(controlName);
@@ -55,34 +57,33 @@ export class AutocarejobUpdateComponent implements OnInit {
       if (autocarejob) {
         this.updateForm(autocarejob);
       }
+      this.loadAllAppointments();
     });
   }
 
   loadAllAppointments(): void {
-    let allAppointments: IAutocareappointment[] = [];
-    let page = 20;
-    const size = 20;
+    this.isLoadingAppointments = true;
+    const todayStart = dayjs().startOf('day');
+    const tomorrowStart = todayStart.add(1, 'day');
 
-    const fetchPage = () => {
-      this.autocareappointmentService.query({ page, size }).subscribe({
+    this.autocareappointmentService
+      .query({
+        page: 0,
+        size: 100,
+        sort: ['appointmentdate,asc', 'id,asc'],
+        'appointmentdate.greaterThanOrEqual': todayStart.toJSON(),
+        'appointmentdate.lessThan': tomorrowStart.toJSON(),
+      })
+      .pipe(finalize(() => (this.isLoadingAppointments = false)))
+      .subscribe({
         next: (res: HttpResponse<IAutocareappointment[]>) => {
-          const appointments = res.body || [];
-          allAppointments = [...allAppointments, ...appointments];
-          console.log('appointmentsss', appointments);
-          if (appointments.length === size) {
-            page++; // Fetch the next page if current page is full
-            fetchPage();
-          } else {
-            this.todayAppointments = this.filterTodayAppointments(allAppointments);
-          }
+          this.todayAppointments = this.filterTodayAppointments(res.body || []);
         },
-        error: () => {
-          console.error('Failed to load appointments');
+        error: error => {
+          console.error('Failed to load appointments', error);
+          this.todayAppointments = [];
         },
       });
-    };
-
-    fetchPage();
   }
   jobType: string | null = null;
   customername: string | null = null;
@@ -110,13 +111,15 @@ export class AutocarejobUpdateComponent implements OnInit {
       console.log('Appointment type is not defined');
     }
 
-    // **Save used appointment in localStorage**
-    let usedAppointments = JSON.parse(localStorage.getItem('usedAppointments') || '[]');
-    usedAppointments.push(appointment.id);
-    localStorage.setItem('usedAppointments', JSON.stringify(usedAppointments));
-
-    // **Remove from local list**
-    this.todayAppointments = this.todayAppointments.filter(a => a.id !== appointment.id);
+    this.editForm.patchValue({
+      vehiclenumber: appointment.vehiclenumber || '',
+      customername: appointment.customername || '',
+      customertel: appointment.contactnumber || '',
+      jobtypename: this.jobType || '',
+      customerid: appointment.customerid ?? null,
+      jobtypeid: appointment.appointmenttype ?? null,
+      vehicleid: appointment.vehicleid ?? null,
+    });
   }
 
   jobTypeMap: { [key: number]: string } = {
@@ -129,13 +132,11 @@ export class AutocarejobUpdateComponent implements OnInit {
     const today = dayjs().startOf('day'); // Get today's date at midnight
     console.log('Today:', today);
 
-    let usedAppointments = JSON.parse(localStorage.getItem('usedAppointments') || '[]');
-
     return appointments.filter(appointment => {
-      if (!appointment.conformdate || usedAppointments.includes(appointment.id)) {
-        return false; // Exclude null dates and used appointments
+      if (!appointment.appointmentdate || appointment.isarrived === true || appointment.iscancel === true || appointment.jobid != null) {
+        return false; // Exclude unavailable appointments
       }
-      const appointmentDate = dayjs(appointment.conformdate).startOf('day'); // Get appointment date at midnight
+      const appointmentDate = dayjs(appointment.appointmentdate).startOf('day'); // Get appointment date at midnight
       return appointmentDate.isSame(today);
     });
   }

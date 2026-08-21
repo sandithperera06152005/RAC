@@ -150,10 +150,10 @@ export class AutocareappointmentFormService {
 
     return {
       id: null,
-      // appointmentdate: currentTime,
+      appointmentdate: currentTime,
       addeddate: currentTime,
       conformdate: currentTime,
-      // appointmenttime: currentTime,
+      appointmenttime: currentTime,
       isconformed: false,
       lmd: currentTime,
       issued: false,
