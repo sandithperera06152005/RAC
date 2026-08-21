@@ -159,6 +159,8 @@ export class AutocarejobInstructionComponent implements OnInit {
   subcategoriesVisible = true; // Show service options by default
   showPrintSummary = false; // Controls whether the print summary is shown on screen
   itemsOnlyMode = false;
+  private shouldPrintOnLoad = false;
+  private hasPrintedOnLoad = false;
   toggleSubcategories() {
     this.subcategoriesVisible = !this.subcategoriesVisible;
   }
@@ -181,6 +183,7 @@ export class AutocarejobInstructionComponent implements OnInit {
 
     this.activatedRoute.queryParamMap.subscribe(params => {
       this.itemsOnlyMode = params.get('itemsOnly') === 'true';
+      this.shouldPrintOnLoad = params.get('print') === 'true';
       if (this.itemsOnlyMode) {
         this.accountService.identity().subscribe(() => {
           if (!this.accountService.canUpdateAdvisorInstructionItems()) {
@@ -670,6 +673,7 @@ export class AutocarejobInstructionComponent implements OnInit {
           this.savedSubcategoryNames.clear();
           this.itemsArray = [];
           this.selectedItems = [];
+          this.printSummaryFromRouteOnce();
           return;
         }
 
@@ -678,6 +682,7 @@ export class AutocarejobInstructionComponent implements OnInit {
         this.invoiceCode = latestInvoice.code || null;
 
         if (this.loadedItemsInvoiceKey === invoiceKey) {
+          this.printSummaryFromRouteOnce();
           return;
         }
 
@@ -702,6 +707,7 @@ export class AutocarejobInstructionComponent implements OnInit {
           },
           error: (error: unknown) => {
             console.error('Failed to load existing job items:', error);
+            this.printSummaryFromRouteOnce();
           },
         });
       },
@@ -815,11 +821,23 @@ export class AutocarejobInstructionComponent implements OnInit {
         this.calculateTotalCharges();
         this.calculateTotalCharge();
         this.cdr.detectChanges();
+        this.printSummaryFromRouteOnce();
       },
       error: (error: unknown) => {
         console.error('Failed to load existing charge selections:', error);
+        this.printSummaryFromRouteOnce();
       },
     });
+  }
+
+  private printSummaryFromRouteOnce(): void {
+    if (!this.shouldPrintOnLoad || this.hasPrintedOnLoad) {
+      return;
+    }
+
+    this.hasPrintedOnLoad = true;
+    this.cdr.detectChanges();
+    setTimeout(() => this.printSummary(), 300);
   }
 
   private syncSelectedServicesFromSaved(): void {

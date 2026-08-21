@@ -532,6 +532,16 @@
                       <fa-icon icon="file-invoice"></fa-icon>
                     </button>
 
+                    <a
+                      [routerLink]="['/autocarejob', autocarejob.id, 'instructions']"
+                      [queryParams]="{ print: 'true' }"
+                      class="btn btn-success btn-sm"
+                      data-cy="entityPrintInstructionsButton"
+                      title="Print Instructions"
+                    >
+                      <fa-icon icon="print"></fa-icon>
+                    </a>
+
                     <button
                       type="submit"
                       (click)="delete(autocarejob)"

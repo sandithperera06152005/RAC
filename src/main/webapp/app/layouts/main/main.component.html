@@ -1,14 +1,16 @@
-<div class="d-flex vh-100">
+<div class="d-flex" [class.vh-100]="!isPrintRoute()">
   @if (!isSidebarHidden()) {
     <jhi-sidebar class="sidebar"></jhi-sidebar>
   }
 
   <div class="flex-grow-1 content-container">
-    <div class="" style="margin-right: 0px">
-      <div class="card jh-card border-0">
+    <div>
+      <div [class.card]="!isPrintRoute()" [class.jh-card]="!isPrintRoute()" [class.border-0]="!isPrintRoute()">
         <router-outlet></router-outlet>
       </div>
-      <jhi-footer></jhi-footer>
+      @if (!isPrintRoute()) {
+        <jhi-footer></jhi-footer>
+      }
     </div>
   </div>
 </div>

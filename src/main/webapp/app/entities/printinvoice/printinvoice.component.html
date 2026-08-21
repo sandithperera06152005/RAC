@@ -1,7 +1,7 @@
 <style>
   /*
    * Layout extracted from Sales Invoice Print0707.docx (Word twips → mm: twips / 1440 * 25.4)
-   * Page: 12240 × 15840 twips (215.9mm × 279.4mm, US Letter)
+   * Page width follows US Letter width, but print height is trimmed for dot matrix continuous forms.
    * Margins: top 1020, bottom 280, left 360, right 720 twips
    */
   :host {
@@ -30,6 +30,16 @@
     overflow: hidden;
   }
 
+  .invoice-content {
+    position: relative;
+    top: 8.5mm;
+    /* 20px jh-card margin + 1.5% jh-card padding */
+    left: 3.2mm;
+    /* 1.5% jh-card padding from the invoice width */
+    width: 100%;
+    height: 100%;
+  }
+
   .field {
     position: absolute;
     white-space: nowrap;
@@ -39,51 +49,51 @@
 
   /* Header row 1 - customer / vehicle / mileage / date */
   .header-customer {
-    top: 11.4mm;
-    left: 23mm;
+    top: 11.8mm;
+    left: 23.05mm;
     max-width: 37mm;
     text-align: left;
   }
 
   .header-vehicle {
-    top: 11.4mm;
-    left: 88.35mm;
+    top: 11.8mm;
+    left: 87.45mm;
     max-width: 31mm;
     text-align: left;
   }
 
   .header-mileage {
-    top: 11.4mm;
-    left: 140mm;
+    top: 11.8mm;
+    left: 138.55mm;
     max-width: 31mm;
     text-align: left;
   }
 
   .header-date {
-    top: 11.4mm;
-    left: 171.27mm; /* tab stop 9653 twips from page edge */
+    top: 11.8mm;
+    left: 169.55mm;
     max-width: 33mm;
     text-align: left;
   }
 
   /* Header row 2 - invoice number / next mileage / invoice type */
   .header-invoice-number {
-    top: 19.04mm;
-    left: 88.35mm;
+    top: 19.1mm;
+    left: 87.45mm;
     max-width: 32mm;
     text-align: left;
   }
 
   .header-next-mileage {
-    top: 19.04mm;
-    left: 140mm;
+    top: 19.1mm;
+    left: 138.55mm;
     max-width: 17mm;
     text-align: left;
   }
 
   .header-payment {
-    top: 19.04mm;
-    left: 171.27mm;
+    top: 19.1mm;
+    left: 169.55mm;
     max-width: 33mm;
     text-align: left;
   }
@@ -91,9 +101,10 @@
   /* Lines table — tblInd 210 twips, grid cols from docx */
   .lines-table {
     position: absolute;
-    top: 31.75mm;
-    left: 10.05mm; /* mar_left + tblInd 210 twips */
-    width: 188.14mm;
+    top: 31.55mm;
+    left: 5.35mm;
+    /* mar_left + tblInd 210 twips */
+    width: 190.5mm;
     table-layout: fixed;
     border-collapse: collapse;
     border-spacing: 0;
@@ -101,34 +112,35 @@
   }
 
   .lines-table col:nth-child(1) {
-    width: 10.18mm;
+    width: 12.5mm;
   }
 
   .lines-table col:nth-child(2) {
-    width: 73.25mm;
+    width: 76mm;
   }
 
   .lines-table col:nth-child(3) {
-    width: 20.2mm;
+    width: 16mm;
   }
 
   .lines-table col:nth-child(4) {
-    width: 19.83mm;
+    width: 10mm;
   }
 
   .lines-table col:nth-child(5) {
-    width: 37.96mm;
+    width: 35mm;
   }
 
   .lines-table col:nth-child(6) {
-    width: 26.72mm;
+    width: 41mm;
   }
 
   .lines-table td {
     border: 0;
     padding: 0;
     vertical-align: top;
-    height: 4.29mm; /* trHeight 243 twips */
+    height: 4.29mm;
+    /* trHeight 243 twips */
     overflow: hidden;
   }
 
@@ -140,54 +152,48 @@
     vertical-align: middle !important;
   }
 
-  .line-code {
-    position: relative;
-    left: -4mm;
+  .lines-table td.line-code {
     text-align: left;
-    padding-left: 0;
+    padding-left: 1mm;
   }
 
-  .line-name {
+  .lines-table td.line-name {
     text-align: left;
-    padding-left: 4.55mm; /* cell indent 258 twips */
+    padding-left: 1mm;
     white-space: nowrap;
   }
 
-  .line-discount {
-    position: relative;
-    left: -2mm;
+  .lines-table td.line-discount {
     text-align: right;
-    padding-right: 0;
   }
 
-  .line-qty {
-    text-align: left;
-    padding-left: 4.55mm;
+  .lines-table td.line-qty {
+    text-align: right;
+    padding-right: 1mm;
   }
 
-  .line-price {
-    position: relative;
-    left: -15mm;
+  .lines-table td.line-price {
     text-align: right;
-    padding-right: 100mm; /* increase this to move Unit Price left */
+    padding-right: 1mm;
   }
 
-  .line-total {
+  .lines-table td.line-total {
     text-align: right;
-    padding-right: 0.71mm; /* cell indent right 40 twips */
+    padding-right: 1mm;
   }
 
   /* Totals block - docx right indent 459 twips, vertical spacing 145 + (59/58 twips between rows) */
   .totals-block {
     position: absolute;
-    top: 163.25mm;
-    right: 20.8mm; /* mar_right + totals indent 459 twips */
-    width: 40mm;
+    top: 160.45mm;
+    right: 20.05mm;
+    width: 41mm;
   }
 
   .total-line {
     height: 4.75mm;
     margin-bottom: 1.25mm;
+    padding-right: 1mm;
     text-align: right;
     white-space: nowrap;
   }
@@ -209,6 +215,7 @@
       margin: 0 !important;
       padding: 0 !important;
       background: #fff !important;
+      overflow: hidden !important;
     }
 
     jhi-sidebar,
@@ -230,73 +237,70 @@
       box-shadow: none !important;
       background: #fff !important;
     }
-
-    .invoice-page {
-      margin: 0;
-      page-break-after: avoid;
-    }
   }
 </style>
 
 <div class="invoice-page" *ngIf="salesInvoice">
-  <div class="field header-customer">{{ salesInvoice.customername }}</div>
-  <div class="field header-vehicle">{{ salesInvoice.vehicleno }}</div>
-  <div class="field header-mileage">{{ salesInvoice.currentmeter }}</div>
-  <div class="field header-date">{{ salesInvoice.invoicedate | date: 'dd/MM/yyyy' }}</div>
+  <div class="invoice-content">
+    <div class="field header-customer">{{ salesInvoice.customername }}</div>
+    <div class="field header-vehicle">{{ salesInvoice.vehicleno }}</div>
+    <div class="field header-mileage">{{ salesInvoice.currentmeter }}</div>
+    <div class="field header-date">{{ salesInvoice.invoicedate | date: 'dd/MM/yyyy' }}</div>
 
-  <div class="field header-invoice-number">{{ salesInvoice.code || salesInvoice.id }}</div>
-  <div class="field header-next-mileage">{{ salesInvoice.nextmeter }}</div>
-  <div class="field header-payment">{{ salesInvoice.paymenttype }}</div>
+    <div class="field header-invoice-number">{{ salesInvoice.code || salesInvoice.id }}</div>
+    <div class="field header-next-mileage">{{ salesInvoice.nextmeter }}</div>
+    <div class="field header-payment">{{ salesInvoice.paymenttype }}</div>
 
-  <table class="lines-table">
-    <colgroup>
-      <col />
-      <col />
-      <col />
-      <col />
-      <col />
-      <col />
-    </colgroup>
-    <tbody>
-      <tr class="vat-invoice-banner" *ngIf="isVatInvoice">
-        <td colspan="6">TAX INVOICE - VAT Reg No. 100956993-7000</td>
-      </tr>
+    <table class="lines-table">
+      <colgroup>
+        <col />
+        <col />
+        <col />
+        <col />
+        <col />
+        <col />
+      </colgroup>
+      <tbody>
+        <tr class="vat-invoice-banner" *ngIf="isVatInvoice">
+          <td colspan="6">TAX INVOICE - VAT Reg No. 100956993-7000</td>
+        </tr>
 
-      <tr *ngFor="let line of invoiceLines">
-        <td class="line-code">{{ line.itemcode || line.itemid || line.id }}</td>
-        <td class="line-name">{{ line.itemname }}</td>
-        <td class="line-discount">{{ line.discount | number: '1.2-2' }}</td>
-        <td class="line-qty">{{ line.quantity | number: '1.2-2' }}</td>
-        <td class="line-price">{{ line.sellingprice | number: '1.2-2' }}</td>
-        <td class="line-total">{{ getInventoryLineTotalBeforeDiscount(line) | number: '1.2-2' }}</td>
-      </tr>
+        <tr *ngFor="let line of invoiceLines">
+          <td class="line-code">{{ line.itemcode || line.itemid || line.id }}</td>
+          <td class="line-name">{{ line.itemname }}</td>
+          <td class="line-discount">{{ line.discount | number: '1.2-2' }}</td>
+          <td class="line-qty">{{ line.quantity | number: '1.2-2' }}</td>
+          <td class="line-price">{{ line.sellingprice | number: '1.2-2' }}</td>
+          <td class="line-total">{{ getInventoryLineTotalBeforeDiscount(line) | number: '1.2-2' }}</td>
+        </tr>
 
-      <tr *ngFor="let line of serviceLines">
-        <td class="line-code">{{ line.serviceCode || line.code || line.optionId || line.id || 'S' }}</td>
-        <td class="line-name">{{ line.serviceName }}</td>
-        <td class="line-discount">{{ line.discount | number: '1.2-2' }}</td>
-        <td class="line-qty">1.00</td>
-        <td class="line-price">{{ getServicePrice(line) | number: '1.2-2' }}</td>
-        <td class="line-total">{{ getServicePrice(line) | number: '1.2-2' }}</td>
-      </tr>
+        <tr *ngFor="let line of serviceLines">
+          <td class="line-code">{{ line.serviceCode || line.code || line.optionId || line.id || 'S' }}</td>
+          <td class="line-name">{{ line.serviceName }}</td>
+          <td class="line-discount">{{ line.discount | number: '1.2-2' }}</td>
+          <td class="line-qty">1.00</td>
+          <td class="line-price">{{ getServicePrice(line) | number: '1.2-2' }}</td>
+          <td class="line-total">{{ getServicePrice(line) | number: '1.2-2' }}</td>
+        </tr>
 
-      <tr *ngFor="let line of commonServiceLines">
-        <td class="line-code">{{ line.code || line.optionId || line.id || 'C' }}</td>
-        <td class="line-name">{{ line.name }}</td>
-        <td class="line-discount">{{ line.discount | number: '1.2-2' }}</td>
-        <td class="line-qty">1.00</td>
-        <td class="line-price">{{ getServicePrice(line) | number: '1.2-2' }}</td>
-        <td class="line-total">{{ getServicePrice(line) | number: '1.2-2' }}</td>
-      </tr>
-    </tbody>
-  </table>
+        <tr *ngFor="let line of commonServiceLines">
+          <td class="line-code">{{ line.code || line.optionId || line.id || 'C' }}</td>
+          <td class="line-name">{{ line.name }}</td>
+          <td class="line-discount">{{ line.discount | number: '1.2-2' }}</td>
+          <td class="line-qty">1.00</td>
+          <td class="line-price">{{ getServicePrice(line) | number: '1.2-2' }}</td>
+          <td class="line-total">{{ getServicePrice(line) | number: '1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
 
-  <div class="totals-block">
-    <div class="total-line">{{ isVatInvoice ? '(EX VAT)' : '' }} {{ displaySubtotal | number: '1.2-2' }}</div>
-    <div class="total-line">{{ salesInvoice.totaldiscount | number: '1.2-2' }}</div>
-    <div class="total-line">{{ vatLabel }} {{ displayVatAmount | number: '1.2-2' }}</div>
-    <div class="total-line">{{ salesInvoice.nettotal | number: '1.2-2' }}</div>
-    <div class="total-line">{{ salesInvoice.paidamount | number: '1.2-2' }}</div>
-    <div class="total-line">{{ salesInvoice.nettotal - (salesInvoice.paidamount || 0) | number: '1.2-2' }}</div>
+    <div class="totals-block">
+      <div class="total-line">{{ isVatInvoice ? '(EX VAT)' : '' }} {{ displaySubtotal | number: '1.2-2' }}</div>
+      <div class="total-line">{{ salesInvoice.totaldiscount | number: '1.2-2' }}</div>
+      <div class="total-line">{{ vatLabel }} {{ displayVatAmount | number: '1.2-2' }}</div>
+      <div class="total-line">{{ salesInvoice.nettotal | number: '1.2-2' }}</div>
+      <div class="total-line">{{ salesInvoice.paidamount | number: '1.2-2' }}</div>
+      <div class="total-line">{{ salesInvoice.nettotal - (salesInvoice.paidamount || 0) | number: '1.2-2' }}</div>
+    </div>
   </div>
 </div>
