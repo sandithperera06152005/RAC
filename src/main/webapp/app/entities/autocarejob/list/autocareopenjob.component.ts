@@ -124,8 +124,12 @@ export class AutocareopenjobComponent implements OnInit {
     this.handleNavigation(page, this.sortState());
   }
 
-  needsExternalRegistration(job: IAutocarejob): boolean {
-    return !job.customerid || !job.vehicleid;
+  needsCustomerRegistration(job: IAutocarejob): boolean {
+    return !job.customerid;
+  }
+
+  needsVehicleRegistration(job: IAutocarejob): boolean {
+    return !job.vehicleid;
   }
 
   navigateToInvoice(job: IAutocarejob): void {

@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -65,6 +66,9 @@ public class AutocarejobResource {
         }
         Instant jobDate = autocarejob.getJobdate() != null ? autocarejob.getJobdate() : Instant.now();
         autocarejob.setJobdate(jobDate);
+        if (hasSameDayOngoingJob(autocarejob.getVehiclenumber(), autocarejob.getJobtypeid(), jobDate)) {
+            throw new BadRequestAlertException("This vehicle has an ongoing job.", ENTITY_NAME, "ongoingjobexists");
+        }
         autocarejob.setJobnumber(getNextDailyJobNumber(jobDate));
         autocarejob = autocarejobRepository.save(autocarejob);
         mobileAppWebhookService.send(MobileAppWebhookService.OPEN_JOB, autocarejob);
@@ -83,6 +87,24 @@ public class AutocarejobResource {
             .findTopByJobdateBetweenOrderByJobnumberDesc(startOfDay, startOfNextDay)
             .map(existingJob -> (existingJob.getJobnumber() != null ? existingJob.getJobnumber() : 0) + 1)
             .orElse(1);
+    }
+
+    private boolean hasSameDayOngoingJob(String vehiclenumber, Integer jobtypeid, Instant jobDate) {
+        if (vehiclenumber == null || vehiclenumber.trim().isEmpty() || jobtypeid == null || jobDate == null) {
+            return false;
+        }
+
+        ZoneId zoneId = ZoneId.systemDefault();
+        LocalDate localJobDate = jobDate.atZone(zoneId).toLocalDate();
+        Instant startOfDay = localJobDate.atStartOfDay(zoneId).toInstant();
+        Instant startOfNextDay = localJobDate.plusDays(1).atStartOfDay(zoneId).toInstant();
+
+        return autocarejobRepository.existsByVehiclenumberIgnoreCaseAndJobtypeidAndIsjobcloseFalseAndJobdateBetween(
+            vehiclenumber.trim(),
+            jobtypeid,
+            startOfDay,
+            startOfNextDay
+        );
     }
 
     /**
@@ -331,6 +353,23 @@ public class AutocarejobResource {
         log.debug("REST request to get Autocarejobs by vehiclenumber : {}", vehiclenumber);
         List<Autocarejob> jobs = autocarejobRepository.findByVehiclenumberIgnoreCaseOrderByJobdateDesc(vehiclenumber);
         return ResponseEntity.ok().body(jobs);
+    }
+
+    /**
+     * {@code GET  /autocarejobs/exists-ongoing} : check if a same-day active job exists for a vehicle and job type.
+     *
+     * @param vehiclenumber the vehicle number.
+     * @param jobtypeid the job type id.
+     * @param jobdate the job date.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and an exists flag.
+     */
+    @GetMapping("/exists-ongoing")
+    public ResponseEntity<Map<String, Boolean>> hasOngoingAutocarejob(
+        @RequestParam String vehiclenumber,
+        @RequestParam Integer jobtypeid,
+        @RequestParam Instant jobdate
+    ) {
+        return ResponseEntity.ok(Map.of("exists", hasSameDayOngoingJob(vehiclenumber, jobtypeid, jobdate)));
     }
 
     /**

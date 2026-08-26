@@ -8,7 +8,7 @@ import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormatMediumDatetimePipe } from 'app/shared/date';
 import { AutocarejobInstructionComponent } from './autocarejob-instruction.component';
-import { IAutocarejob } from '../autocarejob.model';
+import { IAutocarejob, NewAutocarejob } from '../autocarejob.model';
 import { ICustomervehicle } from 'app/entities/customervehicle/customervehicle.model';
 import { CustomervehicleService } from 'app/entities/customervehicle/service/customervehicle.service';
 import { CustomerService } from 'app/entities/customer/service/customer.service';
@@ -360,7 +360,7 @@ export class AutocarejobUpdateComponent implements OnInit {
     const autocarejob = this.autocarejobFormService.getAutocarejob(this.editForm);
 
     // Ensure lookup-driven fields are included in the payload
-    autocarejob.jobtypeid = this.editForm.get('jobtypeid')?.value;
+    autocarejob.jobtypeid = this.editForm.get('jobtypeid')?.value ?? this.getJobTypeId(autocarejob.jobtypename);
     autocarejob.vehicleid = this.editForm.get('vehicleid')?.value;
     autocarejob.customerid = this.editForm.get('customerid')?.value;
     autocarejob.vehicletypeid = this.editForm.get('vehicletypeid')?.value;
@@ -368,9 +368,53 @@ export class AutocarejobUpdateComponent implements OnInit {
     if (autocarejob.id !== null) {
       this.subscribeToSaveResponse(this.autocarejobService.update(autocarejob));
     } else {
-      this.subscribeToSaveResponse(this.autocarejobService.create(autocarejob));
+      this.checkOngoingJobAndCreate(autocarejob);
     }
   }
+
+  private checkOngoingJobAndCreate(autocarejob: NewAutocarejob): void {
+    const vehicleNumber = autocarejob.vehiclenumber?.trim();
+    const jobTypeId = autocarejob.jobtypeid;
+    const jobDate = autocarejob.jobdate ?? dayjs();
+
+    if (!vehicleNumber || jobTypeId == null) {
+      this.subscribeToSaveResponse(this.autocarejobService.create(autocarejob));
+      return;
+    }
+
+    this.autocarejobService.hasOngoingJob(vehicleNumber, jobTypeId, jobDate).subscribe({
+      next: response => {
+        if (response.body?.exists) {
+          alert('This vehicle has an ongoing job.');
+          this.isSaving = false;
+          return;
+        }
+
+        this.subscribeToSaveResponse(this.autocarejobService.create(autocarejob));
+      },
+      error: error => {
+        console.error('Failed to check ongoing job:', error);
+        alert('Failed to check ongoing jobs. Please try again.');
+        this.isSaving = false;
+      },
+    });
+  }
+
+  private getJobTypeId(jobTypeName: string | null | undefined): number | null {
+    switch (jobTypeName) {
+      case 'Full Service and Other Services':
+        return 1;
+      case 'Detailing services':
+        return 2;
+      case 'Performance Care':
+        return 3;
+      case 'Other':
+        return 4;
+      default:
+        return null;
+    }
+  }
+
   invid: number = 0;
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IAutocarejob>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
@@ -391,7 +435,7 @@ export class AutocarejobUpdateComponent implements OnInit {
       },
       error: error => {
         console.error('Save Failed:', error);
-        this.onSaveError();
+        this.onSaveError(error);
       },
     });
   }
@@ -400,8 +444,10 @@ export class AutocarejobUpdateComponent implements OnInit {
     this.previousState();
   }
 
-  protected onSaveError(): void {
-    // Api for inheritance.
+  protected onSaveError(error?: any): void {
+    if (error?.error?.message === 'error.ongoingjobexists') {
+      alert('This vehicle has an ongoing job.');
+    }
   }
 
   protected onSaveFinalize(): void {

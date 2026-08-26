@@ -16,4 +16,11 @@ public interface AutocarejobRepository extends JpaRepository<Autocarejob, Long> 
     Optional<Autocarejob> findTopByJobdateBetweenOrderByJobnumberDesc(Instant start, Instant end);
 
     List<Autocarejob> findByVehiclenumberIgnoreCaseOrderByJobdateDesc(String vehiclenumber);
+
+    boolean existsByVehiclenumberIgnoreCaseAndJobtypeidAndIsjobcloseFalseAndJobdateBetween(
+        String vehiclenumber,
+        Integer jobtypeid,
+        Instant start,
+        Instant end
+    );
 }

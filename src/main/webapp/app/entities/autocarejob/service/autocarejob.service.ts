@@ -70,6 +70,15 @@ export class AutocarejobService {
       .pipe(map(res => this.convertResponseArrayFromServer(res)));
   }
 
+  hasOngoingJob(vehiclenumber: string, jobtypeid: number, jobdate: dayjs.Dayjs): Observable<HttpResponse<{ exists: boolean }>> {
+    const options = createRequestOption({
+      vehiclenumber,
+      jobtypeid,
+      jobdate: jobdate.toJSON(),
+    });
+    return this.http.get<{ exists: boolean }>(`${this.resourceUrl}/exists-ongoing`, { params: options, observe: 'response' });
+  }
+
   findByItem(name: string): Observable<EntityArrayResponseType> {
     const options = createRequestOption({ 'name.contains': name });
     return this.http
