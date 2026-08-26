@@ -108,10 +108,19 @@
                   id="field_customername"
                   data-cy="customername"
                   formControlName="customername"
+                  list="customernameList"
+                  (input)="onCustomerSearch($event)"
+                  (change)="onCustomerSelect($event)"
+                  autocomplete="off"
                   [ngModel]="customername"
                   [class.is-invalid]="isRequiredInvalid('customername')"
                   required
                 />
+                <datalist id="customernameList">
+                  <option *ngFor="let customer of filteredCustomers" [value]="customer.fullname || customer.businessname">
+                    {{ customer.residenceaddress || customer.businessaddress }}
+                  </option>
+                </datalist>
                 <div *ngIf="isRequiredInvalid('customername')" class="invalid-feedback">Customer Name is required.</div>
               </div>
 
@@ -179,8 +188,8 @@
               <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
             </button>
 
-            <button type="submit" id="save-entity" data-cy="entityCreateSaveButton" class="btn btn-primary">
-              <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+            <button type="submit" id="save-entity" data-cy="entityCreateSaveButton" class="btn btn-primary" [disabled]="isSaving">
+              <fa-icon icon="save"></fa-icon>&nbsp;<span>{{ isSaving ? 'Saving...' : 'Save' }}</span>
             </button>
           </div>
         </form>

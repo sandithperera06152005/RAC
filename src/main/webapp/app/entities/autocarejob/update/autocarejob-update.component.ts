@@ -147,6 +147,7 @@ export class AutocarejobUpdateComponent implements OnInit {
 
   filteredVehicles: IAutocareappointment[] = [];
   filteredCustomerVehicles: ICustomervehicle[] = [];
+  filteredCustomers: ICustomer[] = [];
 
   onVehicleSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -178,6 +179,46 @@ export class AutocarejobUpdateComponent implements OnInit {
   }
 
   searchedCustomer: ICustomer | null = null;
+
+  onCustomerSearch(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const searchTerm = input.value.trim();
+
+    this.editForm.patchValue({ customerid: null });
+    this.customername = input.value;
+
+    if (searchTerm.length > 2) {
+      this.customerService.query({ 'fullname.contains': searchTerm, size: 20 }).subscribe(response => {
+        this.filteredCustomers = response.body || [];
+      });
+    } else {
+      this.filteredCustomers = [];
+    }
+  }
+
+  onCustomerSelect(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const selectedCustomerName = input.value;
+    const selectedCustomer = this.filteredCustomers.find(customer =>
+      this.isSameCustomerName(this.getCustomerDisplayName(customer), selectedCustomerName),
+    );
+
+    if (!selectedCustomer) {
+      return;
+    }
+
+    const customerName = this.getCustomerDisplayName(selectedCustomer);
+    const customerTel = this.getCustomerTel(selectedCustomer);
+
+    this.customername = customerName;
+    this.customerTel = customerTel;
+    this.searchedCustomer = selectedCustomer;
+    this.editForm.patchValue({
+      customerid: selectedCustomer.id,
+      customername: customerName,
+      customertel: customerTel,
+    });
+  }
 
   onVehicleSelect(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -285,7 +326,30 @@ export class AutocarejobUpdateComponent implements OnInit {
     );
   }
 
+  private getCustomerDisplayName(customer: ICustomer): string {
+    return customer.fullname || customer.businessname || '';
+  }
+
+  private getCustomerTel(customer: ICustomer): string {
+    return customer.residencephone || customer.businessphone1 || customer.businessphone2 || customer.businessmobile || '';
+  }
+
+  private isSameCustomerName(left: string | null | undefined, right: string | null | undefined): boolean {
+    return (
+      String(left ?? '')
+        .trim()
+        .toUpperCase() ===
+      String(right ?? '')
+        .trim()
+        .toUpperCase()
+    );
+  }
+
   save(): void {
+    if (this.isSaving) {
+      return;
+    }
+
     if (this.editForm.invalid) {
       this.saveAttempted = true;
       this.editForm.markAllAsTouched();
