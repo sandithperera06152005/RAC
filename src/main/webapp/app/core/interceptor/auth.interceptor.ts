@@ -16,6 +16,10 @@ export class AuthInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
+    if (this.isAuthenticationRequest(request)) {
+      return next.handle(request);
+    }
+
     const token: string | null = this.stateStorageService.getAuthenticationToken();
     if (token) {
       request = request.clone({
@@ -25,5 +29,22 @@ export class AuthInterceptor implements HttpInterceptor {
       });
     }
     return next.handle(request);
+  }
+
+  private isAuthenticationRequest(request: HttpRequest<any>): boolean {
+    const requestPath = this.getPath(request.url);
+    const authenticationPath = this.getPath(this.applicationConfigService.getEndpointFor('api/authenticate'));
+
+    return requestPath === authenticationPath;
+  }
+
+  private getPath(url: string): string {
+    const urlWithoutQuery = url.split('?')[0];
+
+    try {
+      return new URL(urlWithoutQuery, window.location.origin).pathname.replace(/^\/+/, '');
+    } catch {
+      return urlWithoutQuery.replace(/^\/+/, '');
+    }
   }
 }
