@@ -36,6 +36,7 @@ import { IVehicletype } from 'app/entities/vehicletype/vehicletype.model';
 import { VehicletypeService } from 'app/entities/vehicletype/service/vehicletype.service';
 import { AutojobsinvoicelinesService } from 'app/entities/autojobsinvoicelines/service/autojobsinvoicelines.service';
 import { AutojobsinvoicelinebatchesService } from 'app/entities/autojobsinvoicelinebatches/service/autojobsinvoicelinebatches.service';
+import { IAutojobsinvoicelinebatches } from 'app/entities/autojobsinvoicelinebatches/autojobsinvoicelinebatches.model';
 import { AutojobsinvoiceService } from 'app/entities/autojobsinvoice/service/autojobsinvoice.service';
 import { IWorkshopworklist } from 'app/entities/workshopworklist/workshopworklist.model';
 import { WorkshopworklistService } from 'app/entities/workshopworklist/service/workshopworklist.service';
@@ -693,15 +694,18 @@ export class AutocarejobInstructionComponent implements OnInit {
             this.itemsArray = invoiceLines.map(line => this.mapInvoiceLineToItemsArray(line));
             this.selectedItems = invoiceLines.map(line => this.mapInvoiceLineToSelectedItem(line));
             this.updateItemTotal();
-            this.loadExistingChargeSelections(invoiceIds);
 
             this.jobinvoicebatches.queryByParentLineIds(invoiceIds).subscribe({
               next: batchResponse => {
-                this.persistedItemBatchKeys = new Set((batchResponse.body || []).map(batch => this.buildItemBatchKey(batch)));
+                const batches = batchResponse.body || [];
+                this.mergeSavedBatchCodesIntoItems(batches);
+                this.persistedItemBatchKeys = new Set(batches.map(batch => this.buildItemBatchKey(batch)));
+                this.loadExistingChargeSelections(invoiceIds);
               },
               error: (batchError: unknown) => {
                 console.error('Failed to load existing job item batches:', batchError);
                 this.persistedItemBatchKeys.clear();
+                this.loadExistingChargeSelections(invoiceIds);
               },
             });
           },
@@ -937,6 +941,42 @@ export class AutocarejobInstructionComponent implements OnInit {
           : line.discount ?? 0,
       requestedQuantity: line.quantity ?? 1,
     };
+  }
+
+  private mergeSavedBatchCodesIntoItems(batches: IAutojobsinvoicelinebatches[]): void {
+    const batchCodeByLine = new Map<string, string>();
+
+    batches.forEach(batch => {
+      const code = (batch.code ?? '').trim();
+      if (code.length === 0) {
+        return;
+      }
+
+      batchCodeByLine.set(this.buildSavedBatchLineKey(batch), code);
+    });
+
+    this.itemsArray.forEach((itemLine, index) => {
+      const savedCode = batchCodeByLine.get(this.buildSavedBatchLineKey(itemLine));
+      if (!savedCode) {
+        return;
+      }
+
+      itemLine.itemcode = savedCode;
+      if (this.selectedItems[index]) {
+        this.selectedItems[index].code = savedCode;
+      }
+    });
+
+    this.cdr.detectChanges();
+  }
+
+  private buildSavedBatchLineKey(item: {
+    id?: number | null;
+    invocieid?: number | null;
+    lineid?: number | null;
+    itemid?: number | null;
+  }): string {
+    return `${item.invocieid ?? item.id ?? ''}|${item.lineid ?? ''}|${item.itemid ?? ''}`;
   }
 
   private syncItemsArrayFromSelection(): void {
@@ -1315,6 +1355,27 @@ export class AutocarejobInstructionComponent implements OnInit {
       alert('Please save the job first');
       return;
     }
+
+    const customerId = this.editForm.controls.customerid.value;
+    if (!this.searchedCustomer && customerId != null) {
+      this.customerService.find(customerId).subscribe({
+        next: res => {
+          this.searchedCustomer = res.body;
+          this.cdr.detectChanges();
+          setTimeout(() => this.printSummary(), 0);
+        },
+        error: error => {
+          console.error('Failed to load customer details for print summary:', error);
+          this.openPrintSummaryWindow();
+        },
+      });
+      return;
+    }
+
+    this.openPrintSummaryWindow();
+  }
+
+  private openPrintSummaryWindow(): void {
     const element = document.getElementById('printSummary');
     console.log('printSummary element found:', !!element);
     const printContents = element?.innerHTML;
@@ -1347,6 +1408,12 @@ export class AutocarejobInstructionComponent implements OnInit {
   row-gap: 0rem;
   column-gap: 1.5rem;
 }
+            .print-item-description-grid {
+              display: grid;
+              grid-template-columns: 105px minmax(0, 1fr);
+              column-gap: 6px;
+              align-items: start;
+            }
 
           </style>
         </head>
@@ -1653,6 +1720,27 @@ export class AutocarejobInstructionComponent implements OnInit {
     this.autocarejob = autocarejob;
     this.autocarejobFormService.resetForm(this.editForm, autocarejob);
     this.syncVehicleTypeSelectionFromForm();
+    this.loadCustomerDetailsForCurrentJob();
+  }
+
+  private loadCustomerDetailsForCurrentJob(): void {
+    const customerId = this.editForm.controls.customerid.value;
+
+    if (customerId == null) {
+      this.searchedCustomer = null;
+      return;
+    }
+
+    this.customerService.find(customerId).subscribe({
+      next: res => {
+        this.searchedCustomer = res.body;
+        this.cdr.detectChanges();
+      },
+      error: error => {
+        console.error('Failed to load customer details for current job:', error);
+        this.searchedCustomer = null;
+      },
+    });
   }
 
   private getFirstCreatedVehicles(vehicles: ICustomervehicle[]): ICustomervehicle[] {

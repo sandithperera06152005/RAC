@@ -945,10 +945,20 @@
         </thead>
         <tbody>
           <tr>
-            <td colspan="5"><strong>ITEMS</strong></td>
+            <td colspan="5">
+              <div class="print-item-description-grid">
+                <strong>ITEM CODE</strong>
+                <strong>ITEM</strong>
+              </div>
+            </td>
           </tr>
           <tr *ngFor="let item of selectedItems; let i = index">
-            <td>{{ item.name }}</td>
+            <td>
+              <div class="print-item-description-grid">
+                <span>{{ item.code }}</span>
+                <span>{{ item.name }}</span>
+              </div>
+            </td>
             <td>{{ item.lastsellingprice }}</td>
             <td>{{ item.requestedQuantity }}</td>
             <td>{{ item.discountPercentage }}</td>
@@ -1018,6 +1028,13 @@
       left: 0;
       top: 0;
       width: 100%;
+    }
+
+    .print-item-description-grid {
+      display: grid;
+      grid-template-columns: 105px minmax(0, 1fr);
+      column-gap: 6px;
+      align-items: start;
     }
   }
 </style>
