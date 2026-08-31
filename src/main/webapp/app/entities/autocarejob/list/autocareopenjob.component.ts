@@ -1,7 +1,7 @@
 import { Component, NgZone, inject, OnInit } from '@angular/core';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
-import { combineLatest, filter, Observable, Subscription, tap } from 'rxjs';
+import { combineLatest, filter, forkJoin, Observable, Subscription, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
@@ -45,6 +45,7 @@ export class AutocareopenjobComponent implements OnInit {
   filteredAutocarejobs: IAutocarejob[] = [];
   searchText: string = '';
   canUpdateAdvisorInstructionItems = false;
+  advisorInstructionJobIds = new Set<number>();
 
   sortState = sortStateSignal({});
 
@@ -98,6 +99,7 @@ export class AutocareopenjobComponent implements OnInit {
           job => !job.isjobclose && job.jobdate?.format('YYYY-MM-DD') === today, // Only show open jobs for today
         );
 
+        this.loadAdvisorInstructionPrintStates(this.autocarejobs ?? []);
         this.filterJobs(); // Apply filtering when loading data
       },
     });
@@ -130,6 +132,32 @@ export class AutocareopenjobComponent implements OnInit {
 
   needsVehicleRegistration(job: IAutocarejob): boolean {
     return !job.vehicleid;
+  }
+
+  canPrintAdvisorInstructions(job: IAutocarejob): boolean {
+    return job.id != null && (job.isadvisorchecked === true || this.advisorInstructionJobIds.has(job.id));
+  }
+
+  loadAdvisorInstructionPrintStates(jobs: IAutocarejob[]): void {
+    this.advisorInstructionJobIds.clear();
+
+    const jobsWithIds = jobs.filter(job => job.id != null);
+    if (jobsWithIds.length === 0) {
+      return;
+    }
+
+    forkJoin(jobsWithIds.map(job => this.autojobsinvoiceService.query({ 'jobid.equals': job.id, page: 0, size: 1 }))).subscribe({
+      next: responses => {
+        responses.forEach((response, index) => {
+          if ((response.body || []).some(invoice => invoice.id != null)) {
+            this.advisorInstructionJobIds.add(jobsWithIds[index].id);
+          }
+        });
+      },
+      error: () => {
+        this.advisorInstructionJobIds.clear();
+      },
+    });
   }
 
   navigateToInvoice(job: IAutocarejob): void {

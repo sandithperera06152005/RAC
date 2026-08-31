@@ -533,6 +533,7 @@
                       <fa-icon icon="file-invoice"></fa-icon>
                     </button>
 
+                    @if (canPrintAdvisorInstructions(autocarejob)) {
                     <a
                       [routerLink]="['/autocarejob', autocarejob.id, 'instructions']"
                       [queryParams]="{ print: 'true' }"
@@ -542,6 +543,7 @@
                     >
                       <fa-icon icon="print"></fa-icon>
                     </a>
+                    }
 
                     <button
                       type="submit"

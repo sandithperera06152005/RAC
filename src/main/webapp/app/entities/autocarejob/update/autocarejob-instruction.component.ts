@@ -1441,7 +1441,7 @@ export class AutocarejobInstructionComponent implements OnInit {
     this.isSaving = true;
     let autocarejob = this.autocarejobFormService.getAutocarejob(this.editForm);
 
-    autocarejob = { ...autocarejob };
+    autocarejob = { ...autocarejob, isadvisorchecked: true };
 
     if (autocarejob.id !== null) {
       this.subscribeToSaveResponse(this.autocarejobService.update(autocarejob));
