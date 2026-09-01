@@ -197,6 +197,7 @@ export class AutocareopenjobComponent implements OnInit {
     const params = this.buildEncodedQuery({
       NewVehicle: job.vehiclenumber ?? '',
       cusId: job.customerid != null ? String(job.customerid) : '',
+      jobId: String(job.id ?? ''),
     });
 
     return `http://192.168.1.150:91/AutoCare/AutoCareVehicle.aspx?${params}`;

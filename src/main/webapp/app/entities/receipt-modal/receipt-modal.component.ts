@@ -454,7 +454,7 @@ export class ReceiptModalComponent implements OnChanges {
     this.cashAmountStr = value;
 
     this.cash = parseFloat(value) || 0;
-    this.balance = this.totalamount - this.cash;
+    this.balance = Number((Number(this.totalamount || 0) - Number(this.cash || 0)).toFixed(2));
   }
 
   onCashBlur(event: Event): void {
@@ -464,7 +464,7 @@ export class ReceiptModalComponent implements OnChanges {
     this.cashAmountStr = val.toFixed(2);
     inputElement.value = this.cashAmountStr;
     this.cash = val;
-    this.balance = this.totalamount - this.cash;
+    this.balance = Number((Number(this.totalamount || 0) - Number(this.cash || 0)).toFixed(2));
   }
 
   onCashFocus(event: Event): void {
@@ -727,6 +727,13 @@ export class ReceiptModalComponent implements OnChanges {
   id: number = 0;
 
   finishBilling(): void {
+    this.balance = Number((Number(this.totalamount || 0) - Number(this.cash || 0)).toFixed(2));
+
+    if (this.method === 'Cash' && Math.abs(this.balance) > 0.004) {
+      alert(`Please settle the full cash amount. Balance: ${this.balance.toFixed(2)}`);
+      return;
+    }
+
     this.save();
   }
 
@@ -1006,6 +1013,9 @@ export class ReceiptModalComponent implements OnChanges {
     console.log('Selected Term ID:', termid);
     this.method = paymentMethod;
     this.accountmethod(paymentMethod);
+    if (this.method === 'Cash') {
+      this.balance = Number((Number(this.totalamount || 0) - Number(this.cash || 0)).toFixed(2));
+    }
     if (paymentMethod !== 'Cheque' && paymentMethod !== 'Bank') {
       this.selectedCompanyBankAccount = null;
       this.selectedCompanyBankAccountId = null;

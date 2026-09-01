@@ -1719,8 +1719,61 @@ export class AutocarejobInstructionComponent implements OnInit {
   protected updateForm(autocarejob: IAutocarejob): void {
     this.autocarejob = autocarejob;
     this.autocarejobFormService.resetForm(this.editForm, autocarejob);
-    this.syncVehicleTypeSelectionFromForm();
+    this.syncVehicleTypeSelectionFromCustomerVehicle();
     this.loadCustomerDetailsForCurrentJob();
+  }
+
+  private syncVehicleTypeSelectionFromCustomerVehicle(): void {
+    const vehicleId = this.editForm.controls.vehicleid.value;
+
+    if (vehicleId != null) {
+      this.customervehicleService.find(vehicleId).subscribe({
+        next: response => this.applyCustomerVehicleType(response.body),
+        error: error => {
+          console.error('Failed to load customer vehicle by id for vehicle type:', error);
+          this.syncVehicleTypeSelectionFromVehicleNumber();
+        },
+      });
+      return;
+    }
+
+    this.syncVehicleTypeSelectionFromVehicleNumber();
+  }
+
+  private syncVehicleTypeSelectionFromVehicleNumber(): void {
+    const vehicleNumber = this.editForm.controls.vehiclenumber.value?.trim();
+
+    if (!vehicleNumber) {
+      this.syncVehicleTypeSelectionFromForm();
+      return;
+    }
+
+    this.customervehicleService.findByVehicleNumber(vehicleNumber).subscribe({
+      next: response => {
+        const vehicles = response.body || [];
+        const customerVehicle =
+          vehicles.find(vehicle => vehicle.vehiclenumber?.trim().toLowerCase() === vehicleNumber.toLowerCase()) ?? null;
+
+        this.applyCustomerVehicleType(customerVehicle);
+      },
+      error: error => {
+        console.error('Failed to load customer vehicle by vehicle number for vehicle type:', error);
+        this.syncVehicleTypeSelectionFromForm();
+      },
+    });
+  }
+
+  private applyCustomerVehicleType(customerVehicle: ICustomervehicle | null): void {
+    if (customerVehicle?.typeid == null) {
+      this.syncVehicleTypeSelectionFromForm();
+      return;
+    }
+
+    const customerVehicleTypeId = Number(customerVehicle.typeid);
+    this.selectedVehicleTypeId = Number.isNaN(customerVehicleTypeId) ? null : customerVehicleTypeId;
+    this.editForm.patchValue({ vehicletypeid: this.selectedVehicleTypeId });
+    this.filterBillingServiceOptionValues();
+    this.cdr.detectChanges();
   }
 
   private loadCustomerDetailsForCurrentJob(): void {
