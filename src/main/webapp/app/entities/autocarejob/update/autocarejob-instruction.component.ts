@@ -98,6 +98,7 @@ export class AutocarejobInstructionComponent implements OnInit {
   invoiceId: number | null = null;
   invoiceCode: string | null = null;
   isSaving = false;
+  private keepSaveAllLockedUntilPrint = false;
   autocarejob: IAutocarejob | null = null;
   customervehicles: ICustomervehicle[] = [];
   customerDetails: any | null = null;
@@ -1465,11 +1466,17 @@ export class AutocarejobInstructionComponent implements OnInit {
   }
 
   saveAll(): void {
+    if (this.isSaving) {
+      return;
+    }
+
     if (!this.canSaveRequiredFields()) {
       return;
     }
 
     this.alertMuteService.mute();
+    this.isSaving = true;
+    this.keepSaveAllLockedUntilPrint = true;
     this.syncItemsArrayFromSelection();
 
     // Persist Workshop Work Service tab selections directly — keyed by jobId = Autocarejob.id
@@ -1480,6 +1487,10 @@ export class AutocarejobInstructionComponent implements OnInit {
 
     if (this.autojobsinvoiceComponent) {
       this.autojobsinvoiceComponent.save();
+    } else {
+      this.keepSaveAllLockedUntilPrint = false;
+      this.isSaving = false;
+      this.alertMuteService.unmute();
     }
     // Job and lines will be saved after invoice via onInvoiceSaved
   }
@@ -1669,6 +1680,7 @@ export class AutocarejobInstructionComponent implements OnInit {
           this.onSaveSuccess();
         } else {
           console.error('Save response body is null');
+          this.onSaveError();
         }
       },
       error: () => this.onSaveError(),
@@ -1696,6 +1708,10 @@ export class AutocarejobInstructionComponent implements OnInit {
         this.printSummary();
       }
 
+      this.keepSaveAllLockedUntilPrint = false;
+      this.isSaving = false;
+      this.cdr.detectChanges();
+
       // Navigate to the open jobs list after a short delay to prevent double-saving/conflicts
       setTimeout(() => {
         this.router.navigate(['/autocarejob/autocareopenjob']);
@@ -1709,11 +1725,15 @@ export class AutocarejobInstructionComponent implements OnInit {
   }
 
   protected onSaveError(): void {
+    this.keepSaveAllLockedUntilPrint = false;
+    this.isSaving = false;
     this.alertMuteService.unmute();
   }
 
   protected onSaveFinalize(): void {
-    this.isSaving = false;
+    if (!this.keepSaveAllLockedUntilPrint) {
+      this.isSaving = false;
+    }
   }
 
   protected updateForm(autocarejob: IAutocarejob): void {

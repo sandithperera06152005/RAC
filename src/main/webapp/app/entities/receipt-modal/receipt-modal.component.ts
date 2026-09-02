@@ -729,7 +729,7 @@ export class ReceiptModalComponent implements OnChanges {
   finishBilling(): void {
     this.balance = Number((Number(this.totalamount || 0) - Number(this.cash || 0)).toFixed(2));
 
-    if (this.method === 'Cash' && Math.abs(this.balance) > 0.004) {
+    if (this.method === 'Cash' && this.balance > 0.004) {
       alert(`Please settle the full cash amount. Balance: ${this.balance.toFixed(2)}`);
       return;
     }
