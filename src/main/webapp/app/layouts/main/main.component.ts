@@ -24,6 +24,9 @@ import SidenavbarComponent from '../sidenavbar/sidenavbar.component';
 
       .content-container {
         flex-grow: 1;
+        min-width: 0;
+        max-width: 100%;
+        overflow-x: hidden;
         // overflow: hidden; /* Prevent unwanted scrolling */
       }
     `,

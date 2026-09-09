@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container-fluid autocare-open-job-page px-2 px-md-3">
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item" role="presentation">
@@ -37,7 +37,7 @@
           <div class="d-flex justify-content-between align-items-center mt-2 mb-3">
             <input
               type="text"
-              class="form-control w-25"
+              class="form-control open-job-search"
               [(ngModel)]="searchText"
               (input)="filterJobs()"
               placeholder="Search by Vehicle Number"
@@ -70,8 +70,8 @@
           <span>No Autocarejobs found</span>
         </div>
         } @if (autocarejobs && autocarejobs.length > 0) {
-        <div class="table-responsive table-entities" id="entities">
-          <table class="table table-striped" aria-describedby="page-heading">
+        <div class="table-responsive table-entities open-job-table-wrap" id="entities">
+          <table class="table table-striped open-job-table" aria-describedby="page-heading">
             <thead>
               <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
                 <th scope="col" jhiSortBy="id">
@@ -382,7 +382,9 @@
                           <fa-icon class="p-1" icon="sort"></fa-icon>
                         </div>
                       </th> -->
-                <!-- <th scope="col"></th> -->
+                <th scope="col" class="open-job-actions-col">
+                  <span></span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -436,8 +438,8 @@
                         <td>{{ autocarejob.rightimage }}</td>
                         <td>{{ autocarejob.backimage }}</td> -->
 
-                <td class="text-end">
-                  <div class="btn-group">
+                <td class="text-end open-job-actions-col">
+                  <div class="btn-group open-job-actions">
                     @if (needsCustomerRegistration(autocarejob)) {
                     <a
                       [href]="getCustomerRegistrationUrl(autocarejob)"

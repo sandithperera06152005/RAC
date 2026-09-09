@@ -37,6 +37,98 @@ import { AccountService } from 'app/core/auth/account.service';
     ItemCountComponent,
     AutocareclosejobComponent,
   ],
+  styles: [
+    `
+      :host {
+        display: block;
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      .autocare-open-job-page {
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+
+      .open-job-search {
+        width: min(100%, 270px);
+      }
+
+      .open-job-table-wrap {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: visible;
+        scrollbar-gutter: stable;
+      }
+
+      .open-job-table {
+        width: 100%;
+        min-width: 1150px;
+        table-layout: auto;
+      }
+
+      .open-job-table th,
+      .open-job-table td {
+        vertical-align: middle;
+      }
+
+      .open-job-table th:not(:nth-child(6)):not(:nth-child(7)),
+      .open-job-table td:not(:nth-child(6)):not(:nth-child(7)) {
+        white-space: nowrap;
+      }
+
+      .open-job-table th:nth-child(6),
+      .open-job-table td:nth-child(6),
+      .open-job-table th:nth-child(7),
+      .open-job-table td:nth-child(7) {
+        min-width: 130px;
+        white-space: normal;
+      }
+
+      .open-job-actions-col {
+        position: sticky;
+        right: 0;
+        z-index: 2;
+        min-width: 275px;
+        width: 275px;
+        padding-left: 1px !important;
+        padding-right: 1px !important;
+        background: #fff !important;
+        box-shadow: -8px 0 10px -10px rgba(0, 0, 0, 0.45);
+      }
+
+      .open-job-table thead .open-job-actions-col {
+        z-index: 3;
+        background: #fff !important;
+      }
+
+      .open-job-actions {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+        gap: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        width: max-content;
+        margin-left: auto;
+      }
+
+      .open-job-actions .btn {
+        flex: 0 0 auto;
+      }
+
+      @media (max-width: 767.98px) {
+        .open-job-table {
+          min-width: 1150px;
+        }
+
+        .open-job-actions-col {
+          min-width: 270px;
+          width: 270px;
+        }
+      }
+    `,
+  ],
 })
 export class AutocareopenjobComponent implements OnInit {
   subscription: Subscription | null = null;
