@@ -578,7 +578,11 @@ export class AutocarejobInstructionComponent implements OnInit {
 
   onVehicleSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const searchTerm = input.value;
+    const searchTerm = input.value.toUpperCase();
+    if (input.value !== searchTerm) {
+      input.value = searchTerm;
+      this.editForm.controls.vehiclenumber.setValue(searchTerm, { emitEvent: false });
+    }
 
     if (searchTerm.length > 2) {
       // Use the new service method to fetch matching results

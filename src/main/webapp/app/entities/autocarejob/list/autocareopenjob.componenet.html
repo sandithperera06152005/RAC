@@ -71,7 +71,7 @@
         </div>
         } @if (autocarejobs && autocarejobs.length > 0) {
         <div class="table-responsive table-entities open-job-table-wrap" id="entities">
-          <table class="table table-striped open-job-table" aria-describedby="page-heading">
+          <table class="table open-job-table" aria-describedby="page-heading">
             <thead>
               <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
                 <th scope="col" jhiSortBy="id">

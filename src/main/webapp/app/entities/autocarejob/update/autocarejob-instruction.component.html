@@ -106,16 +106,18 @@
                 <legend class="w-auto px-2">Vehicle</legend>
                 <div class="row">
                   <div class="mb-3 col-6">
-                    <label class="form-label" for="field_vehiclenumber">Vehiclenumber</label>
+                    <label class="form-label" for="field_vehiclenumber">Vehicle number</label>
                     <input
                       type="text"
-                      class="form-control form-control-sm"
+                      class="form-control form-control-sm text-uppercase"
                       name="vehiclenumber"
                       id="field_vehiclenumber"
                       data-cy="vehiclenumber"
                       formControlName="vehiclenumber"
                       [class.is-invalid]="isRequiredInvalid('vehiclenumber')"
                       autocomplete="off"
+                      autocapitalize="characters"
+                      style="text-transform: uppercase"
                       list="vehiclenumberList"
                       (change)="onVehicleSelect($event)"
                       (input)="onVehicleSearch($event)"
@@ -130,7 +132,7 @@
                   </div>
 
                   <div class="mb-3 col-6">
-                    <label class="form-label" for="field_jobtypename">Jobtypename</label>
+                    <label class="form-label" for="field_jobtypename">Job type name</label>
                     <select
                       class="form-control form-control-sm"
                       name="jobtypename"
@@ -151,7 +153,7 @@
 
                 <div class="row">
                   <div class="mb-3 col-6">
-                    <label class="form-label" for="field_customername">Customername</label>
+                    <label class="form-label" for="field_customername">Customer name</label>
                     <input
                       type="text"
                       class="form-control form-control-sm"
@@ -405,12 +407,14 @@
 
                   <input
                     type="text"
-                    class="form-control form-control-sm"
+                    class="form-control form-control-sm text-uppercase"
                     name="vehiclenumber"
                     id="field_vehiclenumber"
                     data-cy="vehiclenumber"
                     formControlName="vehiclenumber"
                     autocomplete="off"
+                    autocapitalize="characters"
+                    style="text-transform: uppercase"
                     list="vehiclenumberList"
                     (change)="onVehicleSelect($event)"
                     (input)="onVehicleSearch($event)"

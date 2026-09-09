@@ -72,6 +72,11 @@ import { AccountService } from 'app/core/auth/account.service';
         vertical-align: middle;
       }
 
+      .open-job-table tbody tr,
+      .open-job-table tbody td {
+        background-color: #fff !important;
+      }
+
       .open-job-table th:not(:nth-child(6)):not(:nth-child(7)),
       .open-job-table td:not(:nth-child(6)):not(:nth-child(7)) {
         white-space: nowrap;
