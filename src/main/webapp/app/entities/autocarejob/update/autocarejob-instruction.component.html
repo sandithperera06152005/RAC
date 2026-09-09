@@ -622,27 +622,39 @@
 
               <!-- Selected Items Table -->
               <h6 class="mb-2">Selected Items :</h6>
-              <table class="table table-bordered text-center">
+              <table class="table table-bordered align-middle">
+                <colgroup>
+                  <col style="width: 14%" />
+                  <col style="width: 26%" />
+                  <col style="width: 10%" />
+                  <col style="width: 12%" />
+                  <col style="width: 12%" />
+                  <col style="width: 10%" />
+                  <col style="width: 12%" />
+                  <col style="width: 4%" />
+                </colgroup>
                 <thead class="table-dark">
                   <tr>
-                    <th>Item</th>
-                    <th>Avl.Qty</th>
-                    <th>Price</th>
-                    <th>Req Qty</th>
-                    <th>Dis (%)</th>
-                    <th>Total</th>
-                    <th>Delete</th>
+                    <th class="text-start">Code</th>
+                    <th class="text-start">Item</th>
+                    <th class="text-end">Avl.Qty</th>
+                    <th class="text-end">Price</th>
+                    <th class="text-end">Req Qty</th>
+                    <th class="text-end">Dis (%)</th>
+                    <th class="text-end">Total</th>
+                    <th class="text-center">Delete</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let item of selectedItems; let i = index">
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.availablequantity }}</td>
-                    <td>{{ item.lastsellingprice }}</td>
-                    <td>
+                    <td class="text-start">{{ item.code }}</td>
+                    <td class="text-start">{{ item.name }}</td>
+                    <td class="text-end">{{ item.availablequantity }}</td>
+                    <td class="text-end">{{ item.lastsellingprice }}</td>
+                    <td class="text-end">
                       <input
                         type="number"
-                        class="form-control text-center"
+                        class="form-control form-control-sm text-end"
                         [(ngModel)]="item.requestedQuantity"
                         min="1"
                         [max]="item.availablequantity ?? null"
@@ -651,10 +663,10 @@
                       />
                     </td>
 
-                    <td>
+                    <td class="text-end">
                       <input
                         type="number"
-                        class="form-control text-center"
+                        class="form-control form-control-sm text-end"
                         [(ngModel)]="item.discountPercentage"
                         min="0"
                         max="100"
@@ -663,9 +675,9 @@
                       />
                     </td>
 
-                    <td>{{ calculateItemTotal(item) | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
+                    <td class="text-end">{{ calculateItemTotal(item) | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
                     <!-- Display the total per item -->
-                    <td>
+                    <td class="text-center">
                       <button type="button" class="btn btn-danger btn-sm" (click)="onDeleteItem(i)">🗑</button>
                     </td>
                   </tr>
@@ -883,71 +895,92 @@
       <div class="border border-dark p-2 mt-2 mb-3" style="font-size: 11px; line-height: 1.1">
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); row-gap: 0px; column-gap: 15px">
           <div>
-            <p class="m-0"><strong>VEHICLE NO</strong> - {{ editForm.controls['vehiclenumber'].value }}</p>
+            <p class="m-0 print-summary-pair">
+              <strong>VEHICLE NO</strong><span>{{ editForm.controls['vehiclenumber'].value }}</span>
+            </p>
           </div>
           <div>
-            <p class="m-0"><strong>MILAGE</strong> - {{ editForm.controls['millage'].value }}</p>
+            <p class="m-0 print-summary-pair">
+              <strong>MILAGE</strong><span>{{ editForm.controls['millage'].value }}</span>
+            </p>
           </div>
           <div>
-            <p class="m-0">
-              <strong>JOB N0</strong> - {{ editForm.controls['id'].value }}{{ editForm.controls['iswaiting'].value ? ' / Waiting' : '' }}
+            <p class="m-0 print-summary-pair">
+              <strong>JOB N0</strong
+              ><span>{{ editForm.controls['id'].value }}{{ editForm.controls['iswaiting'].value ? ' / Waiting' : '' }}</span>
             </p>
           </div>
 
           <div>
-            <p class="m-0"><strong>DATE</strong> - {{ editForm.controls['jobopentime'].value | date: 'dd/MM/yyyy-HH:mm' }}</p>
-          </div>
-          <div>
-            <p class="m-0"><strong>NAME</strong> - {{ editForm.controls['customername'].value }}</p>
-          </div>
-          <div>
-            <p class="m-0"><strong>T/P</strong> - {{ editForm.controls['customertel'].value }}</p>
-          </div>
-
-          <div>
-            <p class="m-0">
-              <strong>ADDRESS</strong> - {{ searchedCustomer?.residenceaddress || searchedCustomer?.businessaddress || '' }}
+            <p class="m-0 print-summary-pair">
+              <strong>DATE</strong><span>{{ editForm.controls['jobopentime'].value | date: 'dd/MM/yyyy-HH:mm' }}</span>
             </p>
           </div>
           <div>
-            <p class="m-0"><strong>JOB TYPE</strong> - {{ editForm.controls['jobtypename'].value }}</p>
+            <p class="m-0 print-summary-pair">
+              <strong>NAME</strong><span>{{ editForm.controls['customername'].value }}</span>
+            </p>
           </div>
           <div>
-            <p class="m-0">
-              <strong>REFERENCE</strong> -
-              <ng-container *ngFor="let subcategory of selectedSubcategoryItems; let last = last"
-                >{{ subcategory.name }}{{ !last ? ', ' : '' }}</ng-container
-              >
+            <p class="m-0 print-summary-pair">
+              <strong>T/P</strong><span>{{ editForm.controls['customertel'].value }}</span>
             </p>
           </div>
 
           <div>
-            <p class="m-0"><strong>SPECIAL REQUIRMENTS</strong> - {{ editForm.controls['specialrquirments'].value || '' }}</p>
+            <p class="m-0 print-summary-pair">
+              <strong>ADDRESS</strong><span>{{ searchedCustomer?.residenceaddress || searchedCustomer?.businessaddress || '' }}</span>
+            </p>
           </div>
           <div>
-            <p class="m-0"><strong>REMARKS</strong> - {{ editForm.controls['remarks'].value || '' }}</p>
+            <p class="m-0 print-summary-pair">
+              <strong>JOB TYPE</strong><span>{{ editForm.controls['jobtypename'].value }}</span>
+            </p>
           </div>
           <div>
-            <p class="m-0"><strong>SP INSTRUCTIONS</strong> - {{ editForm.controls['specialinstructions'].value || '' }}</p>
+            <p class="m-0 print-summary-pair">
+              <strong>REFERENCE</strong>
+              <span>
+                <ng-container *ngFor="let subcategory of selectedSubcategoryItems; let last = last"
+                  >{{ subcategory.name }}{{ !last ? ', ' : '' }}</ng-container
+                >
+              </span>
+            </p>
+          </div>
+
+          <div>
+            <p class="m-0 print-summary-pair">
+              <strong>SPECIAL REQUIRMENTS</strong><span>{{ editForm.controls['specialrquirments'].value || '' }}</span>
+            </p>
+          </div>
+          <div>
+            <p class="m-0 print-summary-pair">
+              <strong>REMARKS</strong><span>{{ editForm.controls['remarks'].value || '' }}</span>
+            </p>
+          </div>
+          <div>
+            <p class="m-0 print-summary-pair">
+              <strong>SP INSTRUCTIONS</strong><span>{{ editForm.controls['specialinstructions'].value || '' }}</span>
+            </p>
           </div>
         </div>
       </div>
 
       <h4 class="mt-3"><strong>ESTIMATE / ඇස්තමේන්තුව</strong></h4>
 
-      <table class="table table-bordered mt-3">
+      <table class="table table-bordered mt-3 print-summary-table">
         <thead>
           <tr>
-            <th>DESCRIPTION</th>
-            <th>PRICE</th>
-            <th>QTY</th>
-            <th>DIS %</th>
-            <th>TOTAL</th>
+            <th class="text-start">DESCRIPTION</th>
+            <th class="text-end">PRICE</th>
+            <th class="text-end">QTY</th>
+            <th class="text-end">DIS %</th>
+            <th class="text-end">TOTAL</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td colspan="5">
+            <td colspan="5" class="text-start">
               <div class="print-item-description-grid">
                 <strong>ITEM CODE</strong>
                 <strong>ITEM</strong>
@@ -955,47 +988,47 @@
             </td>
           </tr>
           <tr *ngFor="let item of selectedItems; let i = index">
-            <td>
+            <td class="text-start">
               <div class="print-item-description-grid">
                 <span>{{ item.code }}</span>
                 <span>{{ item.name }}</span>
               </div>
             </td>
-            <td>{{ item.lastsellingprice }}</td>
-            <td>{{ item.requestedQuantity }}</td>
-            <td>{{ item.discountPercentage }}</td>
-            <td>{{ calculateItemTotal(item) | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
+            <td class="text-end">{{ item.lastsellingprice || 0 | number: '1.2-2' }}</td>
+            <td class="text-end">{{ item.requestedQuantity || 0 | number: '1.2-2' }}</td>
+            <td class="text-end">{{ item.discountPercentage || 0 | number: '1.2-2' }}</td>
+            <td class="text-end">{{ calculateItemTotal(item) | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
           </tr>
 
           <tr>
-            <td colspan="5"><strong>SERVICE CHARGES</strong></td>
+            <td colspan="5" class="text-start"><strong>SERVICE CHARGES</strong></td>
           </tr>
           <tr *ngFor="let service of selectedServices; let i = index">
-            <td>{{ getBillingServiceOptionName(service.billingserviceoptionid) }}</td>
-            <td>{{ service.value }}</td>
-            <td>1</td>
-            <td>0</td>
-            <td>{{ service.value | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
+            <td class="text-start">{{ getBillingServiceOptionName(service.billingserviceoptionid) }}</td>
+            <td class="text-end">{{ service.value || 0 | number: '1.2-2' }}</td>
+            <td class="text-end">{{ 1 | number: '1.2-2' }}</td>
+            <td class="text-end">{{ 0 | number: '1.2-2' }}</td>
+            <td class="text-end">{{ service.value || 0 | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
           </tr>
 
           <tr>
-            <td colspan="5"><strong>COMMON SERVICES</strong></td>
+            <td colspan="5" class="text-start"><strong>COMMON SERVICES</strong></td>
           </tr>
           <tr *ngFor="let service of selectedcommonServices; let i = index">
-            <td>{{ service.name }}</td>
-            <td>{{ service.value }}</td>
-            <td>1</td>
-            <td>0</td>
-            <td>{{ service.value | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
+            <td class="text-start">{{ service.name }}</td>
+            <td class="text-end">{{ service.value || 0 | number: '1.2-2' }}</td>
+            <td class="text-end">{{ 1 | number: '1.2-2' }}</td>
+            <td class="text-end">{{ 0 | number: '1.2-2' }}</td>
+            <td class="text-end">{{ service.value || 0 | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
           </tr>
         </tbody>
       </table>
 
-      <div class="d-flex justify-content-end mt-3">
+      <div class="print-total-row mt-3">
+        <h4><strong>TOTAL VALUE:</strong></h4>
         <h4>
           <strong
-            >TOTAL VALUE:
-            <span class="text-primary">LKR&nbsp;{{ totalServiceCharge + calculateTotalWithDiscount() | number: '1.2-2' }}</span></strong
+            ><span class="text-primary">LKR&nbsp;{{ getPrintSummaryTotal() | number: '1.2-2' }}</span></strong
           >
         </h4>
       </div>
@@ -1016,6 +1049,10 @@
 </div>
 <style>
   @media print {
+    @page {
+      margin: 10mm;
+    }
+
     body * {
       visibility: hidden;
     }
@@ -1037,6 +1074,44 @@
       grid-template-columns: 105px minmax(0, 1fr);
       column-gap: 6px;
       align-items: start;
+    }
+
+    .print-summary-pair {
+      display: grid;
+      grid-template-columns: minmax(80px, max-content) minmax(0, 1fr);
+      column-gap: 8px;
+      align-items: start;
+    }
+
+    .print-summary-pair span {
+      text-align: right;
+      word-break: break-word;
+    }
+
+    .print-summary-table th,
+    .print-summary-table td {
+      vertical-align: top;
+    }
+
+    .print-summary-table th:nth-child(n + 2),
+    .print-summary-table td:nth-child(n + 2),
+    .print-summary-table th.text-end,
+    .print-summary-table td.text-end {
+      text-align: right !important;
+    }
+
+    .print-summary-table th:first-child,
+    .print-summary-table td:first-child,
+    .print-summary-table td[colspan] {
+      text-align: left !important;
+    }
+
+    .print-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      width: 100%;
     }
   }
 </style>

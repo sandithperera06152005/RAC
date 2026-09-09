@@ -62,6 +62,10 @@ export class AutojobsalesinvoiceservicechargelineService {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
+  deleteByKey(invoiceId: number, lineId: number, optionId: number): Observable<HttpResponse<{}>> {
+    return this.http.delete(`${this.resourceUrl}/invoice/${invoiceId}/line/${lineId}/option/${optionId}`, { observe: 'response' });
+  }
+
   getAutojobsalesinvoiceservicechargelineIdentifier(
     autojobsalesinvoiceservicechargeline: Pick<IAutojobsalesinvoiceservicechargeline, 'id'>,
   ): number {

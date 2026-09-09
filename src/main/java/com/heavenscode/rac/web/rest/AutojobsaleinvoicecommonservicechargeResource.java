@@ -259,6 +259,22 @@ public class AutojobsaleinvoicecommonservicechargeResource {
             .build();
     }
 
+    @DeleteMapping("/invoice/{invoiceId}/line/{lineId}/option/{optionId}")
+    public ResponseEntity<Void> deleteAutojobsaleinvoicecommonservicechargeByKey(
+        @PathVariable("invoiceId") Integer invoiceId,
+        @PathVariable("lineId") Integer lineId,
+        @PathVariable("optionId") Integer optionId
+    ) {
+        LOG.debug(
+            "REST request to delete Autojobsaleinvoicecommonservicecharge by key : invoiceId={}, lineId={}, optionId={}",
+            invoiceId,
+            lineId,
+            optionId
+        );
+        autojobsChildInsertService.deleteCommonServiceCharge(invoiceId, lineId, optionId);
+        return ResponseEntity.noContent().build();
+    }
+
     private String creationIdentifier(Autojobsaleinvoicecommonservicecharge entity) {
         if (entity.getId() != null) {
             return entity.getId().toString();

@@ -40,6 +40,8 @@ spring:
     #url: jdbc:sqlserver://124.43.13.143:1438;databaseName=OziErpWebRathnaweeraService;encrypt=false;trustServerCertificate=true;authentication=SqlPassword
     url: jdbc:sqlserver://124.43.13.143:1438;databaseName=RACTestDB;encrypt=true;trustServerCertificate=true;authentication=SqlPassword
     #url: jdbc:sqlserver://localhost:1438;database=RACTestDB;encrypt=true;trustServerCertificate=true;authentication=SqlPassword
+    #url: jdbc:sqlserver://localhost:1438;database=OziErpWebRathnaweeraService;encrypt=true;trustServerCertificate=true;authentication=SqlPassword
+    #url: jdbc:sqlserver://124.43.13.143:1438;database=OziErpWebRathnaweeraService;encrypt=true;trustServerCertificate=true;authentication=SqlPassword
 
     username: sa
     password: december99

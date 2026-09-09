@@ -102,6 +102,19 @@ public class AutojobsChildInsertService {
         }
     }
 
+    public void deleteServiceChargeLine(Integer invoiceId, Integer lineId, Integer optionId) {
+        deleteByThreePartKey("autojobsalesinvoiceservicechargeline", "invoiceid", "lineid", "optionid", invoiceId, lineId, optionId);
+    }
+
+    public void deleteCommonServiceCharge(Integer invoiceId, Integer lineId, Integer optionId) {
+        deleteByThreePartKey("autojobsaleinvoicecommonservicecharge", "invoiceid", "lineid", "optionid", invoiceId, lineId, optionId);
+    }
+
+    public void deleteInvoiceLine(Integer invoiceId, Integer lineId, Integer itemId) {
+        deleteInvoiceLineBatches(invoiceId, lineId, itemId);
+        deleteByThreePartKey("autojobsinvoicelines", "invocieid", "lineid", "itemid", invoiceId, lineId, itemId);
+    }
+
     public Autojobsinvoicelines insertInvoiceLine(Autojobsinvoicelines entity) {
         try {
             String tableName = resolveQualifiedTableName("autojobsinvoicelines");
@@ -607,6 +620,68 @@ public class AutojobsChildInsertService {
             ")";
         jdbcTemplate.update(sql, insertValues.values().toArray());
         return new GeneratedKey(null, null);
+    }
+
+    private void deleteInvoiceLineBatches(Integer invoiceId, Integer lineId, Integer itemId) {
+        String qualifiedTableName = resolveQualifiedTableName("autojobsinvoicelinebatches");
+        Map<String, String> actualColumns = getActualColumns(qualifiedTableName);
+        String invoiceColumn = actualColumns.get("id");
+        String lineColumn = actualColumns.get("lineid");
+        String itemColumn = actualColumns.get("itemid");
+
+        if (invoiceColumn == null || lineColumn == null || itemColumn == null) {
+            return;
+        }
+
+        jdbcTemplate.update(
+            "DELETE FROM " +
+            qualifiedTableName +
+            " WHERE " +
+            bracket(invoiceColumn) +
+            " = ? AND " +
+            bracket(lineColumn) +
+            " = ? AND " +
+            bracket(itemColumn) +
+            " = ?",
+            invoiceId,
+            lineId,
+            itemId
+        );
+    }
+
+    private void deleteByThreePartKey(
+        String tableName,
+        String firstColumnLogicalName,
+        String secondColumnLogicalName,
+        String thirdColumnLogicalName,
+        Integer firstValue,
+        Integer secondValue,
+        Integer thirdValue
+    ) {
+        String qualifiedTableName = resolveQualifiedTableName(tableName);
+        Map<String, String> actualColumns = getActualColumns(qualifiedTableName);
+        String firstColumn = actualColumns.get(firstColumnLogicalName);
+        String secondColumn = actualColumns.get(secondColumnLogicalName);
+        String thirdColumn = actualColumns.get(thirdColumnLogicalName);
+
+        if (firstColumn == null || secondColumn == null || thirdColumn == null) {
+            throw new IllegalStateException("Required key columns were not found in " + tableName);
+        }
+
+        jdbcTemplate.update(
+            "DELETE FROM " +
+            qualifiedTableName +
+            " WHERE " +
+            bracket(firstColumn) +
+            " = ? AND " +
+            bracket(secondColumn) +
+            " = ? AND " +
+            bracket(thirdColumn) +
+            " = ?",
+            firstValue,
+            secondValue,
+            thirdValue
+        );
     }
 
     private String resolveQualifiedTableName(String tableName) {

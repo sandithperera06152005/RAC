@@ -126,6 +126,7 @@ export class AutocarejobInstructionComponent implements OnInit {
   private savedSubcategoryIds = new Set<number>();
   private savedSubcategoryNames = new Set<string>();
   private savedServiceValues = new Map<number, number>();
+  private removedItemLines: Array<{ invocieid: number; lineid: number; itemid: number }> = [];
   workshopworklist: IWorkshopworklist[] = [];
   selectedworkItems: IWorkshopworklist[] = [];
   selectedSubcategoryItems: IServicesubcategory[] = [];
@@ -328,12 +329,7 @@ export class AutocarejobInstructionComponent implements OnInit {
 
   isServiceSelected(item: IBillingserviceoptionvalues): boolean {
     const optionId = Number(item.billingserviceoptionid ?? 0);
-    const serviceName = this.getBillingServiceOptionName(item.billingserviceoptionid).trim().toLowerCase();
-    return (
-      this.savedServiceOptionIds.has(optionId) ||
-      this.savedServiceNames.has(serviceName) ||
-      this.selectedServices.some(service => Number(service.billingserviceoptionid ?? 0) === optionId)
-    );
+    return this.selectedServices.some(service => Number(service.billingserviceoptionid ?? 0) === optionId);
   }
 
   // Define the serviceArray to hold the selected service details
@@ -357,7 +353,9 @@ export class AutocarejobInstructionComponent implements OnInit {
     if (event.target.checked) {
       // Check if the service already exists in the selectedServices array
       const nextLineId = this.serviceArray.length > 0 ? Math.max(...this.serviceArray.map(item => item.lineid), 0) + 1 : 1;
-      const exists = this.selectedServices.some(service => service.id === item.id);
+      const exists = this.selectedServices.some(
+        service => Number(service.billingserviceoptionid ?? 0) === Number(item.billingserviceoptionid ?? 0),
+      );
 
       if (!exists) {
         // Add the service to selectedServices with the service name and value
@@ -464,36 +462,33 @@ export class AutocarejobInstructionComponent implements OnInit {
 
   isCommonServiceSelected(service: ICommonserviceoption): boolean {
     const optionId = Number(service.id ?? 0);
-    const name = (service.name ?? '').trim().toLowerCase();
-    const code = (service.code ?? '').trim().toLowerCase();
-    return (
-      this.savedCommonServiceOptionIds.has(optionId) ||
-      this.savedCommonServiceNames.has(name) ||
-      this.savedCommonServiceCodes.has(code) ||
-      this.selectedcommonServices.some(selected => Number(selected.id ?? 0) === optionId)
-    );
+    return this.selectedcommonServices.some(selected => Number(selected.id ?? 0) === optionId);
   }
 
   onServiceSelectionChange(service: ICommonserviceoption, event: any) {
     if (event.target.checked) {
       // Add the selected item to the list with the required fields and default values
-      const nextLineId = this.itemsArray.length > 0 ? Math.max(...this.itemsArray.map(item => item.lineid), 0) + 1 : 1;
+      const nextLineId = this.commonServiceArray.length > 0 ? Math.max(...this.commonServiceArray.map(item => item.lineid), 0) + 1 : 1;
       // Add service to selectedcommonServices if not already added
-      this.selectedcommonServices.push(service);
+      if (!this.selectedcommonServices.some(selected => Number(selected.id ?? 0) === Number(service.id ?? 0))) {
+        this.selectedcommonServices.push(service);
+      }
 
-      this.commonServiceArray.push({
-        invoiceid: 0,
-        lineid: nextLineId,
-        optionid: service.id,
-        mainid: 0,
-        code: service.code || '',
-        name: service.name || '',
-        description: service.description || 'No description',
-        value: service.value ?? 0,
-        addedbyid: 0,
-        discount: 0,
-        serviceprice: 0,
-      });
+      if (!this.commonServiceArray.some(selected => Number(selected.optionid ?? 0) === Number(service.id ?? 0))) {
+        this.commonServiceArray.push({
+          invoiceid: 0,
+          lineid: nextLineId,
+          optionid: service.id,
+          mainid: 0,
+          code: service.code || '',
+          name: service.name || '',
+          description: service.description || 'No description',
+          value: service.value ?? 0,
+          addedbyid: 0,
+          discount: 0,
+          serviceprice: 0,
+        });
+      }
     } else {
       // Remove service from selectedcommonServices if unchecked
       this.selectedcommonServices = this.selectedcommonServices.filter(s => s.id !== service.id);
@@ -694,6 +689,7 @@ export class AutocarejobInstructionComponent implements OnInit {
             const invoiceLines = lineResponses.flatMap(response => response.body || []);
             this.itemsArray = invoiceLines.map(line => this.mapInvoiceLineToItemsArray(line));
             this.selectedItems = invoiceLines.map(line => this.mapInvoiceLineToSelectedItem(line));
+            this.loadAvailableQuantitiesForSelectedItems();
             this.updateItemTotal();
 
             this.jobinvoicebatches.queryByParentLineIds(invoiceIds).subscribe({
@@ -934,7 +930,7 @@ export class AutocarejobInstructionComponent implements OnInit {
       name: line.itemname ?? '',
       description: line.description ?? '',
       unitofmeasurement: line.unitofmeasurement ?? '',
-      availablequantity: null,
+      availablequantity: 0,
       lastsellingprice: line.sellingprice ?? 0,
       discountPercentage:
         line.sellingprice && line.quantity
@@ -942,6 +938,31 @@ export class AutocarejobInstructionComponent implements OnInit {
           : line.discount ?? 0,
       requestedQuantity: line.quantity ?? 1,
     };
+  }
+
+  private loadAvailableQuantitiesForSelectedItems(): void {
+    const itemIds = Array.from(new Set(this.selectedItems.map(item => Number(item.id ?? 0)).filter(itemId => itemId > 0)));
+
+    if (itemIds.length === 0) {
+      return;
+    }
+
+    this.inventoryService.query({ 'id.in': itemIds.join(','), page: 0, size: itemIds.length }).subscribe({
+      next: (response: HttpResponse<IInventory[]>) => {
+        const availableQuantityByItemId = new Map(
+          (response.body || []).map(item => [Number(item.id), item.availablequantity ?? 0] as const),
+        );
+
+        this.selectedItems.forEach(item => {
+          item.availablequantity = availableQuantityByItemId.get(Number(item.id ?? 0)) ?? 0;
+        });
+
+        this.cdr.detectChanges();
+      },
+      error: (error: unknown) => {
+        console.error('Failed to load available quantities for saved job items:', error);
+      },
+    });
   }
 
   private mergeSavedBatchCodesIntoItems(batches: IAutojobsinvoicelinebatches[]): void {
@@ -1111,10 +1132,32 @@ export class AutocarejobInstructionComponent implements OnInit {
   }
 
   onDeleteItem(index: number): void {
+    const removedItem = this.itemsArray[index];
+    this.trackRemovedItemLine(removedItem);
+
     // Remove the item from the list
     this.selectedItems.splice(index, 1);
     this.itemsArray.splice(index, 1);
     this.updateItemTotal(); // Update totals after deletion
+  }
+
+  private trackRemovedItemLine(item?: (typeof this.itemsArray)[number]): void {
+    const invocieid = Number(item?.invocieid ?? this.invoiceId ?? 0);
+    const lineid = Number(item?.lineid ?? 0);
+    const itemid = Number(item?.itemid ?? 0);
+
+    if (item?.id == null || invocieid <= 0 || lineid <= 0 || itemid <= 0) {
+      return;
+    }
+
+    const removedKey = this.buildRemovedItemLineKey({ invocieid, lineid, itemid });
+    if (!this.removedItemLines.some(line => this.buildRemovedItemLineKey(line) === removedKey)) {
+      this.removedItemLines.push({ invocieid, lineid, itemid });
+    }
+  }
+
+  private buildRemovedItemLineKey(item: { invocieid: number; lineid: number; itemid: number }): string {
+    return `${item.invocieid}-${item.lineid}-${item.itemid}`;
   }
 
   calculateItemTotal(item: IInventory & { discountPercentage: number; requestedQuantity: number }): number {
@@ -1142,6 +1185,10 @@ export class AutocarejobInstructionComponent implements OnInit {
 
   calculateTotalWithDiscount(): number {
     return this.calculateTotalWithoutDiscount() - this.calculateTotalDiscount();
+  }
+
+  getPrintSummaryTotal(): number {
+    return (this.calculateTotalWithDiscount() || 0) + (this.totalServiceCharge || 0) + (this.totalcommonServiceCharge || 0);
   }
 
   // Update the item total when discount or requested quantity changes
@@ -1393,16 +1440,32 @@ export class AutocarejobInstructionComponent implements OnInit {
         <head>
           <title>Print Summary</title>
           <style>
+            @page { margin: 10mm; }
+            html, body { margin: 0; height: auto; }
             body { font-family: Arial, sans-serif; padding: 20px; font-size: 10px; }
             .table { width: 100%; border-collapse: collapse; font-size: 10px;}
             .table th, .table td { border: 1px solid black; padding: 8px; text-align: left; }
             .text-center { text-align: center; }
             .text-right { text-align: right; }
+            .text-start { text-align: left !important; }
+            .text-end { text-align: right !important; }
+            .print-summary-table th:nth-child(n + 2),
+            .print-summary-table td:nth-child(n + 2),
+            .print-summary-table th.text-end,
+            .print-summary-table td.text-end {
+              text-align: right !important;
+            }
+            .print-summary-table th:first-child,
+            .print-summary-table td:first-child,
+            .print-summary-table td[colspan] {
+              text-align: left !important;
+            }
             .d-flex { display: flex; justify-content: space-between; }
             .mt-3 { margin-top: 20px; }
             .border { border: 1px solid black; padding: 10px; }
             .print-button { margin-top: 20px; padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
             .close-button { margin-top: 20px; padding: 10px 20px; background-color: #dc3545; color: white; border: none; cursor: pointer; }
+            .print-actions { text-align: center; margin-top: 20px; }
             .info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1415,12 +1478,16 @@ export class AutocarejobInstructionComponent implements OnInit {
               column-gap: 6px;
               align-items: start;
             }
+            @media print {
+              body { padding: 0; }
+              .print-actions { display: none !important; }
+            }
 
           </style>
         </head>
         <body onload="window.print();">
           ${printContents}
-          <div style="text-align: center; margin-top: 20px;">
+          <div class="print-actions">
             <button class="print-button" onclick="window.print();">Print</button>
             <button class="close-button" onclick="window.close();">Close</button>
           </div>
@@ -1514,11 +1581,24 @@ export class AutocarejobInstructionComponent implements OnInit {
     }));
 
     const itemsToCreate = itemsToSave.filter(item => item.id == null && item.itemid != null && typeof item.itemid === 'number');
+    const removedItemDeleteRequest = this.persistRemovedItemLines(effectiveInvoiceId);
 
-    if (itemsToCreate.length === 0) {
+    if (itemsToCreate.length === 0 && removedItemDeleteRequest == null) {
       alert('Advisor instructions item list is updated.');
       return;
     }
+
+    if (itemsToCreate.length === 0) {
+      removedItemDeleteRequest?.subscribe({
+        next: () => alert('Advisor instructions item list is updated.'),
+        error: () => alert('Failed to update advisor care instruction items.'),
+      });
+      return;
+    }
+
+    removedItemDeleteRequest?.subscribe({
+      error: deleteError => console.error('Error deleting removed advisor care instruction items:', deleteError),
+    });
 
     let completed = 0;
     let hasError = false;
@@ -1558,6 +1638,116 @@ export class AutocarejobInstructionComponent implements OnInit {
     });
   }
 
+  private persistInvoiceChargeSelections(invoiceId: number): void {
+    this.persistSelectedServiceCharges(invoiceId);
+    this.persistSelectedCommonServiceCharges(invoiceId);
+  }
+
+  private persistRemovedItemLines(defaultInvoiceId: number): Observable<Array<HttpResponse<{}>>> | null {
+    const uniqueLines = Array.from(
+      new Map(
+        this.removedItemLines
+          .map(line => ({
+            invocieid: Number(line.invocieid || defaultInvoiceId),
+            lineid: Number(line.lineid ?? 0),
+            itemid: Number(line.itemid ?? 0),
+          }))
+          .filter(line => line.invocieid > 0 && line.lineid > 0 && line.itemid > 0)
+          .map(line => [this.buildRemovedItemLineKey(line), line]),
+      ).values(),
+    );
+
+    if (uniqueLines.length === 0) {
+      this.removedItemLines = [];
+      return null;
+    }
+
+    this.removedItemLines = [];
+    return forkJoin(uniqueLines.map(line => this.jobinvoicelines.deleteByKey(line.invocieid, line.lineid, line.itemid)));
+  }
+
+  private persistSelectedServiceCharges(invoiceId: number): void {
+    this.jobservice.queryByInvoiceId(invoiceId).subscribe({
+      next: response => {
+        const existingRows = response.body || [];
+        const existingOptionIds = new Set(existingRows.map(row => Number(row.optionid ?? 0)).filter(optionId => optionId > 0));
+        const desiredRows = this.serviceArray.filter(row => Number(row.optionid ?? 0) > 0);
+        const desiredOptionIds = new Set(desiredRows.map(row => Number(row.optionid ?? 0)));
+
+        existingRows
+          .filter(row => !desiredOptionIds.has(Number(row.optionid ?? 0)))
+          .forEach(row => {
+            const rowInvoiceId = Number(row.invoiceid ?? invoiceId);
+            const lineId = Number(row.lineid ?? 0);
+            const optionId = Number(row.optionid ?? 0);
+
+            if (rowInvoiceId > 0 && lineId > 0 && optionId > 0) {
+              this.jobservice.deleteByKey(rowInvoiceId, lineId, optionId).subscribe({
+                next: () => {},
+                error: deleteError => console.error('Error deleting removed service charge:', deleteError),
+              });
+            }
+          });
+
+        desiredRows
+          .filter(row => !existingOptionIds.has(Number(row.optionid ?? 0)))
+          .forEach(row => {
+            this.jobservice.create({ ...row, id: null, invoiceid: invoiceId }).subscribe({
+              next: createResponse => {
+                const saved = createResponse.body;
+                row.id = saved?.id ?? row.id;
+                row.invoiceid = saved?.invoiceid ?? invoiceId;
+                row.lineid = saved?.lineid ?? row.lineid;
+              },
+              error: createError => console.error('Error creating added service charge:', createError.body ?? createError),
+            });
+          });
+      },
+      error: error => console.error('Failed to load existing service charges for diff:', error),
+    });
+  }
+
+  private persistSelectedCommonServiceCharges(invoiceId: number): void {
+    this.jobcommon.queryByInvoiceId(invoiceId).subscribe({
+      next: response => {
+        const existingRows = response.body || [];
+        const existingOptionIds = new Set(existingRows.map(row => Number(row.optionid ?? 0)).filter(optionId => optionId > 0));
+        const desiredRows = this.commonServiceArray.filter(row => Number(row.optionid ?? 0) > 0);
+        const desiredOptionIds = new Set(desiredRows.map(row => Number(row.optionid ?? 0)));
+
+        existingRows
+          .filter(row => !desiredOptionIds.has(Number(row.optionid ?? 0)))
+          .forEach(row => {
+            const rowInvoiceId = Number(row.invoiceid ?? invoiceId);
+            const lineId = Number(row.lineid ?? 0);
+            const optionId = Number(row.optionid ?? 0);
+
+            if (rowInvoiceId > 0 && lineId > 0 && optionId > 0) {
+              this.jobcommon.deleteByKey(rowInvoiceId, lineId, optionId).subscribe({
+                next: () => {},
+                error: deleteError => console.error('Error deleting removed common service charge:', deleteError),
+              });
+            }
+          });
+
+        desiredRows
+          .filter(row => !existingOptionIds.has(Number(row.optionid ?? 0)))
+          .forEach(row => {
+            this.jobcommon.create({ ...row, id: null, invoiceid: invoiceId }).subscribe({
+              next: createResponse => {
+                const saved = createResponse.body;
+                row.id = saved?.id ?? row.id;
+                row.invoiceid = saved?.invoiceid ?? invoiceId;
+                row.lineid = saved?.lineid ?? row.lineid;
+              },
+              error: createError => console.error('Error creating added common service charge:', createError.body ?? createError),
+            });
+          });
+      },
+      error: error => console.error('Failed to load existing common service charges for diff:', error),
+    });
+  }
+
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IAutocarejob>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
       next: response => {
@@ -1576,52 +1766,9 @@ export class AutocarejobInstructionComponent implements OnInit {
             return;
           }
 
-          this.commonServiceArray.forEach(service => {
-            service.invoiceid = effectiveInvoiceId;
-
-            if (service.id) {
-              this.jobcommon.update(service as any).subscribe({
-                next: updateResponse => {
-                  console.log('Common Service updated successfully:', updateResponse);
-                },
-                error: updateError => {
-                  console.error('Error updating common service:', updateError);
-                },
-              });
-            } else {
-              this.jobcommon.create({ ...service, id: null }).subscribe({
-                next: createResponse => {
-                  console.log('Serviceee created successfully:', createResponse);
-                },
-                error: createError => {
-                  console.error('Error creating service:', createError.body);
-                },
-              });
-            }
-          });
-
-          this.serviceArray.forEach(service => {
-            service.invoiceid = effectiveInvoiceId;
-
-            if (service.id) {
-              this.jobservice.update(service as any).subscribe({
-                next: updateResponse => {
-                  console.log('Service updated successfully:', updateResponse);
-                },
-                error: updateError => {
-                  console.error('Error updating service:', updateError);
-                },
-              });
-            } else {
-              this.jobservice.create({ ...service, id: null }).subscribe({
-                next: createResponse => {
-                  console.log('Serviceeeeesssssssssssw created successfully:', createResponse);
-                },
-                error: createError => {
-                  console.error('Error creating service:', createError.body);
-                },
-              });
-            }
+          this.persistInvoiceChargeSelections(effectiveInvoiceId);
+          this.persistRemovedItemLines(effectiveInvoiceId)?.subscribe({
+            error: deleteError => console.error('Error deleting removed advisor care instruction items:', deleteError),
           });
 
           // Loop through the itemsArray and update the invoiceId field for each item

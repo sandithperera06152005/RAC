@@ -217,6 +217,19 @@ public class AutojobsinvoicelinesResource {
             .build();
     }
 
+    @DeleteMapping("/invoice/{invoiceId}/line/{lineId}/item/{itemId}")
+    public ResponseEntity<Void> deleteAutojobsinvoicelinesByKey(
+        @PathVariable("invoiceId") Integer invoiceId,
+        @PathVariable("lineId") Integer lineId,
+        @PathVariable("itemId") Integer itemId
+    ) {
+        LOG.debug("REST request to delete Autojobsinvoicelines by invoiceId/lineId/itemId : {}/{}/{}", invoiceId, lineId, itemId);
+        autojobsChildInsertService.deleteInvoiceLine(invoiceId, lineId, itemId);
+        return ResponseEntity.noContent()
+            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, invoiceId + "-" + lineId + "-" + itemId))
+            .build();
+    }
+
     private String creationIdentifier(Autojobsinvoicelines entity) {
         if (entity.getId() != null) {
             return entity.getId().toString();

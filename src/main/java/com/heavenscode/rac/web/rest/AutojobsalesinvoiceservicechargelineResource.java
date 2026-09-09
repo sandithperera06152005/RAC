@@ -252,6 +252,22 @@ public class AutojobsalesinvoiceservicechargelineResource {
             .build();
     }
 
+    @DeleteMapping("/invoice/{invoiceId}/line/{lineId}/option/{optionId}")
+    public ResponseEntity<Void> deleteAutojobsalesinvoiceservicechargelineByKey(
+        @PathVariable("invoiceId") Integer invoiceId,
+        @PathVariable("lineId") Integer lineId,
+        @PathVariable("optionId") Integer optionId
+    ) {
+        LOG.debug(
+            "REST request to delete Autojobsalesinvoiceservicechargeline by key : invoiceId={}, lineId={}, optionId={}",
+            invoiceId,
+            lineId,
+            optionId
+        );
+        autojobsChildInsertService.deleteServiceChargeLine(invoiceId, lineId, optionId);
+        return ResponseEntity.noContent().build();
+    }
+
     private String creationIdentifier(Autojobsalesinvoiceservicechargeline entity) {
         if (entity.getId() != null) {
             return entity.getId().toString();
