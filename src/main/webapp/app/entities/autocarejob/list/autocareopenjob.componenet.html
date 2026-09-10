@@ -74,13 +74,13 @@
           <table class="table open-job-table" aria-describedby="page-heading">
             <thead>
               <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
-                <th scope="col" jhiSortBy="id">
+                <!-- <th scope="col" jhiSortBy="id">
                   <div class="d-flex">
                     <span>ID</span>
 
                     <fa-icon class="p-1" icon="sort"></fa-icon>
                   </div>
-                </th>
+                </th> -->
                 <th scope="col" jhiSortBy="jobnumber">
                   <div class="d-flex">
                     <span>Jobnumber</span>
@@ -391,9 +391,9 @@
               @for (autocarejob of filteredAutocarejobs; track trackId) { @if (filteredAutocarejobs && filteredAutocarejobs.length > 0) {
 
               <tr data-cy="entityTable">
-                <td>
+                <!-- <td>
                   <a [routerLink]="['/autocarejob', autocarejob.id, 'view']">{{ autocarejob.id }}</a>
-                </td>
+                </td> -->
                 <td>{{ autocarejob.jobnumber }}</td>
                 <td *ngIf="false">{{ autocarejob.vehicleid }}</td>
                 <td>{{ autocarejob.vehiclenumber }}</td>
@@ -473,15 +473,15 @@
                     </a>
                     }
 
-                    <a
+                    <!-- <a
                       [routerLink]="['/autocarejob', autocarejob.id, 'edit']"
                       class="btn btn-primary btn-sm"
                       data-cy="entityEditButton"
                       title="Edit Job"
                     >
                       <fa-icon icon="pencil-alt"></fa-icon>
-                      <!-- <span class="d-none d-md-inline">Edit</span> -->
-                    </a>
+                      <span class="d-none d-md-inline">Edit</span>
+                    </a> -->
 
                     <a
                       [routerLink]="['/autocarejob', autocarejob.id, 'instructions']"

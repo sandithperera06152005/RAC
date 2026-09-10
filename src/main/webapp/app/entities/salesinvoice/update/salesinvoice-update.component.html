@@ -121,6 +121,7 @@
                 id="field_invoicedate"
                 name="invoicedate"
                 formControlName="invoicedate"
+                readonly
               />
             </div>
           </div>
@@ -155,11 +156,25 @@
                 </div>
                 <div class="mb-2">
                   <label class="form-label" for="field_itemPrice">Item Price</label>
-                  <input type="number" class="form-control form-control-sm" id="field_itemPrice" [value]="lastsellingprice" readonly />
+                  <input
+                    type="text"
+                    inputmode="decimal"
+                    class="form-control form-control-sm text-end"
+                    id="field_itemPrice"
+                    [value]="lastsellingprice | number: '1.2-2'"
+                    readonly
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="form-label" for="field_availableQty">Available Quantity</label>
-                  <input type="number" class="form-control form-control-sm" id="field_availableQty" [value]="availablequantity" readonly />
+                  <input
+                    type="text"
+                    inputmode="decimal"
+                    class="form-control form-control-sm text-end"
+                    id="field_availableQty"
+                    [value]="availablequantity | number: '1.0-2'"
+                    readonly
+                  />
                 </div>
               </div>
 
@@ -168,10 +183,11 @@
                 <div class="mb-2">
                   <label class="form-label" for="field_buyQty">Buy Quantity</label>
                   <input
-                    type="number"
-                    class="form-control form-control-sm"
+                    type="text"
+                    inputmode="decimal"
+                    class="form-control form-control-sm text-end"
                     id="field_buyQty"
-                    [value]="buyquantity"
+                    [value]="buyquantity | number: '1.0-2'"
                     (input)="onBuyQtyChange($event)"
                   />
                 </div>

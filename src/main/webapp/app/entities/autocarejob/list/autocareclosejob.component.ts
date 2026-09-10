@@ -9,6 +9,7 @@ import { sortStateSignal, SortDirective, SortByDirective, type SortState, SortSe
 import { DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe } from 'app/shared/date';
 import { ItemCountComponent } from 'app/shared/pagination';
 import { FormsModule } from '@angular/forms';
+import dayjs from 'dayjs/esm';
 
 import { ITEMS_PER_PAGE, PAGE_HEADER, TOTAL_COUNT_RESPONSE_HEADER } from 'app/config/pagination.constants';
 import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigation.constants';
@@ -99,15 +100,22 @@ export class AutocareclosejobComponent implements OnInit {
     this.queryBackend().subscribe({
       next: (res: EntityArrayResponseType) => {
         this.onResponseSuccess(res);
-        this.autocarejobs = this.autocarejobs?.filter(job => job.isjobclose); // Only show open jobs
+        const today = dayjs().format('YYYY-MM-DD');
+
+        this.autocarejobs = this.autocarejobs?.filter(job => job.isjobclose && job.jobdate?.format('YYYY-MM-DD') === today);
         this.filterJobs(); // Apply filtering when loading data
       },
     });
   }
   filterJobs(): void {
     if (!this.autocarejobs) return;
+    const today = dayjs().format('YYYY-MM-DD');
+
     this.filteredAutocarejobs = this.autocarejobs.filter(
-      job => job.vehiclenumber?.toLowerCase().includes(this.searchText.toLowerCase()) && job.isjobclose,
+      job =>
+        job.vehiclenumber?.toLowerCase().includes(this.searchText.toLowerCase()) &&
+        job.isjobclose &&
+        job.jobdate?.format('YYYY-MM-DD') === today,
     );
   }
 

@@ -460,20 +460,20 @@
                   <thead class="thead-dark">
                     <tr>
                       <th>Service</th>
-                      <th>Amount</th>
+                      <th class="text-end">Amount</th>
                       <th>Select</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let service of filteredBillingServiceOptionValues">
                       <td>{{ getBillingServiceOptionName(service.billingserviceoptionid) }}</td>
-                      <td>
+                      <td class="text-end">
                         <input
                           type="text"
                           inputmode="decimal"
                           appDecimal
                           [appDecimalDeferFormat]="true"
-                          class="form-control form-control-sm"
+                          class="form-control form-control-sm text-end"
                           [ngModel]="service.value"
                           [ngModelOptions]="{ standalone: true }"
                           (ngModelChange)="onAmountChange(service, $event)"
@@ -496,19 +496,19 @@
                   <thead>
                     <tr>
                       <th>Service Name</th>
-                      <th>Price</th>
+                      <th class="text-end">Price</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let service of selectedServices">
                       <td>{{ getBillingServiceOptionName(service.billingserviceoptionid) }}</td>
-                      <td>{{ service.value | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
+                      <td class="text-end">{{ service.value | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
                     </tr>
                   </tbody>
                   <tfoot>
                     <tr>
                       <td><strong>Total:</strong></td>
-                      <td>
+                      <td class="text-end">
                         <strong>{{ totalServiceCharge | currency: 'LKR' : 'symbol' : '1.2-2' }}</strong>
                       </td>
                     </tr>
@@ -607,11 +607,12 @@
                   <datalist id="itemList">
                     @if (searchItemsByCode) {
                       <option *ngFor="let item of filtereditems" [value]="item.code">
-                        {{ item.name }} — {{ item.lastsellingprice }} — Avl: {{ item.availablequantity }}
+                        {{ item.name }} — {{ item.lastsellingprice ?? 0 | number: '1.2-2' }} — Avl:
+                        {{ item.availablequantity ?? 0 | number: '1.0-2' }}
                       </option>
                     } @else {
                       <option *ngFor="let item of filtereditems" [value]="item.name">
-                        {{ item.lastsellingprice }} — Avl: {{ item.availablequantity }}
+                        {{ item.lastsellingprice ?? 0 | number: '1.2-2' }} — Avl: {{ item.availablequantity ?? 0 | number: '1.0-2' }}
                       </option>
                     }
                   </datalist>
@@ -653,8 +654,8 @@
                   <tr *ngFor="let item of selectedItems; let i = index">
                     <td class="text-start">{{ item.code }}</td>
                     <td class="text-start">{{ item.name }}</td>
-                    <td class="text-end">{{ item.availablequantity }}</td>
-                    <td class="text-end">{{ item.lastsellingprice }}</td>
+                    <td class="text-end">{{ item.availablequantity ?? 0 | number: '1.0-2' }}</td>
+                    <td class="text-end">{{ item.lastsellingprice ?? 0 | number: '1.2-2' }}</td>
                     <td class="text-end">
                       <input
                         type="number"
@@ -736,14 +737,14 @@
                   <thead>
                     <tr>
                       <th>Service</th>
-                      <th>Amount</th>
+                      <th class="text-end">Amount</th>
                       <th>Select</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let item of commonserviceoption">
                       <td>{{ item.name }}</td>
-                      <td>{{ item.value | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
+                      <td class="text-end">{{ item.value | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
                       <td>
                         <input
                           type="checkbox"
@@ -760,19 +761,19 @@
                 <thead>
                   <tr>
                     <th>Service Name</th>
-                    <th>Price</th>
+                    <th class="text-end">Price</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let service of selectedcommonServices">
                     <td>{{ service.name }}</td>
-                    <td>{{ service.value | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
+                    <td class="text-end">{{ service.value | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
                   </tr>
                 </tbody>
                 <tfoot>
                   <tr>
                     <th>Total</th>
-                    <th>{{ totalcommonServiceCharge | currency: 'LKR' : 'symbol' : '1.2-2' }}</th>
+                    <th class="text-end">{{ totalcommonServiceCharge | currency: 'LKR' : 'symbol' : '1.2-2' }}</th>
                   </tr>
                 </tfoot>
               </table>
@@ -999,7 +1000,7 @@
               </div>
             </td>
             <td class="text-end">{{ item.lastsellingprice || 0 | number: '1.2-2' }}</td>
-            <td class="text-end">{{ item.requestedQuantity || 0 | number: '1.2-2' }}</td>
+            <td class="text-end">{{ item.requestedQuantity || 0 | number: '1.0-2' }}</td>
             <td class="text-end">{{ item.discountPercentage || 0 | number: '1.2-2' }}</td>
             <td class="text-end">{{ calculateItemTotal(item) | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
           </tr>
@@ -1010,7 +1011,7 @@
           <tr *ngFor="let service of selectedServices; let i = index">
             <td class="text-start">{{ getBillingServiceOptionName(service.billingserviceoptionid) }}</td>
             <td class="text-end">{{ service.value || 0 | number: '1.2-2' }}</td>
-            <td class="text-end">{{ 1 | number: '1.2-2' }}</td>
+            <td class="text-end">{{ 1 | number: '1.0-2' }}</td>
             <td class="text-end">{{ 0 | number: '1.2-2' }}</td>
             <td class="text-end">{{ service.value || 0 | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
           </tr>
@@ -1021,7 +1022,7 @@
           <tr *ngFor="let service of selectedcommonServices; let i = index">
             <td class="text-start">{{ service.name }}</td>
             <td class="text-end">{{ service.value || 0 | number: '1.2-2' }}</td>
-            <td class="text-end">{{ 1 | number: '1.2-2' }}</td>
+            <td class="text-end">{{ 1 | number: '1.0-2' }}</td>
             <td class="text-end">{{ 0 | number: '1.2-2' }}</td>
             <td class="text-end">{{ service.value || 0 | currency: 'LKR' : 'symbol' : '1.2-2' }}</td>
           </tr>

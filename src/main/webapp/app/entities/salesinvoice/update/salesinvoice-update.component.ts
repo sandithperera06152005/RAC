@@ -281,7 +281,7 @@ export class SalesinvoiceUpdateComponent implements OnInit {
   // Function to handle changes in the quantity field
   onBuyQtyChange(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
-    this.buyquantity = Number(inputElement.value);
+    this.buyquantity = Number(inputElement.value.replace(/,/g, ''));
     console.log('Buy Quantity:', this.buyquantity);
   }
 

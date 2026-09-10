@@ -53,9 +53,9 @@
                   <tr>
                     <th>Item Code</th>
                     <th>Item Name</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Unit Total</th>
+                    <th class="text-end">Quantity</th>
+                    <th class="text-end">Price</th>
+                    <th class="text-end">Unit Total</th>
                     <th>Issue</th>
                     <th>Cancel Reason</th>
                     <th></th>
@@ -65,9 +65,9 @@
                   <tr *ngFor="let line of allInvoiceLines">
                     <td style="font-size: 0.75rem">{{ line.itemcode }}</td>
                     <td style="font-size: 0.75rem">{{ line.itemname }}</td>
-                    <td style="font-size: 0.75rem">{{ line.quantity }}</td>
-                    <td style="font-size: 0.75rem">{{ line.sellingprice }}</td>
-                    <td style="font-size: 0.75rem">{{ line.linetotal }}</td>
+                    <td class="text-end" style="font-size: 0.75rem">{{ line.quantity ?? 0 | number: '1.0-2' }}</td>
+                    <td class="text-end" style="font-size: 0.75rem">{{ line.sellingprice ?? 0 | number: '1.2-2' }}</td>
+                    <td class="text-end" style="font-size: 0.75rem">{{ line.linetotal ?? 0 | number: '1.2-2' }}</td>
                     <td style="font-size: 0.75rem">
                       <button
                         class="btn btn-success btn-sm"
@@ -105,9 +105,9 @@
                   <tr>
                     <th>Item Code</th>
                     <th>Item Name</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Unit Total</th>
+                    <th class="text-end">Quantity</th>
+                    <th class="text-end">Price</th>
+                    <th class="text-end">Unit Total</th>
                     <th>Cancel</th>
                   </tr>
                 </thead>
@@ -115,9 +115,9 @@
                   <tr *ngFor="let issuedItem of issuedItems">
                     <td style="font-size: 0.75rem">{{ issuedItem.itemcode }}</td>
                     <td style="font-size: 0.75rem">{{ issuedItem.itemname }}</td>
-                    <td style="font-size: 0.75rem">{{ issuedItem.quantity }}</td>
-                    <td style="font-size: 0.75rem">{{ issuedItem.sellingprice }}</td>
-                    <td style="font-size: 0.75rem">{{ issuedItem.linetotal }}</td>
+                    <td class="text-end" style="font-size: 0.75rem">{{ issuedItem.quantity ?? 0 | number: '1.0-2' }}</td>
+                    <td class="text-end" style="font-size: 0.75rem">{{ issuedItem.sellingprice ?? 0 | number: '1.2-2' }}</td>
+                    <td class="text-end" style="font-size: 0.75rem">{{ issuedItem.linetotal ?? 0 | number: '1.2-2' }}</td>
                     <td class="text-muted" style="font-size: 0.75rem">—</td>
                   </tr>
                   <tr *ngIf="issuedItems.length === 0">

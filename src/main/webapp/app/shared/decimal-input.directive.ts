@@ -41,7 +41,7 @@ export class DecimalInputDirective implements AfterViewInit {
     if (controlVal === null || controlVal === undefined || controlVal === '') {
       return;
     }
-    const num = parseFloat(String(controlVal));
+    const num = this.parseDecimal(controlVal);
     if (!isNaN(num)) {
       this.el.nativeElement.value = String(num);
     }
@@ -64,11 +64,18 @@ export class DecimalInputDirective implements AfterViewInit {
       controlVal === null || controlVal === undefined || controlVal === ''
         ? elementVal
         : String(controlVal !== undefined ? controlVal : elementVal);
-    const num = parseFloat(raw);
+    const num = this.parseDecimal(raw);
     if (!isNaN(num) && raw !== '') {
-      this.el.nativeElement.value = num.toFixed(2);
+      this.el.nativeElement.value = num.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
     } else if (raw === '' || raw == null) {
       this.el.nativeElement.value = this.appDecimalAllowEmpty ? '' : '0.00';
     }
+  }
+
+  private parseDecimal(value: unknown): number {
+    return parseFloat(String(value ?? '').replace(/,/g, ''));
   }
 }
