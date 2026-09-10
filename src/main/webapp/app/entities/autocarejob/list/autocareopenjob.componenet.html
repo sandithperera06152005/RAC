@@ -3,13 +3,14 @@
   <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item" role="presentation">
       <a
-        class="nav-link active"
+        class="nav-link"
+        [class.active]="activeMainTab === 'ongoing'"
         id="billing-tab"
-        data-bs-toggle="tab"
         href="#billing"
         role="tab"
         aria-controls="billing"
-        aria-selected="true"
+        [attr.aria-selected]="activeMainTab === 'ongoing'"
+        (click)="$event.preventDefault(); selectMainTab('ongoing')"
       >
         On Going Jobs
       </a>
@@ -17,21 +18,43 @@
     <li class="nav-item" role="presentation">
       <a
         class="nav-link"
+        [class.active]="activeMainTab === 'closed'"
         id="service-charges-tab"
-        data-bs-toggle="tab"
         href="#service-charges"
         role="tab"
         aria-controls="service-charges"
-        aria-selected="false"
+        [attr.aria-selected]="activeMainTab === 'closed'"
+        (click)="$event.preventDefault(); selectMainTab('closed')"
       >
         Closed Jobs
+      </a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a
+        class="nav-link"
+        [class.active]="activeMainTab === 'jobByDate'"
+        id="job-by-date-tab"
+        href="#job-by-date"
+        role="tab"
+        aria-controls="job-by-date"
+        [attr.aria-selected]="activeMainTab === 'jobByDate'"
+        (click)="$event.preventDefault(); selectMainTab('jobByDate')"
+      >
+        Job by Date
       </a>
     </li>
   </ul>
 
   <!-- Tab panes -->
   <div class="tab-content mt-3">
-    <div class="tab-pane fade show active" id="billing" role="tabpanel" aria-labelledby="billing-tab">
+    <div
+      class="tab-pane fade"
+      [class.show]="activeMainTab === 'ongoing'"
+      [class.active]="activeMainTab === 'ongoing'"
+      id="billing"
+      role="tabpanel"
+      aria-labelledby="billing-tab"
+    >
       <div>
         <h2 id="page-heading" data-cy="AutocarejobHeading">
           <div class="d-flex justify-content-between align-items-center mt-2 mb-3">
@@ -588,8 +611,314 @@
         }
       </div>
     </div>
-    <div class="tab-pane fade" id="service-charges" role="tabpanel" aria-labelledby="service-charges-tab">
+    <div
+      class="tab-pane fade"
+      [class.show]="activeMainTab === 'closed'"
+      [class.active]="activeMainTab === 'closed'"
+      id="service-charges"
+      role="tabpanel"
+      aria-labelledby="service-charges-tab"
+    >
       <jhi-autocareclosejob></jhi-autocareclosejob>
+    </div>
+    <div
+      class="tab-pane fade"
+      [class.show]="activeMainTab === 'jobByDate'"
+      [class.active]="activeMainTab === 'jobByDate'"
+      id="job-by-date"
+      role="tabpanel"
+      aria-labelledby="job-by-date-tab"
+    >
+      <fieldset class="border p-3 bg-light job-by-date-panel">
+        <div class="row align-items-end g-3 mb-3">
+          <div class="col-12 col-md-4 col-lg-3">
+            <label class="form-label fw-bold" for="field_jobByDate">Job Date</label>
+            <div class="input-group">
+              <input
+                #jobByDateInput
+                id="field_jobByDate"
+                type="date"
+                class="form-control job-by-date-input"
+                name="jobByDate"
+                [(ngModel)]="selectedJobByDate"
+                [ngModelOptions]="{ standalone: true }"
+                (change)="loadJobsByDate()"
+              />
+              <button class="btn btn-outline-secondary" type="button" (click)="openJobByDatePicker(jobByDateInput)" title="Pick date">
+                <fa-icon icon="calendar-alt"></fa-icon>
+              </button>
+            </div>
+          </div>
+          <div class="col-12 col-md-auto">
+            <div class="d-flex gap-2">
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="loadJobsByDate()"
+                [disabled]="!selectedJobByDate || isLoadingJobByDate"
+              >
+                <fa-icon icon="sync" [spin]="isLoadingJobByDate"></fa-icon>
+                <span class="ms-1">Load</span>
+              </button>
+              <button type="button" class="btn btn-outline-primary" (click)="setJobByDateToday()" [disabled]="isLoadingJobByDate">
+                Today
+              </button>
+              <button type="button" class="btn btn-outline-secondary" (click)="clearJobByDate()" [disabled]="isLoadingJobByDate">
+                Clear
+              </button>
+            </div>
+          </div>
+          <div class="col text-md-end small text-muted" *ngIf="selectedJobByDate">
+            <span>Date: {{ selectedJobByDateLabel }}</span>
+          </div>
+        </div>
+
+        <div *ngIf="!selectedJobByDate" class="alert alert-info mb-0">Select a job date to view ongoing and closed jobs separately.</div>
+
+        <div *ngIf="selectedJobByDate && isLoadingJobByDate" class="text-center text-muted py-4">
+          <fa-icon icon="sync" [spin]="true"></fa-icon>
+          <span class="ms-2">Loading jobs...</span>
+        </div>
+
+        <div *ngIf="selectedJobByDate && !isLoadingJobByDate">
+          <div *ngIf="jobByDateJobs.length === 0" class="alert alert-warning mb-0">No autocare jobs found for this date.</div>
+
+          <ul *ngIf="jobByDateJobs.length > 0" class="nav nav-tabs mt-3" role="tablist">
+            <li class="nav-item" role="presentation">
+              <a
+                class="nav-link"
+                [class.active]="activeJobByDateTab === 'ongoing'"
+                id="job-by-date-ongoing-tab"
+                href="#job-by-date-ongoing"
+                role="tab"
+                aria-controls="job-by-date-ongoing"
+                [attr.aria-selected]="activeJobByDateTab === 'ongoing'"
+                (click)="$event.preventDefault(); selectJobByDateTab('ongoing')"
+              >
+                Ongoing Jobs <span class="text-muted">({{ jobByDateOngoingJobs.length }})</span>
+              </a>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a
+                class="nav-link"
+                [class.active]="activeJobByDateTab === 'closed'"
+                id="job-by-date-closed-tab"
+                href="#job-by-date-closed"
+                role="tab"
+                aria-controls="job-by-date-closed"
+                [attr.aria-selected]="activeJobByDateTab === 'closed'"
+                (click)="$event.preventDefault(); selectJobByDateTab('closed')"
+              >
+                Closed Jobs <span class="text-muted">({{ jobByDateClosedJobs.length }})</span>
+              </a>
+            </li>
+          </ul>
+
+          <div *ngIf="jobByDateJobs.length > 0" class="tab-content pt-3">
+            <div
+              class="tab-pane fade"
+              [class.show]="activeJobByDateTab === 'ongoing'"
+              [class.active]="activeJobByDateTab === 'ongoing'"
+              id="job-by-date-ongoing"
+              role="tabpanel"
+              aria-labelledby="job-by-date-ongoing-tab"
+            >
+              <div *ngIf="jobByDateOngoingJobs.length === 0" class="alert alert-light border mb-0">
+                No ongoing jobs found for this date.
+              </div>
+
+              <div *ngIf="jobByDateOngoingJobs.length > 0">
+                <div class="table-responsive table-entities open-job-table-wrap">
+                  <table class="table table-sm table-bordered align-middle mb-0">
+                    <thead>
+                      <tr>
+                        <th>Jobnumber</th>
+                        <th>Vehiclenumber</th>
+                        <th>Millage</th>
+                        <th>Nextmillage</th>
+                        <th>Jobtypename</th>
+                        <th>Customername</th>
+                        <th>Jobdate</th>
+                        <th>Status</th>
+                        <th class="job-by-date-actions-col"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let autocarejob of paginatedJobByDateOngoingJobs; trackBy: trackId">
+                        <td>{{ autocarejob.jobnumber }}</td>
+                        <td>{{ autocarejob.vehiclenumber }}</td>
+                        <td>{{ autocarejob.millage }}</td>
+                        <td>{{ autocarejob.nextmillage }}</td>
+                        <td>{{ autocarejob.jobtypename }}</td>
+                        <td>{{ autocarejob.customername }}</td>
+                        <td>{{ autocarejob.jobdate | formatMediumDatetime }}</td>
+                        <td class="job-by-date-status">Ongoing</td>
+                        <td class="text-end job-by-date-actions-col">
+                          <div class="btn-group job-by-date-actions">
+                            <a
+                              [routerLink]="['/autocarejob', autocarejob.id, 'view']"
+                              [queryParams]="jobByDateReturnQueryParams()"
+                              class="btn btn-info btn-sm"
+                              title="View Job"
+                            >
+                              <fa-icon icon="eye"></fa-icon>
+                            </a>
+                            <a
+                              [routerLink]="['/autocarejob', autocarejob.id, 'instructions']"
+                              [queryParams]="jobByDateReturnQueryParams()"
+                              class="btn btn-warning btn-sm"
+                              title="File Instructions"
+                            >
+                              <fa-icon icon="clipboard-list"></fa-icon>
+                            </a>
+                            @if (canUpdateAdvisorInstructionItems) {
+                            <a
+                              [routerLink]="['/autocarejob', autocarejob.id, 'instructions']"
+                              [queryParams]="jobByDateUpdateItemsQueryParams()"
+                              class="btn btn-secondary btn-sm"
+                              data-cy="entityUpdateItemsButton"
+                              title="Update Items"
+                            >
+                              <fa-icon icon="list"></fa-icon>
+                            </a>
+                            }
+                            <a
+                              [routerLink]="['/autocarejob', autocarejob.id, 'history']"
+                              [queryParams]="jobByDateReturnQueryParams()"
+                              class="btn btn-success btn-sm"
+                              title="History"
+                            >
+                              <fa-icon icon="history"></fa-icon>
+                            </a>
+                            <a
+                              [routerLink]="['/autocarejob', autocarejob.id, 'itemissue']"
+                              [queryParams]="jobByDateReturnQueryParams()"
+                              class="btn btn-primary btn-sm"
+                              title="Issue Item"
+                            >
+                              <fa-icon icon="bag-shopping"></fa-icon>
+                            </a>
+                            <button
+                              type="button"
+                              (click)="navigateToInvoice(autocarejob)"
+                              class="btn btn-success btn-sm"
+                              title="Create Invoice"
+                            >
+                              <fa-icon icon="file-invoice"></fa-icon>
+                            </button>
+                            <a
+                              *ngIf="canPrintAdvisorInstructions(autocarejob)"
+                              [routerLink]="['/autocarejob', autocarejob.id, 'instructions']"
+                              [queryParams]="jobByDatePrintQueryParams()"
+                              class="btn btn-success btn-sm"
+                              title="Print Instructions"
+                            >
+                              <fa-icon icon="print"></fa-icon>
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                  <jhi-item-count
+                    [params]="{ page: jobByDateOngoingPage, totalItems: jobByDateOngoingJobs.length, itemsPerPage: itemsPerPage }"
+                  ></jhi-item-count>
+                  <ngb-pagination
+                    [collectionSize]="jobByDateOngoingJobs.length"
+                    [page]="jobByDateOngoingPage"
+                    [pageSize]="itemsPerPage"
+                    [maxSize]="5"
+                    [rotate]="true"
+                    [boundaryLinks]="true"
+                    (pageChange)="navigateJobByDateOngoingPage($event)"
+                  ></ngb-pagination>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="tab-pane fade"
+              [class.show]="activeJobByDateTab === 'closed'"
+              [class.active]="activeJobByDateTab === 'closed'"
+              id="job-by-date-closed"
+              role="tabpanel"
+              aria-labelledby="job-by-date-closed-tab"
+            >
+              <div *ngIf="jobByDateClosedJobs.length === 0" class="alert alert-light border mb-0">No closed jobs found for this date.</div>
+
+              <div *ngIf="jobByDateClosedJobs.length > 0">
+                <div class="table-responsive table-entities open-job-table-wrap">
+                  <table class="table table-sm table-bordered align-middle mb-0">
+                    <thead>
+                      <tr>
+                        <th>Jobnumber</th>
+                        <th>Vehiclenumber</th>
+                        <th>Millage</th>
+                        <th>Nextmillage</th>
+                        <th>Jobtypename</th>
+                        <th>Customername</th>
+                        <th>Jobdate</th>
+                        <th>Status</th>
+                        <th class="job-by-date-actions-col"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let autocarejob of paginatedJobByDateClosedJobs; trackBy: trackId">
+                        <td>{{ autocarejob.jobnumber }}</td>
+                        <td>{{ autocarejob.vehiclenumber }}</td>
+                        <td>{{ autocarejob.millage }}</td>
+                        <td>{{ autocarejob.nextmillage }}</td>
+                        <td>{{ autocarejob.jobtypename }}</td>
+                        <td>{{ autocarejob.customername }}</td>
+                        <td>{{ autocarejob.jobdate | formatMediumDatetime }}</td>
+                        <td class="job-by-date-status">Closed</td>
+                        <td class="text-end job-by-date-actions-col">
+                          <div class="btn-group job-by-date-actions">
+                            <a
+                              [routerLink]="['/autocarejob', autocarejob.id, 'view']"
+                              [queryParams]="jobByDateReturnQueryParams()"
+                              class="btn btn-info btn-sm"
+                              title="View Job"
+                            >
+                              <fa-icon icon="eye"></fa-icon>
+                            </a>
+                            <a
+                              [routerLink]="['/autocarejob', autocarejob.id, 'history']"
+                              [queryParams]="jobByDateReturnQueryParams()"
+                              class="btn btn-success btn-sm"
+                              title="History"
+                            >
+                              <fa-icon icon="history"></fa-icon>
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                  <jhi-item-count
+                    [params]="{ page: jobByDateClosedPage, totalItems: jobByDateClosedJobs.length, itemsPerPage: itemsPerPage }"
+                  ></jhi-item-count>
+                  <ngb-pagination
+                    [collectionSize]="jobByDateClosedJobs.length"
+                    [page]="jobByDateClosedPage"
+                    [pageSize]="itemsPerPage"
+                    [maxSize]="5"
+                    [rotate]="true"
+                    [boundaryLinks]="true"
+                    (pageChange)="navigateJobByDateClosedPage($event)"
+                  ></ngb-pagination>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
     </div>
   </div>
 </div>

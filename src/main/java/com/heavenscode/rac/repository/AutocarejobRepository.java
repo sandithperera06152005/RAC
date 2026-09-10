@@ -15,6 +15,8 @@ import org.springframework.stereotype.Repository;
 public interface AutocarejobRepository extends JpaRepository<Autocarejob, Long> {
     Optional<Autocarejob> findTopByJobdateBetweenOrderByJobnumberDesc(Instant start, Instant end);
 
+    List<Autocarejob> findByJobdateBetweenOrderByJobnumberDesc(Instant start, Instant end);
+
     List<Autocarejob> findByVehiclenumberIgnoreCaseOrderByJobdateDesc(String vehiclenumber);
 
     boolean existsByVehiclenumberIgnoreCaseAndJobtypeidAndIsjobcloseFalseAndJobdateBetween(

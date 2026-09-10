@@ -1,7 +1,7 @@
 import { Component, NgZone, inject, OnInit } from '@angular/core';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
-import { combineLatest, filter, forkJoin, Observable, Subscription, tap } from 'rxjs';
+import { combineLatest, filter, Observable, Subscription, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
@@ -122,6 +122,49 @@ import { AccountService } from 'app/core/auth/account.service';
         flex: 0 0 auto;
       }
 
+      .job-by-date-panel {
+        font-size: 0.9rem;
+      }
+
+      .job-by-date-panel h3 {
+        font-size: 1.25rem;
+      }
+
+      .job-by-date-panel .nav-link {
+        font-size: 0.9rem;
+      }
+
+      .job-by-date-panel .table {
+        font-size: 0.875rem;
+      }
+
+      .job-by-date-input::-webkit-calendar-picker-indicator {
+        display: none;
+        -webkit-appearance: none;
+      }
+
+      .job-by-date-input {
+        appearance: textfield;
+      }
+
+      .job-by-date-actions-col {
+        width: 1%;
+        white-space: nowrap;
+      }
+
+      .job-by-date-actions {
+        display: inline-flex;
+        flex-wrap: nowrap;
+        gap: 0;
+        white-space: nowrap;
+      }
+
+      .job-by-date-status {
+        color: #495057;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
       @media (max-width: 767.98px) {
         .open-job-table {
           min-width: 1150px;
@@ -141,6 +184,15 @@ export class AutocareopenjobComponent implements OnInit {
   isLoading = false;
   filteredAutocarejobs: IAutocarejob[] = [];
   searchText: string = '';
+  activeMainTab: 'ongoing' | 'closed' | 'jobByDate' = 'ongoing';
+  activeJobByDateTab: 'ongoing' | 'closed' = 'ongoing';
+  selectedJobByDate = '';
+  jobByDateJobs: IAutocarejob[] = [];
+  jobByDateOngoingJobs: IAutocarejob[] = [];
+  jobByDateClosedJobs: IAutocarejob[] = [];
+  jobByDateOngoingPage = 1;
+  jobByDateClosedPage = 1;
+  isLoadingJobByDate = false;
   canUpdateAdvisorInstructionItems = false;
   advisorInstructionJobIds = new Set<number>();
 
@@ -149,6 +201,7 @@ export class AutocareopenjobComponent implements OnInit {
   itemsPerPage = ITEMS_PER_PAGE;
   totalItems = 0;
   page = 1;
+  private lastLoadedJobByDate = '';
 
   public router = inject(Router);
   protected autocarejobService = inject(AutocarejobService);
@@ -169,7 +222,12 @@ export class AutocareopenjobComponent implements OnInit {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])
       .pipe(
         tap(([params, data]) => this.fillComponentAttributeFromRoute(params, data)),
-        tap(() => this.load()),
+        tap(() => {
+          this.load();
+          if (this.activeMainTab === 'jobByDate' && this.selectedJobByDate && this.selectedJobByDate !== this.lastLoadedJobByDate) {
+            this.loadJobsByDate(false);
+          }
+        }),
       )
       .subscribe();
   }
@@ -215,6 +273,147 @@ export class AutocareopenjobComponent implements OnInit {
     );
   }
 
+  loadJobsByDate(updateRoute = true): void {
+    const selectedDate = this.selectedJobByDateAsDayjs();
+    if (!selectedDate) {
+      this.jobByDateJobs = [];
+      this.jobByDateOngoingJobs = [];
+      this.jobByDateClosedJobs = [];
+      this.lastLoadedJobByDate = '';
+      if (updateRoute) {
+        this.updateJobByDateRouteState();
+      }
+      return;
+    }
+
+    if (updateRoute) {
+      this.updateJobByDateRouteState();
+    }
+
+    this.lastLoadedJobByDate = this.selectedJobByDate;
+    this.isLoadingJobByDate = true;
+    this.autocarejobService.findByJobDate(selectedDate).subscribe({
+      next: (res: EntityArrayResponseType) => {
+        this.jobByDateJobs = res.body ?? [];
+        this.jobByDateOngoingJobs = this.jobByDateJobs.filter(job => !job.isjobclose);
+        this.jobByDateClosedJobs = this.jobByDateJobs.filter(job => job.isjobclose);
+        this.jobByDateOngoingPage = 1;
+        this.jobByDateClosedPage = 1;
+        this.loadAdvisorInstructionPrintStates(this.jobByDateJobs);
+        this.isLoadingJobByDate = false;
+      },
+      error: () => {
+        this.jobByDateJobs = [];
+        this.jobByDateOngoingJobs = [];
+        this.jobByDateClosedJobs = [];
+        this.isLoadingJobByDate = false;
+      },
+    });
+  }
+
+  setJobByDateToday(): void {
+    this.selectedJobByDate = dayjs().format('YYYY-MM-DD');
+    this.loadJobsByDate();
+  }
+
+  clearJobByDate(): void {
+    this.selectedJobByDate = '';
+    this.jobByDateJobs = [];
+    this.jobByDateOngoingJobs = [];
+    this.jobByDateClosedJobs = [];
+    this.jobByDateOngoingPage = 1;
+    this.jobByDateClosedPage = 1;
+    this.lastLoadedJobByDate = '';
+    this.updateJobByDateRouteState();
+  }
+
+  selectMainTab(tab: 'ongoing' | 'closed' | 'jobByDate'): void {
+    this.activeMainTab = tab;
+    this.updateJobByDateRouteState();
+  }
+
+  selectJobByDateTab(tab: 'ongoing' | 'closed'): void {
+    this.activeJobByDateTab = tab;
+    this.updateJobByDateRouteState();
+  }
+
+  jobByDateReturnQueryParams(): Record<string, string | number> {
+    const params: Record<string, string | number> = {
+      autocareTab: 'jobByDate',
+      jobByDateTab: this.activeJobByDateTab,
+    };
+
+    if (this.selectedJobByDate) {
+      params.jobDate = this.selectedJobByDate;
+    }
+
+    if (this.jobByDateOngoingPage > 1) {
+      params.jobByDateOngoingPage = this.jobByDateOngoingPage;
+    }
+
+    if (this.jobByDateClosedPage > 1) {
+      params.jobByDateClosedPage = this.jobByDateClosedPage;
+    }
+
+    return params;
+  }
+
+  jobByDatePrintQueryParams(): Record<string, string | number> {
+    return {
+      ...this.jobByDateReturnQueryParams(),
+      print: 'true',
+    };
+  }
+
+  jobByDateUpdateItemsQueryParams(): Record<string, string | number> {
+    return {
+      ...this.jobByDateReturnQueryParams(),
+      tab: 'items',
+      itemsOnly: 'true',
+    };
+  }
+
+  openJobByDatePicker(input: HTMLInputElement): void {
+    if (typeof input.showPicker === 'function') {
+      input.showPicker();
+      return;
+    }
+
+    input.focus();
+  }
+
+  get selectedJobByDateLabel(): string {
+    const selectedDate = this.selectedJobByDateAsDayjs();
+    return selectedDate ? selectedDate.format('DD/MM/YYYY') : '';
+  }
+
+  get paginatedJobByDateOngoingJobs(): IAutocarejob[] {
+    return this.paginateJobByDateJobs(this.jobByDateOngoingJobs, this.jobByDateOngoingPage);
+  }
+
+  get paginatedJobByDateClosedJobs(): IAutocarejob[] {
+    return this.paginateJobByDateJobs(this.jobByDateClosedJobs, this.jobByDateClosedPage);
+  }
+
+  navigateJobByDateOngoingPage(page: number): void {
+    this.jobByDateOngoingPage = page;
+    this.updateJobByDateRouteState();
+  }
+
+  navigateJobByDateClosedPage(page: number): void {
+    this.jobByDateClosedPage = page;
+    this.updateJobByDateRouteState();
+  }
+
+  private selectedJobByDateAsDayjs(): dayjs.Dayjs | null {
+    if (!this.selectedJobByDate) {
+      return null;
+    }
+
+    const selectedDate = dayjs(this.selectedJobByDate);
+    return selectedDate.isValid() ? selectedDate.startOf('day') : null;
+  }
+
   navigateToWithComponentValues(event: SortState): void {
     this.handleNavigation(this.page, event);
   }
@@ -243,11 +442,12 @@ export class AutocareopenjobComponent implements OnInit {
       return;
     }
 
-    forkJoin(jobsWithIds.map(job => this.autojobsinvoiceService.query({ 'jobid.equals': job.id, page: 0, size: 1 }))).subscribe({
-      next: responses => {
-        responses.forEach((response, index) => {
-          if ((response.body || []).some(invoice => invoice.id != null)) {
-            this.advisorInstructionJobIds.add(jobsWithIds[index].id);
+    const jobIds = [...new Set(jobsWithIds.map(job => job.id))];
+    this.autojobsinvoiceService.query({ 'jobid.in': jobIds.join(','), page: 0, size: jobIds.length }).subscribe({
+      next: (response: HttpResponse<IAutojobsinvoice[]>) => {
+        (response.body ?? []).forEach(invoice => {
+          if (invoice.jobid != null) {
+            this.advisorInstructionJobIds.add(invoice.jobid);
           }
         });
       },
@@ -255,6 +455,11 @@ export class AutocareopenjobComponent implements OnInit {
         this.advisorInstructionJobIds.clear();
       },
     });
+  }
+
+  private paginateJobByDateJobs(jobs: IAutocarejob[], page: number): IAutocarejob[] {
+    const start = (page - 1) * this.itemsPerPage;
+    return jobs.slice(start, start + this.itemsPerPage);
   }
 
   navigateToInvoice(job: IAutocarejob): void {
@@ -304,6 +509,17 @@ export class AutocareopenjobComponent implements OnInit {
     const page = params.get(PAGE_HEADER);
     this.page = +(page ?? 1);
     this.sortState.set(this.sortService.parseSortParam(params.get(SORT) ?? data[DEFAULT_SORT_DATA]));
+
+    const activeTab = params.get('autocareTab');
+    this.activeMainTab = activeTab === 'closed' || activeTab === 'jobByDate' ? activeTab : 'ongoing';
+
+    const jobByDateTab = params.get('jobByDateTab');
+    this.activeJobByDateTab = jobByDateTab === 'closed' ? 'closed' : 'ongoing';
+
+    const jobDate = params.get('jobDate');
+    this.selectedJobByDate = jobDate && dayjs(jobDate).isValid() ? jobDate : '';
+    this.jobByDateOngoingPage = +(params.get('jobByDateOngoingPage') ?? 1);
+    this.jobByDateClosedPage = +(params.get('jobByDateClosedPage') ?? 1);
   }
 
   protected onResponseSuccess(response: EntityArrayResponseType): void {
@@ -344,6 +560,23 @@ export class AutocareopenjobComponent implements OnInit {
       this.router.navigate(['./'], {
         relativeTo: this.activatedRoute,
         queryParams: queryParamsObj,
+      });
+    });
+  }
+
+  private updateJobByDateRouteState(): void {
+    this.ngZone.run(() => {
+      this.router.navigate(['./'], {
+        relativeTo: this.activatedRoute,
+        queryParams: {
+          autocareTab: this.activeMainTab === 'ongoing' ? null : this.activeMainTab,
+          jobDate: this.selectedJobByDate || null,
+          jobByDateTab: this.activeMainTab === 'jobByDate' ? this.activeJobByDateTab : null,
+          jobByDateOngoingPage: this.activeMainTab === 'jobByDate' && this.jobByDateOngoingPage > 1 ? this.jobByDateOngoingPage : null,
+          jobByDateClosedPage: this.activeMainTab === 'jobByDate' && this.jobByDateClosedPage > 1 ? this.jobByDateClosedPage : null,
+        },
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
       });
     });
   }

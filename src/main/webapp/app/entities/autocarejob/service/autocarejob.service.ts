@@ -70,6 +70,13 @@ export class AutocarejobService {
       .pipe(map(res => this.convertResponseArrayFromServer(res)));
   }
 
+  findByJobDate(jobdate: dayjs.Dayjs): Observable<EntityArrayResponseType> {
+    const options = createRequestOption({ date: jobdate.format(DATE_FORMAT) });
+    return this.http
+      .get<RestAutocarejob[]>(`${this.resourceUrl}/by-jobdate`, { params: options, observe: 'response' })
+      .pipe(map(res => this.convertResponseArrayFromServer(res)));
+  }
+
   hasOngoingJob(vehiclenumber: string, jobtypeid: number, jobdate: dayjs.Dayjs): Observable<HttpResponse<{ exists: boolean }>> {
     const options = createRequestOption({
       vehiclenumber,

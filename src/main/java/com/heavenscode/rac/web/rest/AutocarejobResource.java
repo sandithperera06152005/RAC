@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -352,6 +353,19 @@ public class AutocarejobResource {
     public ResponseEntity<List<Autocarejob>> getAutocarejobsByVehiclenumber(@PathVariable("vehiclenumber") String vehiclenumber) {
         log.debug("REST request to get Autocarejobs by vehiclenumber : {}", vehiclenumber);
         List<Autocarejob> jobs = autocarejobRepository.findByVehiclenumberIgnoreCaseOrderByJobdateDesc(vehiclenumber);
+        return ResponseEntity.ok().body(jobs);
+    }
+
+    @GetMapping("/by-jobdate")
+    public ResponseEntity<List<Autocarejob>> getAutocarejobsByJobdate(
+        @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ) {
+        log.debug("REST request to get Autocarejobs by jobdate : {}", date);
+        ZoneId zoneId = ZoneId.systemDefault();
+        Instant startOfDay = date.atStartOfDay(zoneId).toInstant();
+        Instant startOfNextDay = date.plusDays(1).atStartOfDay(zoneId).toInstant();
+
+        List<Autocarejob> jobs = autocarejobRepository.findByJobdateBetweenOrderByJobnumberDesc(startOfDay, startOfNextDay);
         return ResponseEntity.ok().body(jobs);
     }
 

@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, ChangeDetectorRef, ViewChild, Input } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable, forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import dayjs from 'dayjs/esm';
@@ -164,6 +164,7 @@ export class AutocarejobInstructionComponent implements OnInit {
   itemsOnlyMode = false;
   private shouldPrintOnLoad = false;
   private hasPrintedOnLoad = false;
+  private jobListReturnQueryParams: Record<string, string> = {};
   toggleSubcategories() {
     this.subcategoriesVisible = !this.subcategoriesVisible;
   }
@@ -185,12 +186,13 @@ export class AutocarejobInstructionComponent implements OnInit {
     this.requireNextMillageForInstructions();
 
     this.activatedRoute.queryParamMap.subscribe(params => {
+      this.captureJobListReturnParams(params);
       this.itemsOnlyMode = params.get('itemsOnly') === 'true';
       this.shouldPrintOnLoad = params.get('print') === 'true';
       if (this.itemsOnlyMode) {
         this.accountService.identity().subscribe(() => {
           if (!this.accountService.canUpdateAdvisorInstructionItems()) {
-            this.router.navigate(['/autocarejob/autocareopenjob']);
+            this.navigateBackToOpenJobs();
           }
         });
       }
@@ -235,6 +237,21 @@ export class AutocarejobInstructionComponent implements OnInit {
   }
   previousState(): void {
     window.history.back();
+  }
+
+  private captureJobListReturnParams(params: ParamMap): void {
+    const returnParamKeys = ['autocareTab', 'jobDate', 'jobByDateTab', 'jobByDateOngoingPage', 'jobByDateClosedPage'];
+    this.jobListReturnQueryParams = returnParamKeys.reduce<Record<string, string>>((acc, key) => {
+      const value = params.get(key);
+      if (value) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+  }
+
+  private navigateBackToOpenJobs(): void {
+    this.router.navigate(['/autocarejob/autocareopenjob'], { queryParams: this.jobListReturnQueryParams });
   }
 
   loadVehicleTypes(): void {
@@ -1567,7 +1584,7 @@ export class AutocarejobInstructionComponent implements OnInit {
   }
 
   goBackToOpenJobs(): void {
-    this.router.navigate(['/autocarejob/autocareopenjob']);
+    this.navigateBackToOpenJobs();
   }
 
   saveItemsOnly(): void {
@@ -1865,7 +1882,7 @@ export class AutocarejobInstructionComponent implements OnInit {
 
       // Navigate to the open jobs list after a short delay to prevent double-saving/conflicts
       setTimeout(() => {
-        this.router.navigate(['/autocarejob/autocareopenjob']);
+        this.navigateBackToOpenJobs();
       }, 1000);
     }, 800);
 
