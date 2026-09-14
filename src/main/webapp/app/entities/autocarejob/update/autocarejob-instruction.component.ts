@@ -1505,16 +1505,17 @@ export class AutocarejobInstructionComponent implements OnInit {
               margin-top: 6px !important;
               margin-bottom: 10px !important;
               font-size: 11px !important;
-              line-height: 1.1 !important;
+              line-height: 1.05 !important;
             }
             #printSummary .print-customer-grid {
               display: grid;
               grid-template-columns: repeat(3, minmax(0, 1fr));
-              row-gap: 7px;
+              row-gap: 5px;
               column-gap: 22px;
             }
             .print-summary-pair {
               display: block;
+              line-height: 1.05;
             }
             .print-summary-pair strong {
               margin-right: 3px;
@@ -1526,8 +1527,8 @@ export class AutocarejobInstructionComponent implements OnInit {
               word-break: break-word;
             }
             #printSummary .mt-3 { margin-top: 10px !important; }
-            .table { width: 100%; border-collapse: collapse; font-size: 10px; line-height: 1.12; margin-top: 10px !important; margin-bottom: 10px !important; }
-            .table th, .table td { border: 1px solid black; padding: 6px 7px; text-align: left; vertical-align: top; }
+            .table { width: 100%; border-collapse: collapse; font-size: 10px; line-height: 1.05; margin-top: 10px !important; margin-bottom: 10px !important; }
+            .table th, .table td { border: 1px solid black; padding: 5px 7px; text-align: left; vertical-align: top; }
             .text-center { text-align: center; }
             .text-right { text-align: right; }
             .text-start { text-align: left !important; }
