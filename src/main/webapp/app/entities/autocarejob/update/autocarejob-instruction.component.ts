@@ -1473,7 +1473,7 @@ export class AutocarejobInstructionComponent implements OnInit {
   private openPrintSummaryWindow(): void {
     const element = document.getElementById('printSummary');
     console.log('printSummary element found:', !!element);
-    const printContents = element?.innerHTML;
+    const printContents = element?.outerHTML;
     console.log('printSummary contents length:', printContents?.length ?? 0);
     if (!printContents || printContents.trim() === '') {
       console.error('Print section not found or empty!');
@@ -1485,13 +1485,49 @@ export class AutocarejobInstructionComponent implements OnInit {
       printWindow.document.write(`
         <html>
         <head>
-          <title>Print Summary</title>
+          <title>RAC</title>
           <style>
             @page { margin: 10mm; }
             html, body { margin: 0; height: auto; }
-            body { font-family: Arial, sans-serif; padding: 20px; font-size: 10px; }
-            .table { width: 100%; border-collapse: collapse; font-size: 10px;}
-            .table th, .table td { border: 1px solid black; padding: 8px; text-align: left; }
+            body { font-family: Arial, sans-serif; padding: 12px; font-size: 10px; line-height: 1.15; }
+            h2, h4, p { margin-top: 0; margin-bottom: 5px; }
+            h2 { font-size: 18px; line-height: 1.15; margin-bottom: 6px !important; }
+            h4 { font-size: 13px; line-height: 1.15; }
+            #printSummary {
+              display: block !important;
+              padding: 8px !important;
+              font-size: 10px;
+              line-height: 1.15;
+            }
+            #printSummary .print-summary-header { margin-bottom: 10px; }
+            #printSummary .print-customer-box {
+              padding: 10px !important;
+              margin-top: 6px !important;
+              margin-bottom: 10px !important;
+              font-size: 11px !important;
+              line-height: 1.1 !important;
+            }
+            #printSummary .print-customer-grid {
+              display: grid;
+              grid-template-columns: repeat(3, minmax(0, 1fr));
+              row-gap: 7px;
+              column-gap: 22px;
+            }
+            .print-summary-pair {
+              display: block;
+            }
+            .print-summary-pair strong {
+              margin-right: 3px;
+              white-space: nowrap;
+            }
+            .print-summary-pair span {
+              display: inline;
+              text-align: left;
+              word-break: break-word;
+            }
+            #printSummary .mt-3 { margin-top: 10px !important; }
+            .table { width: 100%; border-collapse: collapse; font-size: 10px; line-height: 1.12; margin-top: 10px !important; margin-bottom: 10px !important; }
+            .table th, .table td { border: 1px solid black; padding: 6px 7px; text-align: left; vertical-align: top; }
             .text-center { text-align: center; }
             .text-right { text-align: right; }
             .text-start { text-align: left !important; }
@@ -1508,8 +1544,27 @@ export class AutocarejobInstructionComponent implements OnInit {
               text-align: left !important;
             }
             .d-flex { display: flex; justify-content: space-between; }
-            .mt-3 { margin-top: 20px; }
-            .border { border: 1px solid black; padding: 10px; }
+            .border { border: 1px solid black; }
+            .print-total-row {
+              display: flex;
+              justify-content: space-between;
+              align-items: baseline;
+              gap: 16px;
+              width: 100%;
+              margin-top: 10px;
+              margin-bottom: 10px;
+            }
+            #printSummary > p {
+              font-size: 10px;
+              line-height: 1.15;
+              margin-bottom: 5px;
+            }
+            #printSummary .print-signatures {
+              margin-top: 26px !important;
+            }
+            #printSummary .print-signatures p {
+              margin-bottom: 3px;
+            }
             .print-button { margin-top: 20px; padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
             .close-button { margin-top: 20px; padding: 10px 20px; background-color: #dc3545; color: white; border: none; cursor: pointer; }
             .print-actions { text-align: center; margin-top: 20px; }

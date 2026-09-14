@@ -895,14 +895,14 @@
     </div>
 
     <!-- Print Layout (Hidden in UI, Only Visible in Print) -->
-    <div id="printSummary" class="d-none d-print-block p-3" style="font-family: Arial, sans-serif">
-      <div class="text-center mb-3">
+    <div id="printSummary" class="d-none d-print-block p-2" style="font-family: Arial, sans-serif">
+      <div class="text-center print-summary-header">
         <h2 class="font-weight-bold mb-1">RATHNAWEERA AUTO CARE [PVT] LTD</h2>
         <h4 class="mb-0">ADVISOR INSTRUCTION SHEET - Admin</h4>
       </div>
 
-      <div class="border border-dark p-2 mt-2 mb-3" style="font-size: 11px; line-height: 1.1">
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); row-gap: 0px; column-gap: 15px">
+      <div class="border border-dark print-customer-box" style="font-size: 11px; line-height: 1.1">
+        <div class="print-customer-grid">
           <div>
             <p class="m-0 print-summary-pair">
               <strong>VEHICLE NO </strong><span>{{ editForm.controls['vehiclenumber'].value }}</span>
@@ -977,7 +977,7 @@
 
       <h4 class="mt-3"><strong>ESTIMATE / ඇස්තමේන්තුව</strong></h4>
 
-      <table class="table table-bordered mt-3 print-summary-table">
+      <table class="table table-bordered print-summary-table">
         <thead>
           <tr>
             <th class="text-start">DESCRIPTION</th>
@@ -991,7 +991,7 @@
           <tr>
             <td colspan="5" class="text-start">
               <div class="print-item-description-grid">
-                <strong>ITEM CODE</strong>
+                <strong>CODE</strong>
                 <strong>ITEM</strong>
               </div>
             </td>
@@ -1033,7 +1033,7 @@
         </tbody>
       </table>
 
-      <div class="print-total-row mt-3">
+      <div class="print-total-row">
         <h4><strong>TOTAL VALUE:</strong></h4>
         <h4>
           <strong
@@ -1043,7 +1043,7 @@
       </div>
       <p>සේවාව සිදුකරගෙන යාමේදී අවශ්‍යතාවය මත භාණ්ඩ හා සේවාවල සිදුවන වෙනස්කම් මත ඉහත සඳහන් මිලගණන් වෙනස් විය හැකි බව කරුණාවෙන් සලකන්න.</p>
       <p>Above prices may be vary on the requirement of goods and services.</p>
-      <div class="d-flex justify-content-between mt-4">
+      <div class="d-flex justify-content-between print-signatures">
         <div class="text-center">
           <p>______________________</p>
           <p>Service Advisor</p>
@@ -1076,6 +1076,55 @@
       left: 0;
       top: 0;
       width: 100%;
+      font-size: 10px;
+      line-height: 1.15;
+      padding: 8px !important;
+    }
+
+    #printSummary h2,
+    #printSummary h4,
+    #printSummary p {
+      margin-top: 0;
+      margin-bottom: 5px;
+    }
+
+    #printSummary h2 {
+      font-size: 18px;
+      line-height: 1.15;
+      margin-bottom: 6px !important;
+    }
+
+    #printSummary h4 {
+      font-size: 13px;
+      line-height: 1.15;
+    }
+
+    #printSummary .print-summary-header {
+      margin-bottom: 10px;
+    }
+
+    #printSummary .print-customer-box {
+      padding: 10px !important;
+      margin-top: 6px !important;
+      margin-bottom: 10px !important;
+    }
+
+    #printSummary .print-customer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      row-gap: 7px;
+      column-gap: 22px;
+    }
+
+    #printSummary .mt-3 {
+      margin-top: 10px !important;
+    }
+
+    #printSummary .print-summary-table {
+      margin-top: 10px !important;
+      margin-bottom: 10px !important;
+      font-size: 10px;
+      line-height: 1.12;
     }
 
     .print-item-description-grid {
@@ -1086,19 +1135,23 @@
     }
 
     .print-summary-pair {
-      display: grid;
-      grid-template-columns: minmax(80px, max-content) minmax(0, 1fr);
-      column-gap: 8px;
-      align-items: start;
+      display: block;
+    }
+
+    .print-summary-pair strong {
+      margin-right: 3px;
+      white-space: nowrap;
     }
 
     .print-summary-pair span {
-      text-align: right;
+      display: inline;
+      text-align: left;
       word-break: break-word;
     }
 
     .print-summary-table th,
     .print-summary-table td {
+      padding: 6px 7px !important;
       vertical-align: top;
     }
 
@@ -1121,6 +1174,22 @@
       align-items: baseline;
       gap: 16px;
       width: 100%;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    #printSummary > p {
+      font-size: 10px;
+      line-height: 1.15;
+      margin-bottom: 5px;
+    }
+
+    #printSummary .print-signatures {
+      margin-top: 26px !important;
+    }
+
+    #printSummary .print-signatures p {
+      margin-bottom: 3px;
     }
   }
 </style>
