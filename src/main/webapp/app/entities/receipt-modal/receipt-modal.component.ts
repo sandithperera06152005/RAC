@@ -737,26 +737,7 @@ export class ReceiptModalComponent implements OnChanges {
     this.save();
   }
 
-  generateNextReceiptCode(lastCode: string | null | undefined): string {
-    const defaultCode = 'RCPT1000';
-    let originalCode = lastCode?.trim() || defaultCode;
-
-    if (!originalCode.toLowerCase().startsWith('rcpt')) {
-      originalCode = defaultCode;
-    }
-
-    const match = originalCode.match(/\d+$/);
-    if (match) {
-      return originalCode.replace(/\d+$/, (numStr: string) => {
-        const incremented = Number(numStr) + 1;
-        return String(incremented).padStart(numStr.length, '0');
-      });
-    } else {
-      return 'RCPT1001';
-    }
-  }
-
-  saveReceiptWithCode(nextReceiptCode: string, finalUserId: number): void {
+  saveReceipt(finalUserId: number): void {
     const paymentAmount = this.getCurrentPaymentAmount();
     const selectedPaymentBankAccount = this.method === 'Cheque' || this.method === 'Bank' ? this.selectedCompanyBankAccount : null;
     const paymentAccountId =
@@ -769,7 +750,6 @@ export class ReceiptModalComponent implements OnChanges {
     const safeAccountId = paymentAccountId;
     const receiptTotalAmount = this.method === 'Credit' ? 0 : this.totalamount || 0;
 
-    this.receipt.code = nextReceiptCode;
     this.receipt.lmu = finalUserId;
     this.receipt.lmd = dayjs().add(-new Date().getTimezoneOffset(), 'minute');
     this.receipt.customername = this.customername ?? '';
@@ -913,20 +893,7 @@ export class ReceiptModalComponent implements OnChanges {
 
   private continueBillingSave(finalUserId: number): void {
     if (this.receipt) {
-      this.reciptService.query({ page: 0, size: 1, sort: ['id,desc'] }).subscribe({
-        next: (res: HttpResponse<any[]>) => {
-          const lastReceipt = res.body?.[0];
-          const lastCode = lastReceipt?.code;
-          const nextReceiptCode = this.generateNextReceiptCode(lastCode);
-
-          this.saveReceiptWithCode(nextReceiptCode, finalUserId);
-        },
-        error: (err: any) => {
-          console.error('Error fetching last receipt code:', err);
-          const nextReceiptCode = this.generateNextReceiptCode(null);
-          this.saveReceiptWithCode(nextReceiptCode, finalUserId);
-        },
-      });
+      this.saveReceipt(finalUserId);
     } else {
       this.isSaving = true;
       this.salesinvoiceupdate.save();
@@ -947,6 +914,7 @@ export class ReceiptModalComponent implements OnChanges {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
       next: response => {
         this.id = response.body.id;
+        this.receipt.code = response.body.code;
         callback(response.body.id);
         this.onSaveSuccess();
       },

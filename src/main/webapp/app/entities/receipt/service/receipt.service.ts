@@ -34,6 +34,10 @@ export class ReceiptService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/receipts');
 
+  fetchNextCode(): Observable<HttpResponse<{ code: string }>> {
+    return this.http.get<{ code: string }>(`${this.resourceUrl}/next-code`, { observe: 'response' });
+  }
+
   create(receipt: NewReceipt): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(receipt);
     return this.http

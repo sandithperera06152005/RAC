@@ -2,10 +2,12 @@ package com.heavenscode.rac.web.rest;
 
 import com.heavenscode.rac.domain.Receipt;
 import com.heavenscode.rac.repository.ReceiptRepository;
+import com.heavenscode.rac.service.SystemSettingsCodeSequenceService;
 import com.heavenscode.rac.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -33,14 +35,17 @@ public class ReceiptResource {
     private final Logger log = LoggerFactory.getLogger(ReceiptResource.class);
 
     private static final String ENTITY_NAME = "receipt";
+    private static final String RECEIPT_SETTINGS_KEY = "RECEIPT";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
     private final ReceiptRepository receiptRepository;
+    private final SystemSettingsCodeSequenceService systemSettingsCodeSequenceService;
 
-    public ReceiptResource(ReceiptRepository receiptRepository) {
+    public ReceiptResource(ReceiptRepository receiptRepository, SystemSettingsCodeSequenceService systemSettingsCodeSequenceService) {
         this.receiptRepository = receiptRepository;
+        this.systemSettingsCodeSequenceService = systemSettingsCodeSequenceService;
     }
 
     /**
@@ -56,10 +61,22 @@ public class ReceiptResource {
         if (receipt.getId() != null) {
             throw new BadRequestAlertException("A new receipt cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        receipt.setCode(systemSettingsCodeSequenceService.consumeNextValue(RECEIPT_SETTINGS_KEY, receipt.getLmu(), receipt.getLmd()));
         receipt = receiptRepository.save(receipt);
         return ResponseEntity.created(new URI("/api/receipts/" + receipt.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, receipt.getId().toString()))
             .body(receipt);
+    }
+
+    /**
+     * {@code GET  /receipts/next-code} : preview the next receipt code.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the next code in body.
+     */
+    @GetMapping("/next-code")
+    public ResponseEntity<Map<String, String>> getNextReceiptCode() {
+        log.debug("REST request to get next receipt code");
+        return ResponseEntity.ok(Map.of("code", systemSettingsCodeSequenceService.peekNextValue(RECEIPT_SETTINGS_KEY)));
     }
 
     /**
