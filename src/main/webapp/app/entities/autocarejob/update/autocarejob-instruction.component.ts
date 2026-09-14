@@ -1243,6 +1243,7 @@ export class AutocarejobInstructionComponent implements OnInit {
         nextmillage: selectedVehicle.nextmilage ? Number(selectedVehicle.nextmilage) : null,
         nextgearoilmilage: selectedVehicle.nextgearoilmilage ?? null,
       });
+      this.syncNextMillageSelectionFromForm();
       this.filterBillingServiceOptionValues();
 
       this.customerService.find(selectedVehicle.customerid).subscribe(res => {
@@ -1266,6 +1267,7 @@ export class AutocarejobInstructionComponent implements OnInit {
 
   nextmillage: number | null = null;
   selectedRadioValue: number | null = null;
+  private readonly nextMillageOptions = [3000, 3500, 5000, 7500, 10000];
   nextMilageSelectionAttempted = false;
   saveAttempted = false;
 
@@ -1359,6 +1361,30 @@ export class AutocarejobInstructionComponent implements OnInit {
       this.nextmillage = null;
       this.editForm.get('nextmillage')?.setValue(null);
     }
+  }
+
+  private syncNextMillageSelectionFromForm(): void {
+    const millage = this.toNumberOrNull(this.editForm.get('millage')?.value);
+    const savedNextMillage = this.toNumberOrNull(this.editForm.get('nextmillage')?.value);
+
+    this.nextmillage = savedNextMillage;
+
+    if (millage == null || savedNextMillage == null) {
+      this.selectedRadioValue = null;
+      return;
+    }
+
+    const selectedValue = savedNextMillage - millage;
+    this.selectedRadioValue = this.nextMillageOptions.includes(selectedValue) ? selectedValue : null;
+  }
+
+  private toNumberOrNull(value: unknown): number | null {
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
+
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? numericValue : null;
   }
 
   mapFormToAutojobsinvoice(formValue: any): IAutojobsinvoice {
@@ -1907,6 +1933,7 @@ export class AutocarejobInstructionComponent implements OnInit {
   protected updateForm(autocarejob: IAutocarejob): void {
     this.autocarejob = autocarejob;
     this.autocarejobFormService.resetForm(this.editForm, autocarejob);
+    this.syncNextMillageSelectionFromForm();
     this.syncVehicleTypeSelectionFromCustomerVehicle();
     this.loadCustomerDetailsForCurrentJob();
   }

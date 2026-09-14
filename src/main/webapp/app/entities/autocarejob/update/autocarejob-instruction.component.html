@@ -321,52 +321,56 @@
                 <div class="row">
                   <div class="mb-3 col-6">
                     <label class="form-label" for="field_specialrquirments">Special requirements</label>
-                    <input
-                      type="text"
+                    <textarea
                       class="form-control form-control-sm"
                       name="specialrquirments"
                       id="field_specialrquirments"
                       data-cy="specialrquirments"
                       formControlName="specialrquirments"
-                    />
+                      rows="2"
+                      style="resize: vertical; min-height: 38px"
+                    ></textarea>
                   </div>
 
                   <div class="mb-3 col-6">
                     <label class="form-label" for="field_specialinstructions">Special instructions</label>
-                    <input
-                      type="text"
+                    <textarea
                       class="form-control form-control-sm"
                       name="specialinstructions"
                       id="field_specialinstructions"
                       data-cy="specialinstructions"
                       formControlName="specialinstructions"
-                    />
+                      rows="2"
+                      style="resize: vertical; min-height: 38px"
+                    ></textarea>
                   </div>
                 </div>
 
                 <div class="row">
                   <div class="mb-3 col-6">
                     <label class="form-label" for="field_remarks">Remarks</label>
-                    <input
-                      type="text"
+                    <textarea
                       class="form-control form-control-sm"
                       name="remarks"
                       id="field_remarks"
                       data-cy="remarks"
                       formControlName="remarks"
-                    />
+                      rows="2"
+                      style="resize: vertical; min-height: 38px"
+                    ></textarea>
                   </div>
 
                   <div class="mb-3 col-6">
                     <label class="form-label" for="field_nextserviceinstructions">Next service instructions</label>
-                    <input
-                      type="text"
+                    <textarea
                       class="form-control form-control-sm"
                       name="nextserviceinstructions"
                       id="field_nextserviceinstructions"
                       data-cy="nextserviceinstructions"
                       formControlName="nextserviceinstructions"
-                    />
+                      rows="2"
+                      style="resize: vertical; min-height: 38px"
+                    ></textarea>
                   </div>
                 </div>
               </fieldset>
@@ -901,50 +905,50 @@
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); row-gap: 0px; column-gap: 15px">
           <div>
             <p class="m-0 print-summary-pair">
-              <strong>VEHICLE NO</strong><span>{{ editForm.controls['vehiclenumber'].value }}</span>
+              <strong>VEHICLE NO </strong><span>{{ editForm.controls['vehiclenumber'].value }}</span>
             </p>
           </div>
           <div>
             <p class="m-0 print-summary-pair">
-              <strong>MILAGE</strong><span>{{ editForm.controls['millage'].value }}</span>
+              <strong>MILAGE </strong><span>{{ editForm.controls['millage'].value }}</span>
             </p>
           </div>
           <div>
             <p class="m-0 print-summary-pair">
-              <strong>JOB N0</strong
+              <strong>JOB N0 </strong
               ><span>{{ editForm.controls['id'].value }}{{ editForm.controls['iswaiting'].value ? ' / Waiting' : '' }}</span>
             </p>
           </div>
 
           <div>
             <p class="m-0 print-summary-pair">
-              <strong>DATE</strong><span>{{ editForm.controls['jobopentime'].value | date: 'dd/MM/yyyy-HH:mm' }}</span>
+              <strong>DATE </strong><span>{{ editForm.controls['jobopentime'].value | date: 'dd/MM/yyyy-HH:mm' }}</span>
             </p>
           </div>
           <div>
             <p class="m-0 print-summary-pair">
-              <strong>NAME</strong><span>{{ editForm.controls['customername'].value }}</span>
+              <strong>NAME </strong><span>{{ editForm.controls['customername'].value }}</span>
             </p>
           </div>
           <div>
             <p class="m-0 print-summary-pair">
-              <strong>T/P</strong><span>{{ editForm.controls['customertel'].value }}</span>
+              <strong>T/P </strong><span>{{ editForm.controls['customertel'].value }}</span>
             </p>
           </div>
 
           <div>
             <p class="m-0 print-summary-pair">
-              <strong>ADDRESS</strong><span>{{ searchedCustomer?.residenceaddress || searchedCustomer?.businessaddress || '' }}</span>
+              <strong>ADDRESS </strong><span>{{ searchedCustomer?.residenceaddress || searchedCustomer?.businessaddress || '' }}</span>
             </p>
           </div>
           <div>
             <p class="m-0 print-summary-pair">
-              <strong>JOB TYPE</strong><span>{{ editForm.controls['jobtypename'].value }}</span>
+              <strong>JOB TYPE </strong><span>{{ editForm.controls['jobtypename'].value }}</span>
             </p>
           </div>
           <div>
             <p class="m-0 print-summary-pair">
-              <strong>REFERENCE</strong>
+              <strong>REFERENCE </strong>
               <span>
                 <ng-container *ngFor="let subcategory of selectedSubcategoryItems; let last = last"
                   >{{ subcategory.name }}{{ !last ? ', ' : '' }}</ng-container
@@ -955,17 +959,17 @@
 
           <div>
             <p class="m-0 print-summary-pair">
-              <strong>SPECIAL REQUIRMENTS</strong><span>{{ editForm.controls['specialrquirments'].value || '' }}</span>
+              <strong>SPECIAL REQUIRMENTS </strong><span>{{ editForm.controls['specialrquirments'].value || '' }}</span>
             </p>
           </div>
           <div>
             <p class="m-0 print-summary-pair">
-              <strong>REMARKS</strong><span>{{ editForm.controls['remarks'].value || '' }}</span>
+              <strong>REMARKS </strong><span>{{ editForm.controls['remarks'].value || '' }}</span>
             </p>
           </div>
           <div>
             <p class="m-0 print-summary-pair">
-              <strong>SP INSTRUCTIONS</strong><span>{{ editForm.controls['specialinstructions'].value || '' }}</span>
+              <strong>SP INSTRUCTIONS </strong><span>{{ editForm.controls['specialinstructions'].value || '' }}</span>
             </p>
           </div>
         </div>

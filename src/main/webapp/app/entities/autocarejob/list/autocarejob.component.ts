@@ -3,6 +3,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
 import { combineLatest, filter, Observable, Subscription, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import dayjs from 'dayjs/esm';
 
 import SharedModule from 'app/shared/shared.module';
 import { sortStateSignal, SortDirective, SortByDirective, type SortState, SortService } from 'app/shared/sort';
@@ -106,20 +107,12 @@ export class AutocarejobComponent implements OnInit {
   }
 
   protected fillComponentAttributesFromResponseHeader(headers: HttpHeaders): void {
-    this.totalItems = Number(headers.get(TOTAL_COUNT_RESPONSE_HEADER));
+    this.totalItems = Number(headers.get(TOTAL_COUNT_RESPONSE_HEADER) ?? this.autocarejobs?.length ?? 0);
   }
 
   protected queryBackend(): Observable<EntityArrayResponseType> {
-    const { page } = this;
-
     this.isLoading = true;
-    const pageToLoad: number = page;
-    const queryObject: any = {
-      page: pageToLoad - 1,
-      size: this.itemsPerPage,
-      sort: this.sortService.buildSortParam(this.sortState()),
-    };
-    return this.autocarejobService.query(queryObject).pipe(tap(() => (this.isLoading = false)));
+    return this.autocarejobService.findByJobDate(dayjs()).pipe(tap(() => (this.isLoading = false)));
   }
 
   protected handleNavigation(page: number, sortState: SortState): void {
