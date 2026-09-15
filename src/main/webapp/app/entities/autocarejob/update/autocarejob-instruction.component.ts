@@ -269,7 +269,9 @@ export class AutocarejobInstructionComponent implements OnInit {
     const fetchPage = () => {
       this.billingserviceoptionService.query({ page, size: pageSize }).subscribe(
         (res: HttpResponse<IBillingserviceoption[]>) => {
-          this.billingserviceoption = [...this.billingserviceoption, ...(res.body || [])];
+          this.billingserviceoption = [...this.billingserviceoption, ...(res.body || [])].sort((left, right) =>
+            this.compareBillingServiceOptionOrder(left, right),
+          );
 
           const totalItems = res.headers.get('X-Total-Count');
           const totalRecords = totalItems ? parseInt(totalItems, 10) : 0;
@@ -278,6 +280,8 @@ export class AutocarejobInstructionComponent implements OnInit {
             page++;
             fetchPage();
           } else {
+            this.filteredBillingServiceOptionValues = this.sortBillingServiceOptionValues(this.filteredBillingServiceOptionValues);
+            this.cdr.detectChanges();
           }
         },
         error => {},
@@ -304,7 +308,7 @@ export class AutocarejobInstructionComponent implements OnInit {
     this.lastRequestedVehicleTypeId = vehicleTypeId;
     this.billingserviceoptionvaluesService.findByVehicleTypeId(vehicleTypeId).subscribe({
       next: (res: HttpResponse<IBillingserviceoptionvalues[]>) => {
-        this.filteredBillingServiceOptionValues = res.body || [];
+        this.filteredBillingServiceOptionValues = this.sortBillingServiceOptionValues(res.body || []);
         this.syncSelectedServicesFromSaved();
         this.cdr.detectChanges();
         console.log('Filtered Billing Service Option Values:', this.filteredBillingServiceOptionValues);
@@ -325,6 +329,43 @@ export class AutocarejobInstructionComponent implements OnInit {
     const option = this.billingserviceoption.find(opt => opt.id === billingserviceoptionId);
     // console.log('Billing Service Optionssssssssss:', option); // Debugging
     return option && option.servicename ? option.servicename : 'Unknown';
+  }
+
+  private compareBillingServiceOptionOrder(left: IBillingserviceoption, right: IBillingserviceoption): number {
+    const leftOrder = left.orderby ?? Number.MAX_SAFE_INTEGER;
+    const rightOrder = right.orderby ?? Number.MAX_SAFE_INTEGER;
+
+    if (leftOrder !== rightOrder) {
+      return leftOrder - rightOrder;
+    }
+
+    return (left.id ?? 0) - (right.id ?? 0);
+  }
+
+  private sortBillingServiceOptionValues(values: IBillingserviceoptionvalues[]): IBillingserviceoptionvalues[] {
+    const optionOrder = new Map<number, { orderby: number; id: number }>();
+    this.billingserviceoption.forEach(option => {
+      optionOrder.set(option.id, {
+        orderby: option.orderby ?? Number.MAX_SAFE_INTEGER,
+        id: option.id ?? Number.MAX_SAFE_INTEGER,
+      });
+    });
+
+    return [...values].sort((left, right) => {
+      const leftMeta = optionOrder.get(Number(left.billingserviceoptionid ?? 0));
+      const rightMeta = optionOrder.get(Number(right.billingserviceoptionid ?? 0));
+      const leftOrder = leftMeta?.orderby ?? Number.MAX_SAFE_INTEGER;
+      const rightOrder = rightMeta?.orderby ?? Number.MAX_SAFE_INTEGER;
+
+      if (leftOrder !== rightOrder) {
+        return leftOrder - rightOrder;
+      }
+
+      return (
+        (leftMeta?.id ?? Number(left.billingserviceoptionid ?? Number.MAX_SAFE_INTEGER)) -
+        (rightMeta?.id ?? Number(right.billingserviceoptionid ?? Number.MAX_SAFE_INTEGER))
+      );
+    });
   }
 
   onVehicleTypeChange(): void {

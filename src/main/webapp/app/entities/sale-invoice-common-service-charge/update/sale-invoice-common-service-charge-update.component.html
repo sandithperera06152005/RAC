@@ -48,6 +48,25 @@
           .border-dashed {
             border-style: dashed !important;
           }
+          .common-service-charge-table th {
+            vertical-align: middle;
+            white-space: nowrap;
+          }
+          .common-service-charge-table .value-col {
+            width: 155px;
+            min-width: 155px;
+          }
+          .common-service-charge-table .value-input-group {
+            flex-wrap: nowrap;
+            width: 145px;
+            margin-left: auto;
+          }
+          .common-service-charge-table .value-input-group .form-control {
+            min-width: 0;
+            padding-left: 0.35rem;
+            padding-right: 0.35rem;
+            text-align: right;
+          }
         </style>
 
         <div class="services-container p-3 rounded-3 bg-light mb-3" *ngIf="commonServiceOptions.length > 0">
@@ -83,7 +102,7 @@
         </div>
 
         <div class="table-responsive rounded-3 shadow-sm mt-4 border">
-          <table class="table table-hover align-middle mb-0">
+          <table class="table table-hover align-middle mb-0 common-service-charge-table">
             <thead class="bg-light">
               <tr>
                 <th *ngIf="false">ID</th>
@@ -93,7 +112,7 @@
                 <th *ngIf="false">Main ID</th>
                 <th class="ps-3 py-3">Name</th>
                 <th>Description</th>
-                <th class="text-end">Value</th>
+                <th class="text-end value-col">Value</th>
                 <th class="text-center pe-3">Actions</th>
               </tr>
             </thead>
@@ -150,8 +169,8 @@
                     placeholder="Optional description..."
                   />
                 </td>
-                <td class="text-end" style="width: 150px">
-                  <div class="input-group input-group-sm justify-content-end">
+                <td class="text-end value-col">
+                  <div class="input-group input-group-sm value-input-group">
                     <span class="input-group-text bg-white border-end-0 text-muted small">Rs.</span>
                     <input
                       type="text"
@@ -160,7 +179,6 @@
                       [appDecimalDeferFormat]="true"
                       class="form-control text-end border-start-0 fw-bold"
                       formControlName="value"
-                      style="max-width: 100px"
                     />
                   </div>
                 </td>

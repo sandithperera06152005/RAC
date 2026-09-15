@@ -27,6 +27,29 @@
     width: 100%;
     height: 100%;
   }
+
+  .selected-lines-table {
+    min-width: 1060px;
+    margin-bottom: 0;
+  }
+
+  .selected-lines-table th {
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  .selected-lines-table td {
+    vertical-align: middle;
+  }
+
+  .selected-lines-table .description-cell {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .selected-lines-table .action-col {
+    width: 70px;
+  }
 </style>
 <div justify-content-right class="row full-width-form">
   <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm" class="full-width-form">
@@ -427,6 +450,19 @@
                   Service Common Charges
                 </a>
               </li>
+              <li class="nav-item ms-auto" role="presentation">
+                <a
+                  class="nav-link"
+                  id="all-items-services-tab"
+                  data-bs-toggle="tab"
+                  href="#all-items-services"
+                  role="tab"
+                  aria-controls="all-items-services"
+                  aria-selected="false"
+                >
+                  All Items / Services
+                </a>
+              </li>
             </ul>
 
             <!-- Tab panes -->
@@ -459,6 +495,58 @@
                   (totalUpdated)="receiveTotal($event, 'child3')"
                   [allowManual]="false"
                 ></jhi-sale-invoice-common-service-charge-update>
+              </div>
+              <div class="tab-pane fade" id="all-items-services" role="tabpanel" aria-labelledby="all-items-services-tab">
+                <div class="table-responsive rounded-3 shadow-sm mt-3 border" style="max-height: 360px">
+                  <table class="table table-hover table-striped align-middle selected-lines-table">
+                    <thead class="bg-light">
+                      <tr>
+                        <th class="text-center" style="width: 48px">#</th>
+                        <th style="width: 110px">Item Code</th>
+                        <th>Description</th>
+                        <th class="text-end" style="width: 100px">Qty</th>
+                        <th class="text-end" style="width: 130px">Unit Price</th>
+                        <th class="text-end" style="width: 120px">Discount</th>
+                        <th class="text-end" style="width: 130px">Total</th>
+                        <th class="text-center action-col">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let row of getSelectedInvoiceRows(); let i = index">
+                        <td class="text-center">{{ i + 1 }}</td>
+                        <td>{{ row.itemCode }}</td>
+                        <td class="description-cell">{{ row.description }}</td>
+                        <td class="text-end">{{ row.quantity | number: '1.2-2' }}</td>
+                        <td class="text-end">{{ row.unitPrice | number: '1.2-2' }}</td>
+                        <td class="text-end">{{ row.discount | number: '1.2-2' }}</td>
+                        <td class="text-end fw-bold">{{ row.total | number: '1.2-2' }}</td>
+                        <td class="text-center">
+                          <button
+                            type="button"
+                            class="btn btn-link text-danger p-0"
+                            (click)="removeSelectedInvoiceRow(row)"
+                            title="Remove line"
+                          >
+                            <fa-icon icon="times" size="lg"></fa-icon>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr *ngIf="getSelectedInvoiceRows().length === 0">
+                        <td colspan="8" class="text-center py-4 text-muted small">
+                          <fa-icon icon="file-invoice" size="2x" class="d-block mb-2 opacity-50"></fa-icon>
+                          No selected items or services.
+                        </td>
+                      </tr>
+                    </tbody>
+                    <!-- <tfoot *ngIf="getSelectedInvoiceRows().length > 0">
+                      <tr>
+                        <td colspan="6" class="text-end fw-bold">Total:</td>
+                        <td class="text-end fw-bold">{{ getSelectedInvoiceGrandTotal() | number: '1.2-2' }}</td>
+                        <td></td>
+                      </tr>
+                    </tfoot> -->
+                  </table>
+                </div>
               </div>
             </div>
           </div>

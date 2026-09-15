@@ -58,13 +58,30 @@
             white-space: nowrap;
           }
           .service-charge-table .col-discount-pct,
-          .service-charge-table .col-discount,
-          .service-charge-table .col-value {
+          .service-charge-table .col-discount {
             width: 110px;
             min-width: 110px;
             text-align: left;
             padding-left: 0.1rem;
             padding-right: 0.35rem;
+          }
+          .service-charge-table .col-value {
+            width: 155px;
+            min-width: 155px;
+            text-align: left;
+            padding-left: 0.35rem;
+            padding-right: 0.5rem;
+          }
+          .service-charge-table .value-input-group {
+            flex-wrap: nowrap;
+            width: 145px;
+            margin-left: auto;
+          }
+          .service-charge-table .value-input-group .form-control {
+            min-width: 0;
+            padding-left: 0.35rem;
+            padding-right: 0.35rem;
+            text-align: right;
           }
           .service-charge-table .col-discount-value {
             width: 130px;
@@ -204,7 +221,7 @@
                   <input type="text" class="form-control form-control-sm" readonly [value]="formatLineDiscountDisplay(i)" />
                 </td>
                 <td class="col-value">
-                  <div class="input-group input-group-sm">
+                  <div class="input-group input-group-sm value-input-group">
                     <span class="input-group-text bg-white border-end-0 text-muted small">Rs.</span>
                     <input
                       type="text"
@@ -213,7 +230,6 @@
                       [appDecimalDeferFormat]="true"
                       class="form-control border-start-0 fw-bold"
                       formControlName="value"
-                      style="max-width: 100px"
                     />
                   </div>
                 </td>

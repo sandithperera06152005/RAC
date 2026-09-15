@@ -399,6 +399,128 @@ export class SalesinvoiceUpdateComponent implements OnInit {
     this.fetchedServicesCommon = [];
   }
 
+  getSelectedInvoiceRows(): Array<{
+    sourceType: 'item' | 'service' | 'commonService';
+    sourceIndex: number;
+    itemCode: string;
+    description: string;
+    quantity: number;
+    unitPrice: number;
+    discount: number;
+    total: number;
+  }> {
+    return [...this.getSelectedItemRows(), ...this.getSelectedServiceRows(), ...this.getSelectedCommonServiceRows()];
+  }
+
+  removeSelectedInvoiceRow(row: { sourceType: 'item' | 'service' | 'commonService'; sourceIndex: number }): void {
+    if (row.sourceType === 'item') {
+      this.salesInvoiceLinesUpdateComponent?.removeSalesInvoiceLine(row.sourceIndex);
+      return;
+    }
+
+    if (row.sourceType === 'service') {
+      this.SalesInvoiceServiceChargeLinesUpdateComponent?.removeServiceChargeLine(row.sourceIndex);
+      return;
+    }
+
+    this.SaleInvoiceCommonServiceChargesUpdateComponent?.removeServiceChargeDummy(row.sourceIndex);
+  }
+
+  getSelectedInvoiceGrandTotal(): number {
+    return this.getSelectedInvoiceRows().reduce((sum, row) => sum + row.total, 0);
+  }
+
+  private getSelectedItemRows(): Array<{
+    sourceType: 'item';
+    sourceIndex: number;
+    itemCode: string;
+    description: string;
+    quantity: number;
+    unitPrice: number;
+    discount: number;
+    total: number;
+  }> {
+    const controls = this.salesInvoiceLinesUpdateComponent?.salesInvoiceLinesArray?.controls ?? [];
+    return controls.map((control, index) => {
+      const line = (control as FormGroup).getRawValue();
+      const quantity = Number(line.quantity ?? 0);
+      const unitPrice = Number(line.sellingprice ?? 0);
+      const discount = Number(line.discount ?? 0);
+      const total = Number(line.linetotal ?? quantity * unitPrice - discount);
+
+      return {
+        sourceType: 'item',
+        sourceIndex: index,
+        itemCode: line.itemcode ?? '',
+        description: line.itemname ?? '',
+        quantity,
+        unitPrice,
+        discount,
+        total,
+      };
+    });
+  }
+
+  private getSelectedServiceRows(): Array<{
+    sourceType: 'service';
+    sourceIndex: number;
+    itemCode: string;
+    description: string;
+    quantity: number;
+    unitPrice: number;
+    discount: number;
+    total: number;
+  }> {
+    const controls = this.SalesInvoiceServiceChargeLinesUpdateComponent?.serviceChargeLinesArray?.controls ?? [];
+    return controls.map((control, index) => {
+      const line = (control as FormGroup).getRawValue();
+      const unitPrice = Number(line.servicePrice ?? line.value ?? 0);
+      const discount = Number(line.discount ?? 0);
+      const total = Number(line.value ?? unitPrice - discount);
+
+      return {
+        sourceType: 'service',
+        sourceIndex: index,
+        itemCode: line.optionId ? String(line.optionId) : '',
+        description: line.serviceName ?? '',
+        quantity: 1,
+        unitPrice,
+        discount,
+        total,
+      };
+    });
+  }
+
+  private getSelectedCommonServiceRows(): Array<{
+    sourceType: 'commonService';
+    sourceIndex: number;
+    itemCode: string;
+    description: string;
+    quantity: number;
+    unitPrice: number;
+    discount: number;
+    total: number;
+  }> {
+    const controls = this.SaleInvoiceCommonServiceChargesUpdateComponent?.serviceChargesArray?.controls ?? [];
+    return controls.map((control, index) => {
+      const line = (control as FormGroup).getRawValue();
+      const unitPrice = Number(line.servicePrice ?? line.value ?? 0);
+      const discount = Number(line.discount ?? 0);
+      const total = Number(line.value ?? unitPrice - discount);
+
+      return {
+        sourceType: 'commonService',
+        sourceIndex: index,
+        itemCode: line.code ?? '',
+        description: line.name ?? '',
+        quantity: 1,
+        unitPrice,
+        discount,
+        total,
+      };
+    });
+  }
+
   private normalizeKeyPart(value: unknown): string {
     return String(value ?? '')
       .trim()

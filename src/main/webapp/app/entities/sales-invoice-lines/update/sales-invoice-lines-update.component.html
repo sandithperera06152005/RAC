@@ -3,6 +3,41 @@
     vertical-align: middle;
     text-align: center;
   }
+
+  .billing-lines-table {
+    min-width: 1180px;
+    table-layout: fixed;
+  }
+
+  .billing-lines-table th,
+  .billing-lines-table td {
+    vertical-align: middle;
+  }
+
+  .billing-lines-table .form-control {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding-left: 0.45rem;
+    padding-right: 0.45rem;
+  }
+
+  .billing-lines-table .money-field {
+    font-size: 0.86rem;
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+  }
+
+  .billing-lines-table .item-name-field {
+    min-height: 31px;
+    height: auto;
+    field-sizing: content;
+    resize: none;
+    overflow: hidden;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.25;
+  }
 </style>
 
 <div class="d-flex justify-content">
@@ -12,26 +47,26 @@
     <jhi-alert-error></jhi-alert-error>
 
     <div class="table-responsive">
-      <table class="table table-bordered table-striped">
+      <table class="table table-bordered table-striped billing-lines-table">
         <thead>
           <tr class="billing-table-header">
             <th *ngIf="showCodeField" style="width: 120px">ID</th>
             <th *ngIf="showCodeField" style="width: 150px">Invoice Id</th>
             <th *ngIf="showCodeField" style="width: 150px">Line Id</th>
             <th *ngIf="showCodeField" style="width: 150px">Item Id</th>
-            <th style="width: 120px">Item Code</th>
-            <th style="width: 750px">Item Name</th>
+            <th style="width: 90px">Item Code</th>
+            <th style="width: 360px">Item Name</th>
             <th *ngIf="showCodeField" style="width: 200px">Description</th>
             <th *ngIf="showCodeField" style="width: 150px">Unit Of Measurement</th>
-            <th style="width: 100px">Quantity</th>
+            <th style="width: 85px">Quantity</th>
             <th *ngIf="showCodeField" style="width: 150px">Item Cost</th>
             <th *ngIf="showCodeField" style="width: 150px">Item Price</th>
-            <th style="width: 120px">Discount %</th>
-            <th style="width: 120px">Discount Value</th>
-            <th style="width: 120px">Discount</th>
+            <th style="width: 95px">Discount %</th>
+            <th style="width: 105px">Discount Value</th>
+            <th style="width: 95px">Discount</th>
             <th *ngIf="showCodeField" style="width: 120px">Tax</th>
-            <th style="width: 150px">Selling Price</th>
-            <th style="width: 150px">Line Total</th>
+            <th style="width: 120px">Selling Price</th>
+            <th style="width: 120px">Line Total</th>
             <th *ngIf="showCodeField" style="width: 120px">Lmu</th>
             <th *ngIf="showCodeField" style="width: 180px">Lmd</th>
             <th *ngIf="showCodeField" style="width: 100px">Nbt</th>
@@ -67,15 +102,15 @@
             </td>
 
             <td>
-              <input
+              <textarea
                 formControlName="itemname"
-                type="text"
-                class="form-control border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 w-48"
+                class="form-control border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 item-name-field"
                 (input)="onItemNameInput($event, i)"
                 (change)="onItemNameSelect($event, i)"
                 [attr.list]="'autocomplete' + i"
                 readonly
-              />
+                rows="1"
+              ></textarea>
               <datalist [id]="'autocomplete' + i">
                 <option *ngFor="let item of filteredItems[i]" [value]="item.code">
                   {{ item.name }}
@@ -85,7 +120,7 @@
 
             <td *ngIf="showCodeField"><input type="text" class="form-control" formControlName="description" /></td>
             <td *ngIf="showCodeField"><input type="text" class="form-control" formControlName="unitofmeasurement" /></td>
-            <td><input type="number" class="form-control" formControlName="quantity" (input)="onQuantityChange(i)" /></td>
+            <td><input type="number" class="form-control text-end" formControlName="quantity" (input)="onQuantityChange(i)" /></td>
             <td *ngIf="showCodeField"><input type="number" class="form-control" formControlName="itemcost" /></td>
             <td *ngIf="showCodeField"><input type="number" class="form-control" formControlName="itemprice" /></td>
             <td>
@@ -109,10 +144,17 @@
             </td>
             <td *ngIf="showCodeField"><input type="number" class="form-control" formControlName="tax" /></td>
             <td class="text-end">
-              <input type="text" inputmode="decimal" appDecimal class="form-control text-end" formControlName="sellingprice" readonly />
+              <input
+                type="text"
+                inputmode="decimal"
+                appDecimal
+                class="form-control text-end money-field"
+                formControlName="sellingprice"
+                readonly
+              />
             </td>
             <td class="text-end">
-              <input type="text" class="form-control text-end" readonly [value]="formatLineTotalDisplay(i)" />
+              <input type="text" class="form-control text-end money-field" readonly [value]="formatLineTotalDisplay(i)" />
             </td>
             <td *ngIf="showCodeField"><input type="number" class="form-control" formControlName="lmu" /></td>
             <td *ngIf="showCodeField"><input type="datetime-local" class="form-control" formControlName="lmd" /></td>
