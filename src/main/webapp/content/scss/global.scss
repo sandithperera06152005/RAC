@@ -348,8 +348,9 @@ ui bootstrap tweaks
 }
 
 .open-job-actions-col {
-  min-width: 340px;
-  width: 340px;
+  max-width: 372px;
+  min-width: 372px;
+  width: 372px;
 }
 
 .job-by-date-actions-col {
@@ -368,8 +369,8 @@ ui bootstrap tweaks
 }
 
 .open-job-actions {
-  gap: 0;
-  justify-content: space-between;
+  gap: 8px;
+  justify-content: flex-end;
   width: 100%;
 }
 

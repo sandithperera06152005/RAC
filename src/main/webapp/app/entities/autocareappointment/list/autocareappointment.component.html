@@ -327,11 +327,13 @@
                 <td>{{ autocareappointment.jobid }}</td>
               </div>
               <td class="text-end">
-                <div class="btn-group">
+                <div class="btn-group autocare-appointment-actions">
                   <a
                     [routerLink]="['/autocareappointment', autocareappointment.id, 'view']"
                     class="btn btn-info btn-sm rac-action-button"
                     data-cy="entityDetailsButton"
+                    title="View Appointment"
+                    aria-label="View Appointment"
                   >
                     <img class="rac-action-icon rac-view-action-icon" src="content/images/autocare-actions/view.png" alt="View" />
                   </a>
@@ -340,8 +342,10 @@
                     [routerLink]="['/autocareappointment', autocareappointment.id, 'edit']"
                     class="btn btn-primary btn-sm rac-action-button"
                     data-cy="entityEditButton"
+                    title="Edit Appointment"
+                    aria-label="Edit Appointment"
                   >
-                    <img class="rac-action-icon" src="content/images/autocare-actions/edit.png" alt="Edit" />
+                    <img class="rac-action-icon autocare-appointment-edit-icon" src="content/images/autocare-actions/edit.png" alt="Edit" />
                   </a>
 
                   <button
@@ -349,6 +353,8 @@
                     (click)="delete(autocareappointment)"
                     class="btn btn-danger btn-sm rac-action-button"
                     data-cy="entityDeleteButton"
+                    title="Delete Appointment"
+                    aria-label="Delete Appointment"
                   >
                     <img class="rac-action-icon" src="content/images/autocare-actions/delete.png" alt="Delete" />
                   </button>
@@ -358,13 +364,17 @@
                     (click)="tick(autocareappointment)"
                     class="btn btn-success btn-sm rac-action-button"
                     data-cy="entityDeleteButton"
+                    title="Confirm Appointment"
+                    aria-label="Confirm Appointment"
                   >
-                    <img class="rac-action-icon" src="content/images/autocare-actions/delete.png" alt="Delete" />
+                    <img class="rac-action-icon" src="content/images/autocare-actions/success.png" alt="Confirm" />
                   </button>
                   <button
                     *ngIf="showUpdateMissedButton && autocareappointment.missedappointmentcall"
                     (click)="updateMissedAppointment(autocareappointment)"
                     class="btn btn-warning btn-sm"
+                    title="Edit Comment"
+                    aria-label="Edit Comment"
                   >
                     Edit Comment
                   </button>

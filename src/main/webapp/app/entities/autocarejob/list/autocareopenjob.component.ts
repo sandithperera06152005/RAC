@@ -94,8 +94,9 @@ import { AccountService } from 'app/core/auth/account.service';
         position: sticky;
         right: 0;
         z-index: 2;
-        min-width: 270px;
-        width: 270px;
+        max-width: 372px;
+        min-width: 372px;
+        width: 372px;
         padding-left: 8px !important;
         padding-right: 8px !important;
         background: #fff !important;
@@ -110,8 +111,8 @@ import { AccountService } from 'app/core/auth/account.service';
       .open-job-actions {
         display: flex;
         flex-wrap: nowrap;
-        justify-content: space-between;
-        gap: 0;
+        justify-content: flex-end;
+        gap: 8px;
         white-space: nowrap;
         overflow: visible;
         width: 100%;
@@ -179,8 +180,9 @@ import { AccountService } from 'app/core/auth/account.service';
         }
 
         .open-job-actions-col {
-          min-width: 340px;
-          width: 340px;
+          max-width: 372px;
+          min-width: 372px;
+          width: 372px;
         }
       }
     `,

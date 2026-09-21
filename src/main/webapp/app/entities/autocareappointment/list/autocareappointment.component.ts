@@ -20,6 +20,20 @@ import { AutocareappointmentUpdateDialogComponent } from '../delete/autocareappo
   standalone: true,
   selector: 'jhi-autocareappointment',
   templateUrl: './autocareappointment.component.html',
+  styles: [
+    `
+      .autocare-appointment-actions {
+        align-items: center;
+        gap: 8px;
+      }
+
+      .autocare-appointment-edit-icon {
+        max-height: 38px;
+        max-width: 50px;
+        width: 50px;
+      }
+    `,
+  ],
   imports: [
     RouterModule,
     FormsModule,
