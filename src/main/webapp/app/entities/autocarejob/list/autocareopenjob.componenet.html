@@ -468,10 +468,10 @@
                       [href]="getCustomerRegistrationUrl(autocarejob)"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="btn btn-info btn-sm"
+                      class="btn btn-info btn-sm rac-action-button"
                       title="Register Customer"
                     >
-                      <fa-icon icon="user-plus"></fa-icon>
+                      <img class="rac-action-icon" src="content/images/autocare-actions/new_customer.jpg" alt="" />
                     </a>
                     } @if (needsVehicleRegistration(autocarejob)) {
 
@@ -479,19 +479,19 @@
                       [href]="getVehicleRegistrationUrl(autocarejob)"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="btn btn-secondary btn-sm"
+                      class="btn btn-secondary btn-sm rac-action-button"
                       title="Register Vehicle"
                     >
-                      <fa-icon icon="car"></fa-icon>
+                      <img class="rac-action-icon" src="content/images/autocare-actions/new_car.png" alt="" />
                     </a>
                     } @if (!needsCustomerRegistration(autocarejob) && !needsVehicleRegistration(autocarejob)) {
                     <a
                       [routerLink]="['/autocarejob', autocarejob.id, 'view']"
-                      class="btn btn-info btn-sm"
+                      class="btn btn-info btn-sm rac-action-button"
                       data-cy="entityDetailsButton"
                       title="View Job"
                     >
-                      <fa-icon icon="eye"></fa-icon>
+                      <img class="rac-action-icon rac-view-action-icon" src="content/images/autocare-actions/view.png" alt="" />
                       <!-- <span class="d-none d-md-inline">View</span> -->
                     </a>
                     }
@@ -508,11 +508,11 @@
 
                     <a
                       [routerLink]="['/autocarejob', autocarejob.id, 'instructions']"
-                      class="btn btn-warning btn-sm"
+                      class="btn btn-warning btn-sm rac-action-button"
                       data-cy="entityEditButton"
                       title="File Instructions"
                     >
-                      <fa-icon icon="clipboard-list"></fa-icon>
+                      <img class="rac-action-icon" src="content/images/autocare-actions/FillInstruction.png" alt="" />
                       <!-- <span class="d-none d-md-inline">instruction</span> -->
                     </a>
 
@@ -520,69 +520,73 @@
                     <a
                       [routerLink]="['/autocarejob', autocarejob.id, 'instructions']"
                       [queryParams]="{ tab: 'items', itemsOnly: 'true' }"
-                      class="btn btn-secondary btn-sm"
+                      class="btn btn-secondary btn-sm rac-action-button"
                       data-cy="entityUpdateItemsButton"
-                      title="Update Items"
+                      title="Add Items"
                     >
-                      <fa-icon icon="list"></fa-icon>
+                      <img class="rac-action-icon" src="content/images/autocare-actions/addItems.png" alt="" />
                     </a>
                     }
 
                     <a
                       [routerLink]="['/autocarejob', autocarejob.id, 'history']"
-                      class="btn btn-success btn-sm"
+                      class="btn btn-success btn-sm rac-action-button"
                       data-cy="entityEditButton"
                       title="History"
                     >
-                      <fa-icon icon="history"></fa-icon>
+                      <img class="rac-action-icon" src="content/images/autocare-actions/History.png" alt="" />
                       <!-- <span class="d-none d-md-inline">History</span> -->
                     </a>
 
                     <a
                       [routerLink]="['/autocarejob', autocarejob.id, 'itemissue']"
-                      class="btn btn-primary btn-sm"
+                      class="btn btn-primary btn-sm rac-action-button"
                       data-cy="entityEditButton"
                       title="Issue Item"
                     >
-                      <fa-icon icon="bag-shopping"></fa-icon>
+                      <img class="rac-action-icon" src="content/images/autocare-actions/issueItems.png" alt="" />
                       <!-- <span class="d-none d-md-inline"> Item</span> -->
                     </a>
 
                     <button
                       type="button"
                       (click)="navigateToInvoice(autocarejob)"
-                      class="btn btn-success btn-sm"
+                      class="btn btn-success btn-sm rac-action-button"
                       data-cy="entityInvoiceButton"
                       title="Create Invoice"
                     >
-                      <fa-icon icon="file-invoice"></fa-icon>
+                      <img class="rac-action-icon" src="content/images/autocare-actions/invoice.png" alt="" />
                     </button>
 
                     @if (canPrintAdvisorInstructions(autocarejob)) {
                     <a
                       [routerLink]="['/autocarejob', autocarejob.id, 'instructions']"
                       [queryParams]="{ print: 'true' }"
-                      class="btn btn-success btn-sm"
+                      class="btn btn-success btn-sm rac-action-button"
                       data-cy="entityPrintInstructionsButton"
                       title="Print Instructions"
                     >
-                      <fa-icon icon="print"></fa-icon>
+                      <img class="rac-action-icon" src="content/images/autocare-actions/print.png" alt="" />
                     </a>
                     }
 
                     <button
                       type="submit"
                       (click)="delete(autocarejob)"
-                      class="btn btn-danger btn-sm"
+                      class="btn btn-danger btn-sm rac-action-button"
                       data-cy="entityDeleteButton"
                       title="Delete Job"
                     >
-                      <fa-icon icon="times"></fa-icon>
+                      <img class="rac-action-icon" src="content/images/autocare-actions/delete.png" alt="" />
                       <!-- <span class="d-none d-md-inline">Delete</span> -->
                     </button>
 
-                    <button *ngIf="autocarejob.iswaiting" class="btn btn-success btn-sm">Wait</button>
-                    <button *ngIf="autocarejob.updatetocustomer" class="btn btn-success btn-sm">Call</button>
+                    <span *ngIf="autocarejob.iswaiting" class="rac-action-status" title="Customer is waiting">
+                      <img class="rac-action-icon" src="content/images/autocare-actions/waiting.png" alt="" />
+                    </span>
+                    <span *ngIf="autocarejob.updatetocustomer" class="rac-action-status" title="Call to customer after job done">
+                      <img class="rac-action-icon" src="content/images/autocare-actions/end.png" alt="" />
+                    </span>
                   </div>
                 </td>
               </tr>
@@ -758,62 +762,62 @@
                             <a
                               [routerLink]="['/autocarejob', autocarejob.id, 'view']"
                               [queryParams]="jobByDateReturnQueryParams()"
-                              class="btn btn-info btn-sm"
+                              class="btn btn-info btn-sm rac-action-button"
                               title="View Job"
                             >
-                              <fa-icon icon="eye"></fa-icon>
+                              <img class="rac-action-icon rac-view-action-icon" src="content/images/autocare-actions/view.png" alt="" />
                             </a>
                             <a
                               [routerLink]="['/autocarejob', autocarejob.id, 'instructions']"
                               [queryParams]="jobByDateReturnQueryParams()"
-                              class="btn btn-warning btn-sm"
+                              class="btn btn-warning btn-sm rac-action-button"
                               title="File Instructions"
                             >
-                              <fa-icon icon="clipboard-list"></fa-icon>
+                              <img class="rac-action-icon" src="content/images/autocare-actions/FillInstruction.png" alt="" />
                             </a>
                             @if (canUpdateAdvisorInstructionItems) {
                             <a
                               [routerLink]="['/autocarejob', autocarejob.id, 'instructions']"
                               [queryParams]="jobByDateUpdateItemsQueryParams()"
-                              class="btn btn-secondary btn-sm"
+                              class="btn btn-secondary btn-sm rac-action-button"
                               data-cy="entityUpdateItemsButton"
-                              title="Update Items"
+                              title="Add Items"
                             >
-                              <fa-icon icon="list"></fa-icon>
+                              <img class="rac-action-icon" src="content/images/autocare-actions/addItems.png" alt="" />
                             </a>
                             }
                             <a
                               [routerLink]="['/autocarejob', autocarejob.id, 'history']"
                               [queryParams]="jobByDateReturnQueryParams()"
-                              class="btn btn-success btn-sm"
+                              class="btn btn-success btn-sm rac-action-button"
                               title="History"
                             >
-                              <fa-icon icon="history"></fa-icon>
+                              <img class="rac-action-icon" src="content/images/autocare-actions/History.png" alt="" />
                             </a>
                             <a
                               [routerLink]="['/autocarejob', autocarejob.id, 'itemissue']"
                               [queryParams]="jobByDateReturnQueryParams()"
-                              class="btn btn-primary btn-sm"
+                              class="btn btn-primary btn-sm rac-action-button"
                               title="Issue Item"
                             >
-                              <fa-icon icon="bag-shopping"></fa-icon>
+                              <img class="rac-action-icon" src="content/images/autocare-actions/issueItems.png" alt="" />
                             </a>
                             <button
                               type="button"
                               (click)="navigateToInvoice(autocarejob)"
-                              class="btn btn-success btn-sm"
+                              class="btn btn-success btn-sm rac-action-button"
                               title="Create Invoice"
                             >
-                              <fa-icon icon="file-invoice"></fa-icon>
+                              <img class="rac-action-icon" src="content/images/autocare-actions/invoice.png" alt="" />
                             </button>
                             <a
                               *ngIf="canPrintAdvisorInstructions(autocarejob)"
                               [routerLink]="['/autocarejob', autocarejob.id, 'instructions']"
                               [queryParams]="jobByDatePrintQueryParams()"
-                              class="btn btn-success btn-sm"
+                              class="btn btn-success btn-sm rac-action-button"
                               title="Print Instructions"
                             >
-                              <fa-icon icon="print"></fa-icon>
+                              <img class="rac-action-icon" src="content/images/autocare-actions/print.png" alt="" />
                             </a>
                           </div>
                         </td>
@@ -880,18 +884,18 @@
                             <a
                               [routerLink]="['/autocarejob', autocarejob.id, 'view']"
                               [queryParams]="jobByDateReturnQueryParams()"
-                              class="btn btn-info btn-sm"
+                              class="btn btn-info btn-sm rac-action-button"
                               title="View Job"
                             >
-                              <fa-icon icon="eye"></fa-icon>
+                              <img class="rac-action-icon rac-view-action-icon" src="content/images/autocare-actions/view.png" alt="" />
                             </a>
                             <a
                               [routerLink]="['/autocarejob', autocarejob.id, 'history']"
                               [queryParams]="jobByDateReturnQueryParams()"
-                              class="btn btn-success btn-sm"
+                              class="btn btn-success btn-sm rac-action-button"
                               title="History"
                             >
-                              <fa-icon icon="history"></fa-icon>
+                              <img class="rac-action-icon" src="content/images/autocare-actions/vehicle.png" alt="" />
                             </a>
                           </div>
                         </td>

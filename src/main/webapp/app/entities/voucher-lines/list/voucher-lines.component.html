@@ -143,19 +143,29 @@
               <td>{{ voucherLines.accountId }}</td>
               <td class="text-end">
                 <div class="btn-group">
-                  <a [routerLink]="['/voucher-lines', voucherLines.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
-                    <fa-icon icon="eye"></fa-icon>
-                    <span class="d-none d-md-inline">View</span>
+                  <a
+                    [routerLink]="['/voucher-lines', voucherLines.id, 'view']"
+                    class="btn btn-info btn-sm rac-action-button"
+                    data-cy="entityDetailsButton"
+                  >
+                    <img class="rac-action-icon rac-view-action-icon" src="content/images/autocare-actions/view.png" alt="View" />
                   </a>
 
-                  <a [routerLink]="['/voucher-lines', voucherLines.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
-                    <fa-icon icon="pencil-alt"></fa-icon>
-                    <span class="d-none d-md-inline">Edit</span>
+                  <a
+                    [routerLink]="['/voucher-lines', voucherLines.id, 'edit']"
+                    class="btn btn-primary btn-sm rac-action-button"
+                    data-cy="entityEditButton"
+                  >
+                    <img class="rac-action-icon" src="content/images/autocare-actions/edit.png" alt="Edit" />
                   </a>
 
-                  <button type="submit" (click)="delete(voucherLines)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
-                    <fa-icon icon="times"></fa-icon>
-                    <span class="d-none d-md-inline">Delete</span>
+                  <button
+                    type="submit"
+                    (click)="delete(voucherLines)"
+                    class="btn btn-danger btn-sm rac-action-button"
+                    data-cy="entityDeleteButton"
+                  >
+                    <img class="rac-action-icon" src="content/images/autocare-actions/delete.png" alt="Delete" />
                   </button>
                 </div>
               </td>

@@ -21,6 +21,27 @@ import { AutocarejobDeleteDialogComponent } from '../delete/autocarejob-delete-d
   standalone: true,
   selector: 'jhi-autocarejob',
   templateUrl: './autocarejob.component.html',
+  styles: [
+    `
+      .autocare-list-actions-cell {
+        min-width: 78px;
+        padding-left: 0.35rem;
+        padding-right: 0.55rem;
+      }
+
+      .autocare-list-actions {
+        align-items: center;
+        display: inline-flex;
+        gap: 10px;
+        justify-content: space-between;
+        width: 62px;
+      }
+
+      .autocare-list-actions .rac-action-button {
+        flex: 0 0 auto;
+      }
+    `,
+  ],
   imports: [
     RouterModule,
     FormsModule,

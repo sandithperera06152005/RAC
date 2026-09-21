@@ -297,6 +297,90 @@ ui bootstrap tweaks
   padding-left: 0px;
 }
 
+.rac-action-button {
+  align-items: center;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  display: inline-flex;
+  height: 24px;
+  justify-content: center;
+  margin-right: 0;
+  padding: 0 !important;
+  vertical-align: middle;
+  width: 24px;
+}
+
+.rac-action-button:hover,
+.rac-action-button:focus {
+  background: transparent !important;
+  opacity: 0.78;
+}
+
+.rac-action-button:focus-visible {
+  outline: 1px dotted #333;
+  outline-offset: 2px;
+}
+
+.rac-action-icon {
+  display: block;
+  height: auto;
+  max-height: 23px;
+  max-width: 23px;
+  object-fit: contain;
+  width: 23px;
+}
+
+.rac-view-action-icon {
+  max-height: none;
+  max-width: none;
+  width: 52px;
+}
+
+.rac-action-status {
+  align-items: center;
+  display: inline-flex;
+  height: 24px;
+  justify-content: center;
+  margin-right: 0;
+  vertical-align: middle;
+  width: 24px;
+}
+
+.open-job-actions-col {
+  min-width: 340px;
+  width: 340px;
+}
+
+.job-by-date-actions-col {
+  min-width: 100px;
+  width: 100px;
+}
+
+.open-job-actions,
+.job-by-date-actions {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  justify-content: flex-end;
+  width: max-content;
+}
+
+.open-job-actions {
+  gap: 0;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.job-by-date-actions {
+  margin-left: auto;
+}
+
+.job-by-date-actions .btn {
+  flex: 0 0 auto;
+}
+
 /* ==========================================================================
 angular-cli removes postcss-rtl processed inline css, processed rules must be added here instead
 ========================================================================== */

@@ -95,25 +95,27 @@
                 <div class="btn-group">
                   <a
                     [routerLink]="['/workshopworklist', workshopworklist.id, 'view']"
-                    class="btn btn-info btn-sm"
+                    class="btn btn-info btn-sm rac-action-button"
                     data-cy="entityDetailsButton"
                   >
-                    <fa-icon icon="eye"></fa-icon>
-                    <span class="d-none d-md-inline">View</span>
+                    <img class="rac-action-icon rac-view-action-icon" src="content/images/autocare-actions/view.png" alt="View" />
                   </a>
 
                   <a
                     [routerLink]="['/workshopworklist', workshopworklist.id, 'edit']"
-                    class="btn btn-primary btn-sm"
+                    class="btn btn-primary btn-sm rac-action-button"
                     data-cy="entityEditButton"
                   >
-                    <fa-icon icon="pencil-alt"></fa-icon>
-                    <span class="d-none d-md-inline">Edit</span>
+                    <img class="rac-action-icon" src="content/images/autocare-actions/edit.png" alt="Edit" />
                   </a>
 
-                  <button type="submit" (click)="delete(workshopworklist)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
-                    <fa-icon icon="times"></fa-icon>
-                    <span class="d-none d-md-inline">Delete</span>
+                  <button
+                    type="submit"
+                    (click)="delete(workshopworklist)"
+                    class="btn btn-danger btn-sm rac-action-button"
+                    data-cy="entityDeleteButton"
+                  >
+                    <img class="rac-action-icon" src="content/images/autocare-actions/delete.png" alt="Delete" />
                   </button>
                 </div>
               </td>

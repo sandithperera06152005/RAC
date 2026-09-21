@@ -197,38 +197,38 @@
                 <div class="btn-group">
                   <a
                     [routerLink]="['/autojobsinvoice', autojobsinvoice.id, 'view']"
-                    class="btn btn-info btn-sm"
+                    class="btn btn-info btn-sm rac-action-button"
                     data-cy="entityDetailsButton"
                     title="View Details"
                   >
-                    <fa-icon icon="eye"></fa-icon>
+                    <img class="rac-action-icon rac-view-action-icon" src="content/images/autocare-actions/view.png" alt="View" />
                   </a>
                   <!-- <a
                     [routerLink]="['/salesinvoice', 'new']"
-                    class="btn btn-primary btn-sm"
+                    class="btn btn-primary btn-sm rac-action-button"
                     data-cy="entityEditButton"
                     [queryParams]="{ id: autojobsinvoice.id }"
                     title="Create Sales Invoice"
                   >
-                    <fa-icon icon="book"></fa-icon>
+                    <img class="rac-action-icon" src="content/images/autocare-actions/edit.png" alt="Edit" />
                   </a> -->
                   <!-- <a
                     [routerLink]="['/autojobsinvoice', autojobsinvoice.id, 'edit']"
-                    class="btn btn-primary btn-sm"
+                    class="btn btn-primary btn-sm rac-action-button"
                     data-cy="entityEditButton"
                     title="Edit Invoice"
                   >
-                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <img class="rac-action-icon" src="content/images/autocare-actions/edit.png" alt="Edit" />
                   </a> -->
 
                   <!-- <button
                     type="submit"
                     (click)="delete(autojobsinvoice)"
-                    class="btn btn-danger btn-sm"
+                    class="btn btn-danger btn-sm rac-action-button"
                     data-cy="entityDeleteButton"
                     title="Delete Invoice"
                   >
-                    <fa-icon icon="times"></fa-icon>
+                    <img class="rac-action-icon" src="content/images/autocare-actions/delete.png" alt="Delete" />
                   </button> -->
                 </div>
               </td>

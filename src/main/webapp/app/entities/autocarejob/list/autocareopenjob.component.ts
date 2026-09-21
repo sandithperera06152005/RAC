@@ -94,10 +94,10 @@ import { AccountService } from 'app/core/auth/account.service';
         position: sticky;
         right: 0;
         z-index: 2;
-        min-width: 275px;
-        width: 275px;
-        padding-left: 1px !important;
-        padding-right: 1px !important;
+        min-width: 270px;
+        width: 270px;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
         background: #fff !important;
         box-shadow: -8px 0 10px -10px rgba(0, 0, 0, 0.45);
       }
@@ -110,11 +110,11 @@ import { AccountService } from 'app/core/auth/account.service';
       .open-job-actions {
         display: flex;
         flex-wrap: nowrap;
-        justify-content: flex-end;
+        justify-content: space-between;
         gap: 0;
         white-space: nowrap;
-        overflow: hidden;
-        width: max-content;
+        overflow: visible;
+        width: 100%;
         margin-left: auto;
       }
 
@@ -148,15 +148,23 @@ import { AccountService } from 'app/core/auth/account.service';
       }
 
       .job-by-date-actions-col {
-        width: 1%;
+        min-width: 100px;
+        width: 100px;
         white-space: nowrap;
       }
 
       .job-by-date-actions {
         display: inline-flex;
         flex-wrap: nowrap;
-        gap: 0;
+        gap: 6px;
+        justify-content: flex-end;
+        margin-left: auto;
         white-space: nowrap;
+        width: max-content;
+      }
+
+      .job-by-date-actions .btn {
+        flex: 0 0 auto;
       }
 
       .job-by-date-status {
@@ -171,8 +179,8 @@ import { AccountService } from 'app/core/auth/account.service';
         }
 
         .open-job-actions-col {
-          min-width: 270px;
-          width: 270px;
+          min-width: 340px;
+          width: 340px;
         }
       }
     `,

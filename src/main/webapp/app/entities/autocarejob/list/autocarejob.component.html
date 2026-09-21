@@ -396,18 +396,29 @@
               <td>{{ autocarejob.rightimage }}</td>
               <td>{{ autocarejob.backimage }}</td> -->
 
-              <td class="text-end">
-                <div class="btn-group">
-                  <a [routerLink]="['/autocarejob', autocarejob.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
-                    <fa-icon icon="eye"></fa-icon>
+              <td class="text-end autocare-list-actions-cell">
+                <div class="btn-group autocare-list-actions">
+                  <a
+                    [routerLink]="['/autocarejob', autocarejob.id, 'view']"
+                    class="btn btn-info btn-sm rac-action-button"
+                    data-cy="entityDetailsButton"
+                    title="View Job"
+                  >
+                    <img class="rac-action-icon rac-view-action-icon" src="content/images/autocare-actions/view.png" alt="" />
                   </a>
 
-                  <!-- <a [routerLink]="['/autocarejob', autocarejob.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
-                    <fa-icon icon="pencil-alt"></fa-icon>
+                  <!-- <a [routerLink]="['/autocarejob', autocarejob.id, 'edit']" class="btn btn-primary btn-sm rac-action-button" data-cy="entityEditButton">
+                    <img class="rac-action-icon" src="content/images/autocare-actions/edit.png" alt="Edit" />
                   </a> -->
 
-                  <button type="submit" (click)="delete(autocarejob)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
-                    <fa-icon icon="times"></fa-icon>
+                  <button
+                    type="submit"
+                    (click)="delete(autocarejob)"
+                    class="btn btn-danger btn-sm rac-action-button"
+                    data-cy="entityDeleteButton"
+                    title="Delete Job"
+                  >
+                    <img class="rac-action-icon" src="content/images/autocare-actions/delete.png" alt="" />
                   </button>
                 </div>
               </td>

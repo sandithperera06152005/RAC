@@ -23,6 +23,92 @@ import { IAutojobsinvoice } from 'app/entities/autojobsinvoice/autojobsinvoice.m
   standalone: true,
   selector: 'jhi-autocareclosejob',
   templateUrl: './autocareclosejob.component.html',
+  styles: [
+    `
+      .closed-job-table-wrap {
+        overflow-x: visible;
+        width: 100%;
+      }
+
+      .closed-job-table-wrap .table {
+        margin-bottom: 0;
+        table-layout: fixed;
+        width: 100%;
+      }
+
+      .closed-job-table-wrap th,
+      .closed-job-table-wrap td {
+        overflow: hidden;
+        padding-left: 0.35rem;
+        padding-right: 0.35rem;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        white-space: nowrap;
+      }
+
+      .closed-job-table-wrap th .d-flex {
+        align-items: center;
+        min-width: 0;
+      }
+
+      .closed-job-table-wrap th span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .closed-job-table-wrap th:nth-child(1),
+      .closed-job-table-wrap td:nth-child(1) {
+        width: 5%;
+      }
+
+      .closed-job-table-wrap th:nth-child(2),
+      .closed-job-table-wrap td:nth-child(2) {
+        width: 9%;
+      }
+
+      .closed-job-table-wrap th:nth-child(3),
+      .closed-job-table-wrap td:nth-child(3) {
+        width: 11%;
+      }
+
+      .closed-job-table-wrap th:nth-child(4),
+      .closed-job-table-wrap td:nth-child(4) {
+        width: 8%;
+      }
+
+      .closed-job-table-wrap th:nth-child(5),
+      .closed-job-table-wrap td:nth-child(5) {
+        width: 9%;
+      }
+
+      .closed-job-table-wrap th:nth-child(6),
+      .closed-job-table-wrap td:nth-child(6) {
+        width: 18%;
+      }
+
+      .closed-job-table-wrap th:nth-child(7),
+      .closed-job-table-wrap td:nth-child(7) {
+        width: 18%;
+      }
+
+      .closed-job-table-wrap th:nth-child(8),
+      .closed-job-table-wrap td:nth-child(8) {
+        width: 17%;
+      }
+
+      .closed-job-table-wrap th:nth-child(9),
+      .closed-job-table-wrap td:nth-child(9) {
+        text-align: center !important;
+        width: 5%;
+      }
+
+      .closed-job-table-wrap .btn-group {
+        display: inline-flex;
+        justify-content: center;
+        width: 100%;
+      }
+    `,
+  ],
   imports: [
     RouterModule,
     FormsModule,

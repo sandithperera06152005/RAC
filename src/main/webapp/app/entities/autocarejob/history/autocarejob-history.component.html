@@ -142,7 +142,14 @@
         <div class="tab-pane fade show active" id="billing" role="tabpanel" aria-labelledby="billing-tab">
           <div id="print-invoice-wise">
             <div class="text-end mb-3">
-              <button class="btn btn-primary btn-sm" type="button" (click)="printSection('print-invoice-wise')">Print Invoice Wise</button>
+              <button
+                class="btn btn-primary btn-sm rac-action-button"
+                type="button"
+                (click)="printSection('print-invoice-wise')"
+                title="Print Invoice Wise"
+              >
+                <img class="rac-action-icon" src="content/images/autocare-actions/print.png" alt="Print" />
+              </button>
             </div>
 
             <div *ngIf="invoiceId.length > 0; else noData">
@@ -286,9 +293,13 @@
                     <option [ngValue]="100">100</option>
                   </select>
                 </div>
-                <button class="btn btn-primary btn-sm" type="button" (click)="printSection('print-job-wise')">
-                  <fa-icon icon="print"></fa-icon>
-                  Print Job Wise
+                <button
+                  class="btn btn-primary btn-sm rac-action-button"
+                  type="button"
+                  (click)="printSection('print-job-wise')"
+                  title="Print Job Wise"
+                >
+                  <img class="rac-action-icon" src="content/images/autocare-actions/print.png" alt="Print" />
                 </button>
               </div>
 
