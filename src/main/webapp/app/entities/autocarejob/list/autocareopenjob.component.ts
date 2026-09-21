@@ -111,12 +111,12 @@ import { AccountService } from 'app/core/auth/account.service';
       .open-job-actions {
         display: flex;
         flex-wrap: nowrap;
-        justify-content: flex-end;
+        justify-content: flex-start;
         gap: 8px;
         white-space: nowrap;
         overflow: visible;
         width: 100%;
-        margin-left: auto;
+        margin-left: 0;
       }
 
       .open-job-actions .btn {
