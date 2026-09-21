@@ -58,32 +58,32 @@ import { IAutojobsinvoice } from 'app/entities/autojobsinvoice/autojobsinvoice.m
 
       .closed-job-table-wrap th:nth-child(1),
       .closed-job-table-wrap td:nth-child(1) {
-        width: 5%;
+        width: 9%;
       }
 
       .closed-job-table-wrap th:nth-child(2),
       .closed-job-table-wrap td:nth-child(2) {
-        width: 9%;
+        width: 11%;
       }
 
       .closed-job-table-wrap th:nth-child(3),
       .closed-job-table-wrap td:nth-child(3) {
-        width: 11%;
+        width: 8%;
       }
 
       .closed-job-table-wrap th:nth-child(4),
       .closed-job-table-wrap td:nth-child(4) {
-        width: 8%;
+        width: 9%;
       }
 
       .closed-job-table-wrap th:nth-child(5),
       .closed-job-table-wrap td:nth-child(5) {
-        width: 9%;
+        width: 20%;
       }
 
       .closed-job-table-wrap th:nth-child(6),
       .closed-job-table-wrap td:nth-child(6) {
-        width: 18%;
+        width: 20%;
       }
 
       .closed-job-table-wrap th:nth-child(7),
@@ -93,11 +93,6 @@ import { IAutojobsinvoice } from 'app/entities/autojobsinvoice/autojobsinvoice.m
 
       .closed-job-table-wrap th:nth-child(8),
       .closed-job-table-wrap td:nth-child(8) {
-        width: 17%;
-      }
-
-      .closed-job-table-wrap th:nth-child(9),
-      .closed-job-table-wrap td:nth-child(9) {
         text-align: center !important;
         width: 5%;
       }

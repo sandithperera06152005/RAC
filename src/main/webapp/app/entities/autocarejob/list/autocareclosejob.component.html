@@ -35,7 +35,7 @@
       <table class="table table-striped" aria-describedby="page-heading">
         <thead>
           <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
-            <th scope="col" jhiSortBy="id">
+            <th scope="col" jhiSortBy="id" *ngIf="false">
               <div class="d-flex">
                 <span>ID</span>
 
@@ -350,7 +350,7 @@
           @for (autocarejob of filteredAutocarejobs; track trackId) {
             @if (filteredAutocarejobs && filteredAutocarejobs.length > 0) {
               <tr data-cy="entityTable">
-                <td>
+                <td *ngIf="false">
                   <a [routerLink]="['/autocarejob', autocarejob.id, 'view']">{{ autocarejob.id }}</a>
                 </td>
                 <td>{{ autocarejob.jobnumber }}</td>
