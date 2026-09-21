@@ -11,6 +11,7 @@ import { AccountService } from 'app/core/auth/account.service';
   selector: 'jhi-login',
   imports: [SharedModule, FormsModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
 })
 export default class LoginComponent implements OnInit, AfterViewInit {
   @ViewChild('username', { static: false })

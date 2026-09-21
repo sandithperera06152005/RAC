@@ -3,7 +3,7 @@ Main page styles
 ========================================================================== */
 
 .image-resize {
-  width: 100px;
+  width: 88px;
   height: auto;
   object-fit: contain;
 }
@@ -32,15 +32,7 @@ Main page styles
 }
 
 .jh-card {
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
   border: none;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
-  }
 }
 
 .animate-slideIn {
@@ -55,5 +47,128 @@ Main page styles
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+.rac-dashboard {
+  .page-title {
+    small {
+      color: #888;
+      font-size: 13px;
+    }
+  }
+}
+
+.dashboard-stat {
+  color: #ffffff;
+  display: block;
+  min-height: 106px;
+  overflow: hidden;
+  position: relative;
+  text-decoration: none;
+
+  .visual {
+    bottom: 20px;
+    color: rgba(255, 255, 255, 0.28);
+    font-size: 54px;
+    left: 12px;
+    line-height: 1;
+    position: absolute;
+  }
+
+  .details {
+    display: flex;
+    flex-direction: column;
+    min-height: 76px;
+    padding: 13px 12px 7px 72px;
+    text-align: right;
+  }
+
+  .number {
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.15;
+  }
+
+  .desc {
+    font-size: 12px;
+    opacity: 0.95;
+  }
+
+  .more {
+    background: rgba(0, 0, 0, 0.14);
+    display: block;
+    font-size: 12px;
+    padding: 5px 10px;
+    text-align: right;
+  }
+}
+
+.red-intense {
+  background: #e35b5a;
+}
+
+.blue-madison {
+  background: #578ebe;
+}
+
+.green-haze {
+  background: #44b6ae;
+}
+
+.purple-plum {
+  background: #8775a7;
+}
+
+.green-jungle {
+  background: #26a69a;
+}
+
+.blue-dark {
+  background: #5e738b;
+}
+
+.erp-panel {
+  border: 1px solid #d7dde6;
+  border-radius: 0;
+  box-shadow: none;
+
+  .card-header {
+    background: #ffffff;
+    color: #2b3643;
+    font-weight: 600;
+  }
+}
+
+.welcome-text {
+  color: #7a8699;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.public-login-panel {
+  background: #ffffff;
+  border: 1px solid #d7dde6;
+  margin-bottom: 12px;
+  padding: 16px;
+}
+
+.brand-block {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+
+  h2 {
+    color: #2b3643;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  p {
+    color: #7a8699;
+    font-size: 12px;
+    margin: 2px 0 0;
+    text-transform: uppercase;
   }
 }

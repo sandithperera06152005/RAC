@@ -1,14 +1,26 @@
-<div class="d-flex" [class.vh-100]="!isPrintRoute()">
+<div class="rac-admin-shell d-flex" [class.vh-100]="!isPrintRoute()">
   @if (!isSidebarHidden()) {
     <jhi-sidebar class="sidebar"></jhi-sidebar>
   }
 
   <div class="flex-grow-1 content-container">
-    <div>
-      <div [class.card]="!isPrintRoute()" [class.jh-card]="!isPrintRoute()" [class.border-0]="!isPrintRoute()">
+    @if (!isPrintRoute() && !isLoginRoute()) {
+      <header class="rac-topbar">
+        <div>
+          <div class="rac-topbar-title">RAC</div>
+          <div class="rac-topbar-subtitle">Rathaweera Auto Care ERP</div>
+        </div>
+        <div class="rac-topbar-actions">
+          <span class="rac-topbar-chip">Dashboard</span>
+        </div>
+      </header>
+    }
+
+    <div class="rac-page-body" [class.rac-login-body-shell]="isLoginRoute()">
+      <div [class.jh-card]="!isPrintRoute()" [class.border-0]="!isPrintRoute()">
         <router-outlet></router-outlet>
       </div>
-      @if (!isPrintRoute()) {
+      @if (!isPrintRoute() && !isLoginRoute()) {
         <jhi-footer></jhi-footer>
       }
     </div>
