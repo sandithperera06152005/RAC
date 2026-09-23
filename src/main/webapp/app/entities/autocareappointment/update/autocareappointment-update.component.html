@@ -193,7 +193,6 @@
               "
               onmouseover="this.style.border='1px solid  black'; this.style.backgroundColor='#e9ecef';"
               onmouseout="this.style.border='1px solid transparent'; this.style.backgroundColor='transparent';"
-              (mouseover)="openAccordion(i)"
             >
               <h2 class="accordion-header" [id]="'heading' + i">
                 <button
@@ -202,7 +201,7 @@
                   data-bs-toggle="collapse"
                   (mouseover)="openAccordion(i)"
                   [attr.data-bs-target]="'#collapse' + i"
-                  [attr.aria-expanded]="i === 0 ? 'true' : 'false'"
+                  [attr.aria-expanded]="i === openIndex ? 'true' : 'false'"
                   [attr.aria-controls]="'collapse' + i"
                   style="
                     transition:
@@ -216,11 +215,9 @@
               <div
                 [id]="'collapse' + i"
                 class="accordion-collapse collapse"
-                [class.show]="i === 0"
+                [class.show]="i === openIndex"
                 [attr.aria-labelledby]="'heading' + i"
                 data-bs-parent="#accordionExample"
-                [ngClass]="{ show: i === openIndex }"
-                (mouseover)="openAccordion(i)"
               >
                 <div class="accordion-body" style="display: flex">
                   <div *ngFor="let hoist of hoistData" class="mb-3">
@@ -254,19 +251,14 @@
                                   <ng-container *ngIf="timetable.hoisttypename === hoistType.hoisttype">
                                     <button
                                       type="button"
-                                      style="width: 100px"
                                       (click)="selectTime(timetable, hoist.id)"
-                                      class="btn btn-primary custom-hover"
+                                      class="btn btn-primary autocare-slot-button"
+                                      [class.autocare-slot-selected]="isSelectedTimeSlot(timetable, hoist.id)"
+                                      [attr.aria-pressed]="isSelectedTimeSlot(timetable, hoist.id)"
                                     >
                                       {{ timetable.hoisttime | date: 'hh:mm' : '+0000' }}
                                       <!-- {{ timetable.hoisttime }} -->
                                     </button>
-                                    <style>
-                                      .custom-hover:hover {
-                                        background-color: #e1ae2e !important; /* Change to your preferred color */
-                                        color: white !important;
-                                      }
-                                    </style>
                                   </ng-container>
                                 </ng-container>
                               </div>

@@ -65,6 +65,34 @@ dayjs.extend(utc);
         border: 1px solid #ddd;
         text-align: center;
       }
+
+      .autocare-slot-button {
+        width: 100px;
+        min-height: 42px;
+        position: relative;
+      }
+
+      .autocare-slot-button:hover {
+        background-color: #e1ae2e !important;
+        color: white !important;
+      }
+
+      .autocare-slot-selected {
+        background-color: #198754 !important;
+        border: 2px solid #0f5132 !important;
+        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+        color: white !important;
+        font-weight: 700;
+      }
+
+      .autocare-slot-selected::after {
+        content: 'Selected';
+        display: block;
+        font-size: 0.65rem;
+        line-height: 1;
+        margin-top: 2px;
+        text-transform: uppercase;
+      }
     `,
   ],
 })
@@ -110,7 +138,7 @@ export class AutocareappointmentUpdateComponent implements OnInit {
       this.loadHoistAppointmentTime();
     });
   }
-  openIndex: number | null = null;
+  openIndex: number | null = 0;
 
   openAccordion(index: number) {
     this.openIndex = index;
@@ -180,9 +208,9 @@ export class AutocareappointmentUpdateComponent implements OnInit {
       console.log('hoistid :', hoistId);
       this.editForm.get('hoistid')?.patchValue(hoistId);
 
-      // Optionally store the selected time and hoist for reference
-      this.selectedTime = timetable.hoisttime;
-      this.selectedHoist = timetable.hoistid;
+      // Store the selected time and hoist for the selected-slot indicator.
+      this.selectedTime = this.normalizeTimetableSlotTime(timetable.hoisttime);
+      this.selectedHoist = hoistId;
     } else {
       alert('Please select an Appointment Date');
     }
@@ -283,19 +311,90 @@ export class AutocareappointmentUpdateComponent implements OnInit {
   }
 
   loadHoistAppointmentTime(): void {
-    this.autocarehoisttypeService.query().subscribe(response => {
-      this.hoistTypeData = response.body || [];
-      console.log('Hoist Type : ', this.hoistTypeData);
-    });
-    this.autocarehoistService.query().subscribe(response => {
-      this.hoistData = response.body || [];
-      console.log('Hoists : ', this.hoistData);
-    });
-    this.autocaretimetableService.query({ size: 2000, page: 0 }).subscribe(response => {
-      this.timetableData = response.body || [];
+    forkJoin({
+      hoistTypes: this.autocarehoisttypeService.query(),
+      hoists: this.autocarehoistService.query(),
+      timetables: this.autocaretimetableService.query({ size: 2000, page: 0 }),
+    }).subscribe(({ hoistTypes, hoists, timetables }) => {
+      this.hoistTypeData = hoistTypes.body || [];
+      this.hoistData = hoists.body || [];
+      this.timetableData = timetables.body || [];
 
+      console.log('Hoist Type : ', this.hoistTypeData);
+      console.log('Hoists : ', this.hoistData);
       console.log('Time slots : ', this.timetableData);
+
+      this.applySelectedSlotFromCurrentForm();
+      this.openSelectedHoistType();
     });
+  }
+
+  isSelectedTimeSlot(timetable: any, hoistId: number): boolean {
+    return this.selectedHoist === hoistId && this.selectedTime === this.normalizeTimetableSlotTime(timetable?.hoisttime);
+  }
+
+  private applySelectedSlotFromCurrentForm(): void {
+    const savedAppointmentTime = this.editForm.get('appointmenttime')?.value;
+    const savedHoistId = this.editForm.get('hoistid')?.value;
+
+    if (!savedAppointmentTime || savedHoistId == null) {
+      return;
+    }
+
+    this.selectedTime = this.normalizeAppointmentSlotTime(savedAppointmentTime);
+    this.selectedHoist = Number(savedHoistId);
+  }
+
+  private openSelectedHoistType(): void {
+    if (this.selectedHoist == null) {
+      return;
+    }
+
+    const selectedHoist = this.hoistData.find(hoist => Number(hoist.id) === Number(this.selectedHoist));
+    if (!selectedHoist) {
+      return;
+    }
+
+    const selectedHoistTypeIndex = this.hoistTypeData.findIndex(hoistType => Number(hoistType.id) === Number(selectedHoist.hoisttypeid));
+    if (selectedHoistTypeIndex >= 0) {
+      this.openIndex = selectedHoistTypeIndex;
+    }
+  }
+
+  private normalizeAppointmentSlotTime(value: any): string | null {
+    if (!value) {
+      return null;
+    }
+
+    if (typeof value === 'string') {
+      const simpleTimeMatch = value.match(/(\d{2}):(\d{2})/);
+      if (simpleTimeMatch) {
+        return `${simpleTimeMatch[1]}:${simpleTimeMatch[2]}`;
+      }
+    }
+
+    const parsed = dayjs(value);
+    return parsed.isValid() ? parsed.format('HH:mm') : null;
+  }
+
+  private normalizeTimetableSlotTime(value: any): string | null {
+    if (!value) {
+      return null;
+    }
+
+    const parsed = dayjs(value);
+    if (parsed.isValid()) {
+      return parsed.utc().format('HH:mm');
+    }
+
+    if (typeof value === 'string') {
+      const simpleTimeMatch = value.match(/(\d{2}):(\d{2})/);
+      if (simpleTimeMatch) {
+        return `${simpleTimeMatch[1]}:${simpleTimeMatch[2]}`;
+      }
+    }
+
+    return null;
   }
 
   previousState(): void {
@@ -343,5 +442,6 @@ export class AutocareappointmentUpdateComponent implements OnInit {
   protected updateForm(autocareappointment: IAutocareappointment): void {
     this.autocareappointment = autocareappointment;
     this.autocareappointmentFormService.resetForm(this.editForm, autocareappointment);
+    this.applySelectedSlotFromCurrentForm();
   }
 }

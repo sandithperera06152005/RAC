@@ -23,6 +23,7 @@ import { SalesinvoiceService } from '../salesinvoice/service/salesinvoice.servic
 import { CustomerService } from 'app/entities/customer/service/customer.service';
 import { ICompanybankaccount } from '../companybankaccount/companybankaccount.model';
 import { CompanybankaccountService } from '../companybankaccount/service/companybankaccount.service';
+import { AccountService } from 'app/core/auth/account.service';
 
 declare const bootstrap: any;
 
@@ -89,6 +90,7 @@ export class ReceiptModalComponent implements OnChanges {
   acc = inject(AccountsService);
   salesInvoiceService = inject(SalesinvoiceService);
   invoicelines = inject(SalesInvoiceLinesService);
+  protected accountService = inject(AccountService);
   router = inject(Router);
 
   nextvalue: string = '';
@@ -750,7 +752,9 @@ export class ReceiptModalComponent implements OnChanges {
     const safeAccountId = paymentAccountId;
     const receiptTotalAmount = this.method === 'Credit' ? 0 : this.totalamount || 0;
 
-    this.receipt.lmu = finalUserId;
+    const receiptUserId = finalUserId || this.createdby || 0;
+    this.receipt.lmu = receiptUserId;
+    this.receipt.createdby = receiptUserId;
     this.receipt.lmd = dayjs().add(-new Date().getTimezoneOffset(), 'minute');
     this.receipt.customername = this.customername ?? '';
     this.receipt.totalamount = receiptTotalAmount;
@@ -869,10 +873,25 @@ export class ReceiptModalComponent implements OnChanges {
       paymenttype: this.method,
     });
 
-    const storedUserId = localStorage.getItem('empId');
-    const userIdNumber = storedUserId ? parseInt(storedUserId, 10) : 0;
-    const finalUserId = isNaN(userIdNumber) ? 0 : userIdNumber;
+    const finalUserId = this.getStoredLoggedInUserId();
 
+    if (finalUserId > 0) {
+      this.continueSaveAfterResolvingUser(finalUserId);
+      return;
+    }
+
+    this.accountService.identity().subscribe(account => {
+      this.continueSaveAfterResolvingUser(account?.id ?? this.createdby ?? 0);
+    });
+  }
+
+  private getStoredLoggedInUserId(): number {
+    const storedUserId = localStorage.getItem('empId') ?? localStorage.getItem('userId');
+    const userIdNumber = storedUserId ? parseInt(storedUserId, 10) : 0;
+    return isNaN(userIdNumber) ? 0 : userIdNumber;
+  }
+
+  private continueSaveAfterResolvingUser(finalUserId: number): void {
     this.salesinvoiceupdate.checkDuplicateActiveInvoice().subscribe({
       next: response => {
         if (response.body?.exists) {
