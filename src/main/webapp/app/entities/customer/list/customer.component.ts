@@ -1,7 +1,8 @@
 import { Component, NgZone, inject, OnInit } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
-import { combineLatest, filter, Observable, Subscription, tap } from 'rxjs';
+import { combineLatest, filter, Observable, of, Subscription, tap } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
@@ -15,6 +16,8 @@ import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigati
 import { ICustomer } from '../customer.model';
 import { EntityArrayResponseType, CustomerService } from '../service/customer.service';
 import { CustomerDeleteDialogComponent } from '../delete/customer-delete-dialog.component';
+import { CommonserviceoptionService } from 'app/entities/commonserviceoption/service/commonserviceoption.service';
+import { ICommonserviceoption } from 'app/entities/commonserviceoption/commonserviceoption.model';
 
 @Component({
   standalone: true,
@@ -36,6 +39,7 @@ export class CustomerComponent implements OnInit {
   subscription: Subscription | null = null;
   customers?: ICustomer[];
   isLoading = false;
+  customerTypeNames = new Map<number, string>();
 
   sortState = sortStateSignal({});
 
@@ -45,6 +49,7 @@ export class CustomerComponent implements OnInit {
 
   public router = inject(Router);
   protected customerService = inject(CustomerService);
+  protected commonserviceoptionService = inject(CommonserviceoptionService);
   protected activatedRoute = inject(ActivatedRoute);
   protected sortService = inject(SortService);
   protected modalService = inject(NgbModal);
@@ -53,12 +58,18 @@ export class CustomerComponent implements OnInit {
   trackId = (_index: number, item: ICustomer): number => this.customerService.getCustomerIdentifier(item);
 
   ngOnInit(): void {
+    this.loadCustomerTypeNames();
+
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])
       .pipe(
         tap(([params, data]) => this.fillComponentAttributeFromRoute(params, data)),
         tap(() => this.load()),
       )
       .subscribe();
+  }
+
+  getCustomerTypeName(customerTypeId: number | null | undefined): string | number | null | undefined {
+    return customerTypeId == null ? customerTypeId : this.customerTypeNames.get(customerTypeId) ?? customerTypeId;
   }
 
   delete(customer: ICustomer): void {
@@ -107,6 +118,29 @@ export class CustomerComponent implements OnInit {
 
   protected fillComponentAttributesFromResponseHeader(headers: HttpHeaders): void {
     this.totalItems = Number(headers.get(TOTAL_COUNT_RESPONSE_HEADER));
+  }
+
+  protected loadCustomerTypeNames(): void {
+    this.commonserviceoptionService
+      .query({ size: 1000 })
+      .pipe(catchError(() => of({ body: [] as ICommonserviceoption[] })))
+      .subscribe(response => {
+        this.customerTypeNames = this.createCommonOptionNameMap(response.body ?? []);
+      });
+  }
+
+  protected createCommonOptionNameMap(options: ICommonserviceoption[]): Map<number, string> {
+    const names = new Map<number, string>();
+    options.forEach(option => {
+      if (option.name) {
+        names.set(option.id, option.name);
+
+        if (option.value != null) {
+          names.set(option.value, option.name);
+        }
+      }
+    });
+    return names;
   }
 
   protected queryBackend(): Observable<EntityArrayResponseType> {

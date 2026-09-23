@@ -1,6 +1,8 @@
 package com.heavenscode.rac.repository;
 
 import com.heavenscode.rac.domain.User;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -14,6 +16,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    interface UserNameOnly {
+        Long getId();
+        String getLogin();
+    }
+
     Optional<User> findOneByEmailIgnoreCase(String email);
     Optional<User> findOneByLogin(String login);
 
@@ -40,4 +47,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findOneWithAuthoritiesByEmailIgnoreCase(String email);
 
     Page<User> findAllByIdNotNullAndActivatedIsTrue(Pageable pageable);
+
+    @Query(
+        value = """
+        select
+            [ID] as [id],
+            [UserName] as [login]
+        from dbo.[Employee]
+        where [ID] in (:ids)
+        """,
+        nativeQuery = true
+    )
+    List<UserNameOnly> findUserNamesByIdIn(@Param("ids") Collection<Long> ids);
 }

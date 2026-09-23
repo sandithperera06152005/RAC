@@ -8,6 +8,7 @@
         <span>Refresh list</span>
       </button>
 
+      <!--
       <button
         id="jh-create-entity"
         data-cy="entityCreateButton"
@@ -17,6 +18,7 @@
         <fa-icon icon="plus"></fa-icon>
         <span>Create a new Customer</span>
       </button>
+      -->
     </div>
   </h2>
 
@@ -35,6 +37,7 @@
       <table class="table table-striped" aria-describedby="page-heading">
         <thead>
           <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <!--
             <th scope="col" jhiSortBy="id">
               <div class="d-flex">
                 <span>ID</span>
@@ -42,9 +45,10 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            -->
             <th scope="col" jhiSortBy="customertype">
               <div class="d-flex">
-                <span>Customertype</span>
+                <span>Customer Type</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -65,49 +69,49 @@
             </th>
             <th scope="col" jhiSortBy="namewithinitials">
               <div class="d-flex">
-                <span>Namewithinitials</span>
+                <span>Name with initials</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="fullname">
               <div class="d-flex">
-                <span>Fullname</span>
+                <span>Full Name</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="callingname">
               <div class="d-flex">
-                <span>Callingname</span>
+                <span>Calling Name</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="nicno">
               <div class="d-flex">
-                <span>Nicno</span>
+                <span>NIC No</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="nicissueddate">
               <div class="d-flex">
-                <span>Nicissueddate</span>
+                <span>NIC Issued Date</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="dateofbirth">
               <div class="d-flex">
-                <span>Dateofbirth</span>
+                <span>Date of Birth</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="bloodgroup">
               <div class="d-flex">
-                <span>Bloodgroup</span>
+                <span>Blood Group</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -121,14 +125,14 @@
             </th>
             <th scope="col" jhiSortBy="maritalstatus">
               <div class="d-flex">
-                <span>Maritalstatus</span>
+                <span>Marital Status</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="marrieddate">
               <div class="d-flex">
-                <span>Marrieddate</span>
+                <span>Married Date</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -163,161 +167,161 @@
             </th>
             <th scope="col" jhiSortBy="businessname">
               <div class="d-flex">
-                <span>Businessname</span>
+                <span>Business Name</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="businessregdate">
               <div class="d-flex">
-                <span>Businessregdate</span>
+                <span>Business Reg Date</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="businessregno">
               <div class="d-flex">
-                <span>Businessregno</span>
+                <span>Business Reg No</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="profilepicturepath">
               <div class="d-flex">
-                <span>Profilepicturepath</span>
+                <span>Profile Picture Path</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="residencehouseno">
               <div class="d-flex">
-                <span>Residencehouseno</span>
+                <span>Residence House No</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="residenceaddress">
               <div class="d-flex">
-                <span>Residenceaddress</span>
+                <span>Residence Address</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="residencecity">
               <div class="d-flex">
-                <span>Residencecity</span>
+                <span>Residence City</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="residencephone">
               <div class="d-flex">
-                <span>Residencephone</span>
+                <span>Residence Phone</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="businesslocationno">
               <div class="d-flex">
-                <span>Businesslocationno</span>
+                <span>Business Location No</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="businessaddress">
               <div class="d-flex">
-                <span>Businessaddress</span>
+                <span>Business Address</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="businesscity">
               <div class="d-flex">
-                <span>Businesscity</span>
+                <span>Business City</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="businessphone1">
               <div class="d-flex">
-                <span>Businessphone 1</span>
+                <span>Business Phone 1</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="businessphone2">
               <div class="d-flex">
-                <span>Businessphone 2</span>
+                <span>Business Phone 2</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="businessmobile">
               <div class="d-flex">
-                <span>Businessmobile</span>
+                <span>Business Mobile</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="businessfax">
               <div class="d-flex">
-                <span>Businessfax</span>
+                <span>Business Fax</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="businessemail">
               <div class="d-flex">
-                <span>Businessemail</span>
+                <span>Business Email</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="businessprovinceid">
               <div class="d-flex">
-                <span>Businessprovinceid</span>
+                <span>Business Province ID</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="businessdistrictid">
               <div class="d-flex">
-                <span>Businessdistrictid</span>
+                <span>Business District ID</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="contactpersonname">
               <div class="d-flex">
-                <span>Contactpersonname</span>
+                <span>Contact Person Name</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="contactpersonphone">
               <div class="d-flex">
-                <span>Contactpersonphone</span>
+                <span>Contact Person Phone</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="contactpersonmobile">
               <div class="d-flex">
-                <span>Contactpersonmobile</span>
+                <span>Contact Person Mobile</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="contactpersonemail">
               <div class="d-flex">
-                <span>Contactpersonemail</span>
+                <span>Contact Person Email</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="rootmappath">
               <div class="d-flex">
-                <span>Rootmappath</span>
+                <span>Root Map Path</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -331,21 +335,21 @@
             </th>
             <th scope="col" jhiSortBy="registrationdate">
               <div class="d-flex">
-                <span>Registrationdate</span>
+                <span>Registration Date</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="isactive">
               <div class="d-flex">
-                <span>Isactive</span>
+                <span>Is Active</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="isinternalcustomer">
               <div class="d-flex">
-                <span>Isinternalcustomer</span>
+                <span>Is Internal Customer</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -359,224 +363,224 @@
             </th>
             <th scope="col" jhiSortBy="lmu">
               <div class="d-flex">
-                <span>Lmu</span>
+                <span>LMU</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="lmd">
               <div class="d-flex">
-                <span>Lmd</span>
+                <span>LMD</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="maximumdiscount">
               <div class="d-flex">
-                <span>Maximumdiscount</span>
+                <span>Maximum Discount</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="creditlimit">
               <div class="d-flex">
-                <span>Creditlimit</span>
+                <span>Credit Limit</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="hassecuritydeposit">
               <div class="d-flex">
-                <span>Hassecuritydeposit</span>
+                <span>Has Security Deposit</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="securitydepositamount">
               <div class="d-flex">
-                <span>Securitydepositamount</span>
+                <span>Security Deposit Amount</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="paybycash">
               <div class="d-flex">
-                <span>Paybycash</span>
+                <span>Pay By Cash</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="cashpaymentbeforeload">
               <div class="d-flex">
-                <span>Cashpaymentbeforeload</span>
+                <span>Cash Payment Before Load</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="cashlastinvoicebeforeload">
               <div class="d-flex">
-                <span>Cashlastinvoicebeforeload</span>
+                <span>Cash Last Invoice Before Load</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="paybycredit">
               <div class="d-flex">
-                <span>Paybycredit</span>
+                <span>Pay By Credit</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="creditoneweekcheck">
               <div class="d-flex">
-                <span>Creditoneweekcheck</span>
+                <span>Credit One Week Check</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="creditpaymentbydays">
               <div class="d-flex">
-                <span>Creditpaymentbydays</span>
+                <span>Credit Payment By Days</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="haspurchasingdeposit">
               <div class="d-flex">
-                <span>Haspurchasingdeposit</span>
+                <span>Has Purchasing Deposit</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="hassecuritydepositbond">
               <div class="d-flex">
-                <span>Hassecuritydepositbond</span>
+                <span>Has Security Deposit Bond</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="hasassestsdeposit">
               <div class="d-flex">
-                <span>Hasassestsdeposit</span>
+                <span>Has Assets Deposit</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="customerrootmappath">
               <div class="d-flex">
-                <span>Customerrootmappath</span>
+                <span>Customer Root Map Path</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="employername">
               <div class="d-flex">
-                <span>Employername</span>
+                <span>Employer Name</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="employeraddress">
               <div class="d-flex">
-                <span>Employeraddress</span>
+                <span>Employer Address</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="employerphone">
               <div class="d-flex">
-                <span>Employerphone</span>
+                <span>Employer Phone</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="employerdesignation">
               <div class="d-flex">
-                <span>Employerdesignation</span>
+                <span>Employer Designation</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="previousemployername">
               <div class="d-flex">
-                <span>Previousemployername</span>
+                <span>Previous Employer Name</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="previousemployeraddress">
               <div class="d-flex">
-                <span>Previousemployeraddress</span>
+                <span>Previous Employer Address</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="previousindustry">
               <div class="d-flex">
-                <span>Previousindustry</span>
+                <span>Previous Industry</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="previousperiod">
               <div class="d-flex">
-                <span>Previousperiod</span>
+                <span>Previous Period</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="previouspositions">
               <div class="d-flex">
-                <span>Previouspositions</span>
+                <span>Previous Positions</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="previousresionforleaving">
               <div class="d-flex">
-                <span>Previousresionforleaving</span>
+                <span>Previous Reason For Leaving</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="hascreaditlimit">
               <div class="d-flex">
-                <span>Hascreaditlimit</span>
+                <span>Has Credit Limit</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="accountid">
               <div class="d-flex">
-                <span>Accountid</span>
+                <span>Account ID</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="accountcode">
               <div class="d-flex">
-                <span>Accountcode</span>
+                <span>Account Code</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="isregistered">
               <div class="d-flex">
-                <span>Isregistered</span>
+                <span>Is Registered</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="vatregnumber">
               <div class="d-flex">
-                <span>Vatregnumber</span>
+                <span>VAT Reg Number</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="tinnumber">
               <div class="d-flex">
-                <span>Tinnumber</span>
+                <span>TIN Number</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -597,7 +601,7 @@
             </th>
             <th scope="col" jhiSortBy="creditperiod">
               <div class="d-flex">
-                <span>Creditperiod</span>
+                <span>Credit Period</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -608,10 +612,12 @@
         <tbody>
           @for (customer of customers; track trackId) {
             <tr data-cy="entityTable">
+              <!--
               <td>
                 <a [routerLink]="['/customer', customer.id, 'view']">{{ customer.id }}</a>
               </td>
-              <td>{{ customer.customertype }}</td>
+              -->
+              <td>{{ getCustomerTypeName(customer.customertype) }}</td>
               <td>{{ customer.code }}</td>
               <td>{{ customer.title }}</td>
               <td>{{ customer.namewithinitials }}</td>
@@ -701,6 +707,7 @@
                     <img class="rac-action-icon rac-view-action-icon" src="content/images/autocare-actions/view.png" alt="View" />
                   </a>
 
+                  <!--
                   <a
                     [routerLink]="['/customer', customer.id, 'edit']"
                     class="btn btn-primary btn-sm rac-action-button"
@@ -708,6 +715,7 @@
                   >
                     <img class="rac-action-icon" src="content/images/autocare-actions/edit.png" alt="Edit" />
                   </a>
+                  -->
 
                   <button
                     type="submit"

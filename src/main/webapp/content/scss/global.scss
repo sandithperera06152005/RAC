@@ -247,6 +247,34 @@ entity list page css
   margin: auto 0;
 }
 
+.table-entities {
+  overflow-x: auto;
+}
+
+.table-entities table {
+  min-width: 100%;
+  table-layout: auto;
+  width: max-content;
+}
+
+.table-entities thead th {
+  white-space: nowrap;
+}
+
+.table-entities thead th .d-flex {
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 4px;
+}
+
+.table-entities thead th .d-flex span {
+  white-space: nowrap;
+}
+
+.table-entities thead th fa-icon {
+  flex: 0 0 auto;
+}
+
 /* ==========================================================================
 entity detail page css
 ========================================================================== */

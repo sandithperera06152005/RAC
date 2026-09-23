@@ -1,110 +1,151 @@
-<div class="d-flex justify-content-center">
-  <div class="col-8">
-    @if (receipt()) {
-      <div>
-        <h2 data-cy="receiptDetailsHeading"><span>Receipt</span></h2>
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      @if (receipt()) {
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-white border-bottom py-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0 text-primary fw-bold">Receipt Details</h4>
+              <span class="badge bg-primary px-3 py-2">Receipt #{{ receipt()!.code || receipt()!.id }}</span>
+            </div>
+          </div>
 
-        <hr />
+          <div class="card-body p-4">
+            <jhi-alert-error></jhi-alert-error>
+            <jhi-alert></jhi-alert>
 
-        <jhi-alert-error></jhi-alert-error>
+            <div class="row g-4">
+              <div class="col-md-6">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Receipt Information</h6>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">ID</div>
+                  <div class="col-7 fw-bold">{{ receipt()!.id }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Code</div>
+                  <div class="col-7">{{ receipt()!.code }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Receipt Date</div>
+                  <div class="col-7">{{ receipt()!.receiptdate | formatMediumDatetime }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Term</div>
+                  <div class="col-7">{{ receipt()!.term }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Date</div>
+                  <div class="col-7">{{ receipt()!.date | formatMediumDatetime }}</div>
+                </div>
+              </div>
 
-        <jhi-alert></jhi-alert>
+              <div class="col-md-6">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Customer Information</h6>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Customer Name</div>
+                  <div class="col-7 fw-bold">{{ receipt()!.customername }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Customer Address</div>
+                  <div class="col-7">{{ receipt()!.customeraddress }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Customer ID</div>
+                  <div class="col-7">{{ receipt()!.customerid }}</div>
+                </div>
+              </div>
 
-        <dl class="row-md jh-entity-details">
-          <dt><span>ID</span></dt>
-          <dd>
-            <span>{{ receipt()!.id }}</span>
-          </dd>
-          <dt><span>Code</span></dt>
-          <dd>
-            <span>{{ receipt()!.code }}</span>
-          </dd>
-          <dt><span>Receiptdate</span></dt>
-          <dd>
-            <span>{{ receipt()!.receiptdate | formatMediumDatetime }}</span>
-          </dd>
-          <dt><span>Customername</span></dt>
-          <dd>
-            <span>{{ receipt()!.customername }}</span>
-          </dd>
-          <dt><span>Customeraddress</span></dt>
-          <dd>
-            <span>{{ receipt()!.customeraddress }}</span>
-          </dd>
-          <dt><span>Totalamount</span></dt>
-          <dd>
-            <span>{{ receipt()!.totalamount }}</span>
-          </dd>
-          <dt><span>Totalamountinword</span></dt>
-          <dd>
-            <span>{{ receipt()!.totalamountinword }}</span>
-          </dd>
-          <dt><span>Comments</span></dt>
-          <dd>
-            <span>{{ receipt()!.comments }}</span>
-          </dd>
-          <dt><span>Lmu</span></dt>
-          <dd>
-            <span>{{ receipt()!.lmu }}</span>
-          </dd>
-          <dt><span>Lmd</span></dt>
-          <dd>
-            <span>{{ receipt()!.lmd | formatMediumDatetime }}</span>
-          </dd>
-          <dt><span>Termid</span></dt>
-          <dd>
-            <span>{{ receipt()!.termid }}</span>
-          </dd>
-          <dt><span>Term</span></dt>
-          <dd>
-            <span>{{ receipt()!.term }}</span>
-          </dd>
-          <dt><span>Date</span></dt>
-          <dd>
-            <span>{{ receipt()!.date | formatMediumDatetime }}</span>
-          </dd>
-          <dt><span>Amount</span></dt>
-          <dd>
-            <span>{{ receipt()!.amount }}</span>
-          </dd>
-          <dt><span>Checkdate</span></dt>
-          <dd>
-            <span>{{ receipt()!.checkdate | formatMediumDatetime }}</span>
-          </dd>
-          <dt><span>Checkno</span></dt>
-          <dd>
-            <span>{{ receipt()!.checkno }}</span>
-          </dd>
-          <dt><span>Bank</span></dt>
-          <dd>
-            <span>{{ receipt()!.bank }}</span>
-          </dd>
-          <dt><span>Customerid</span></dt>
-          <dd>
-            <span>{{ receipt()!.customerid }}</span>
-          </dd>
-          <dt><span>Isactive</span></dt>
-          <dd>
-            <span>{{ receipt()!.isactive }}</span>
-          </dd>
-          <dt><span>Deposited</span></dt>
-          <dd>
-            <span>{{ receipt()!.deposited }}</span>
-          </dd>
-          <dt><span>Createdby</span></dt>
-          <dd>
-            <span>{{ receipt()!.createdby }}</span>
-          </dd>
-        </dl>
+              <div class="col-12 mt-4">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Payment Summary</h6>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Total Amount</div>
+                      <div class="h6 mb-0 fw-bold">{{ receipt()!.totalamount | number: '1.2-2' }}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Amount</div>
+                      <div class="h6 mb-0 fw-bold">{{ receipt()!.amount | number: '1.2-2' }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-md-3 text-secondary">Total Amount In Word</div>
+                  <div class="col-md-9">{{ receipt()!.totalamountinword }}</div>
+                </div>
+              </div>
 
-        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
-        </button>
+              <div class="col-12 mt-4">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Cheque & Bank Details</h6>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Check Date</div>
+                  <div class="col-md-9">{{ receipt()!.checkdate | formatMediumDatetime }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Check No</div>
+                  <div class="col-md-9">{{ receipt()!.checkno }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Bank</div>
+                  <div class="col-md-9">{{ receipt()!.bank }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Deposited</div>
+                  <div class="col-md-9">{{ receipt()!.deposited ? 'Yes' : 'No' }}</div>
+                </div>
+              </div>
 
-        <button type="button" [routerLink]="['/receipt', receipt()!.id, 'edit']" class="btn btn-primary">
-          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
-        </button>
-      </div>
-    }
+              <div class="col-12 mt-4">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Status & Audit Information</h6>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Active</div>
+                  <div class="col-md-9">{{ receipt()!.isactive ? 'Yes' : 'No' }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Created By</div>
+                  <div class="col-md-9">{{ receipt()!.createdby }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">LMU</div>
+                  <div class="col-md-9">{{ receipt()!.lmu }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">LMD</div>
+                  <div class="col-md-9">{{ receipt()!.lmd | formatMediumDatetime }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Term ID</div>
+                  <div class="col-md-9">{{ receipt()!.termid }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Comments</div>
+                  <div class="col-md-9">{{ receipt()!.comments }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-footer bg-white py-3 border-top-0 d-flex gap-2 justify-content-end">
+            <button
+              type="submit"
+              (click)="previousState()"
+              class="btn btn-outline-secondary px-4 shadow-sm"
+              data-cy="entityDetailsBackButton"
+            >
+              <fa-icon icon="arrow-left" class="me-1"></fa-icon> Back
+            </button>
+
+            <!-- Edit button hidden as requested. -->
+            <!--
+            <button type="button" [routerLink]="['/receipt', receipt()!.id, 'edit']" class="btn btn-primary px-4 shadow-sm">
+              <fa-icon icon="pencil-alt" class="me-1"></fa-icon> Edit
+            </button>
+            -->
+          </div>
+        </div>
+      }
+    </div>
   </div>
 </div>

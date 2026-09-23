@@ -1,7 +1,8 @@
 import { Component, NgZone, OnInit, inject } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
-import { Observable, Subscription, combineLatest, filter, tap } from 'rxjs';
+import { Observable, Subscription, combineLatest, filter, of, tap } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
@@ -17,6 +18,10 @@ import { FilterComponent, FilterOptions, IFilterOption, IFilterOptions } from 'a
 import { EntityArrayResponseType, InventoryService } from '../service/inventory.service';
 import { InventoryDeleteDialogComponent } from '../delete/inventory-delete-dialog.component';
 import { IInventory } from '../inventory.model';
+import { CommonserviceoptionService } from 'app/entities/commonserviceoption/service/commonserviceoption.service';
+import { ICommonserviceoption } from 'app/entities/commonserviceoption/commonserviceoption.model';
+import { ServicecategoryService } from 'app/entities/servicecategory/service/servicecategory.service';
+import { IServicecategory } from 'app/entities/servicecategory/servicecategory.model';
 
 @Component({
   standalone: true,
@@ -39,6 +44,8 @@ export class InventoryComponent implements OnInit {
   subscription: Subscription | null = null;
   inventories?: IInventory[];
   isLoading = false;
+  inventoryTypeNames = new Map<number, string>();
+  categoryNames = new Map<number, string>();
 
   sortState = sortStateSignal({});
   filters: IFilterOptions = new FilterOptions();
@@ -49,6 +56,8 @@ export class InventoryComponent implements OnInit {
 
   public router = inject(Router);
   protected inventoryService = inject(InventoryService);
+  protected commonserviceoptionService = inject(CommonserviceoptionService);
+  protected servicecategoryService = inject(ServicecategoryService);
   protected activatedRoute = inject(ActivatedRoute);
   protected sortService = inject(SortService);
   protected dataUtils = inject(DataUtils);
@@ -58,6 +67,8 @@ export class InventoryComponent implements OnInit {
   trackId = (item: IInventory): number => this.inventoryService.getInventoryIdentifier(item);
 
   ngOnInit(): void {
+    this.loadInventoryLookups();
+
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])
       .pipe(
         tap(([params, data]) => this.fillComponentAttributeFromRoute(params, data)),
@@ -66,6 +77,15 @@ export class InventoryComponent implements OnInit {
       .subscribe();
 
     this.filters.filterChanges.subscribe(filterOptions => this.handleNavigation(1, this.sortState(), filterOptions));
+  }
+
+  getInventoryTypeName(typeId: number | null | undefined): string | number | null | undefined {
+    return typeId == null ? typeId : this.inventoryTypeNames.get(typeId) ?? typeId;
+  }
+
+  getClassification2Name(classification2: string | null | undefined): string | null | undefined {
+    const classification2Id = this.toLookupId(classification2);
+    return classification2Id == null ? classification2 : this.categoryNames.get(classification2Id) ?? classification2;
   }
 
   byteSize(base64String: string): string {
@@ -123,6 +143,55 @@ export class InventoryComponent implements OnInit {
 
   protected fillComponentAttributesFromResponseHeader(headers: HttpHeaders): void {
     this.totalItems = Number(headers.get(TOTAL_COUNT_RESPONSE_HEADER));
+  }
+
+  protected loadInventoryLookups(): void {
+    this.commonserviceoptionService
+      .query({ size: 1000 })
+      .pipe(catchError(() => of({ body: [] as ICommonserviceoption[] })))
+      .subscribe(response => {
+        this.inventoryTypeNames = this.createCommonOptionNameMap(response.body ?? []);
+      });
+
+    this.servicecategoryService
+      .query({ size: 1000 })
+      .pipe(catchError(() => of({ body: [] as IServicecategory[] })))
+      .subscribe(response => {
+        this.categoryNames = this.createCategoryNameMap(response.body ?? []);
+      });
+  }
+
+  protected createCommonOptionNameMap(options: ICommonserviceoption[]): Map<number, string> {
+    const names = new Map<number, string>();
+    options.forEach(option => {
+      if (option.name) {
+        names.set(option.id, option.name);
+
+        if (option.value != null) {
+          names.set(option.value, option.name);
+        }
+      }
+    });
+    return names;
+  }
+
+  protected createCategoryNameMap(categories: IServicecategory[]): Map<number, string> {
+    const names = new Map<number, string>();
+    categories.forEach(category => {
+      if (category.name) {
+        names.set(category.id, category.name);
+      }
+    });
+    return names;
+  }
+
+  protected toLookupId(value: string | null | undefined): number | null {
+    if (value == null || value.trim() === '') {
+      return null;
+    }
+
+    const id = Number(value);
+    return Number.isInteger(id) ? id : null;
   }
 
   protected queryBackend(): Observable<EntityArrayResponseType> {

@@ -1,7 +1,8 @@
 import { Component, NgZone, inject, OnInit } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
-import { combineLatest, filter, Observable, Subscription, tap } from 'rxjs';
+import { combineLatest, filter, Observable, of, Subscription, tap } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
@@ -15,6 +16,8 @@ import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigati
 import { IReceipt } from '../receipt.model';
 import { EntityArrayResponseType, ReceiptService } from '../service/receipt.service';
 import { ReceiptDeleteDialogComponent } from '../delete/receipt-delete-dialog.component';
+import { IUser } from 'app/entities/user/user.model';
+import { UserService } from 'app/entities/user/service/user.service';
 
 @Component({
   standalone: true,
@@ -36,6 +39,7 @@ export class ReceiptComponent implements OnInit {
   subscription: Subscription | null = null;
   receipts?: IReceipt[];
   isLoading = false;
+  createdByNames = new Map<number, string>();
 
   sortState = sortStateSignal({});
 
@@ -45,12 +49,22 @@ export class ReceiptComponent implements OnInit {
 
   public router = inject(Router);
   protected receiptService = inject(ReceiptService);
+  protected userService = inject(UserService);
   protected activatedRoute = inject(ActivatedRoute);
   protected sortService = inject(SortService);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
   trackId = (_index: number, item: IReceipt): number => this.receiptService.getReceiptIdentifier(item);
+
+  formatAmount(value: number | null | undefined): string | number | null | undefined {
+    return value == null
+      ? value
+      : new Intl.NumberFormat('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(value);
+  }
 
   ngOnInit(): void {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])
@@ -59,6 +73,10 @@ export class ReceiptComponent implements OnInit {
         tap(() => this.load()),
       )
       .subscribe();
+  }
+
+  getCreatedByName(createdById: number | null | undefined): string | number | null | undefined {
+    return createdById == null ? createdById : this.createdByNames.get(createdById) ?? createdById;
   }
 
   delete(receipt: IReceipt): void {
@@ -99,6 +117,7 @@ export class ReceiptComponent implements OnInit {
     this.fillComponentAttributesFromResponseHeader(response.headers);
     const dataFromBody = this.fillComponentAttributesFromResponseBody(response.body);
     this.receipts = dataFromBody;
+    this.loadCreatedByNames(dataFromBody);
   }
 
   protected fillComponentAttributesFromResponseBody(data: IReceipt[] | null): IReceipt[] {
@@ -107,6 +126,37 @@ export class ReceiptComponent implements OnInit {
 
   protected fillComponentAttributesFromResponseHeader(headers: HttpHeaders): void {
     this.totalItems = Number(headers.get(TOTAL_COUNT_RESPONSE_HEADER));
+  }
+
+  protected loadCreatedByNames(receipts: IReceipt[]): void {
+    const createdByIds = receipts
+      .map(receipt => receipt.createdby)
+      .filter((createdById): createdById is number => createdById != null && createdById > 0)
+      .filter((createdById, index, ids) => ids.indexOf(createdById) === index);
+
+    if (createdByIds.length === 0) {
+      this.createdByNames = new Map<number, string>();
+      return;
+    }
+
+    this.userService
+      .queryUserNamesByIds(createdByIds)
+      .pipe(catchError(() => of({ body: [] as IUser[] })))
+      .subscribe(response => {
+        this.createdByNames = this.createUserNameMap(response.body ?? []);
+      });
+  }
+
+  protected createUserNameMap(users: IUser[]): Map<number, string> {
+    const names = new Map<number, string>();
+    users.forEach(user => {
+      if (user.id == null) {
+        return;
+      }
+
+      names.set(user.id, user.login ?? String(user.id));
+    });
+    return names;
   }
 
   protected queryBackend(): Observable<EntityArrayResponseType> {

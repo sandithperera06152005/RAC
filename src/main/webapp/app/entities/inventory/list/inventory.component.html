@@ -8,6 +8,7 @@
         <span>Refresh list</span>
       </button>
 
+      <!--
       <button
         id="jh-create-entity"
         data-cy="entityCreateButton"
@@ -17,6 +18,7 @@
         <fa-icon icon="plus"></fa-icon>
         <span>Create a new Inventory</span>
       </button>
+      -->
     </div>
   </h2>
 
@@ -37,6 +39,7 @@
       <table class="table table-striped" aria-describedby="page-heading">
         <thead>
           <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <!--
             <th scope="col" jhiSortBy="id">
               <div class="d-flex">
                 <span>ID</span>
@@ -44,6 +47,7 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            -->
             <th scope="col" jhiSortBy="code">
               <div class="d-flex">
                 <span>Code</span>
@@ -53,7 +57,7 @@
             </th>
             <th scope="col" jhiSortBy="partnumber">
               <div class="d-flex">
-                <span>Partnumber</span>
+                <span>Part Number</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -79,6 +83,7 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <!--
             <th scope="col" jhiSortBy="classification1">
               <div class="d-flex">
                 <span>Classification 1</span>
@@ -86,6 +91,7 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            -->
             <th scope="col" jhiSortBy="classification2">
               <div class="d-flex">
                 <span>Classification 2</span>
@@ -93,6 +99,7 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <!--
             <th scope="col" jhiSortBy="classification3">
               <div class="d-flex">
                 <span>Classification 3</span>
@@ -114,240 +121,241 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            -->
             <th scope="col" jhiSortBy="unitofmeasurement">
               <div class="d-flex">
-                <span>Unitofmeasurement</span>
+                <span>Unit of Measurement</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="decimalplaces">
               <div class="d-flex">
-                <span>Decimalplaces</span>
+                <span>Decimal Places</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="isassemblyunit">
               <div class="d-flex">
-                <span>Isassemblyunit</span>
+                <span>Is Assembly Unit</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="assemblyunitof">
               <div class="d-flex">
-                <span>Assemblyunitof</span>
+                <span>Assembly Unit Of</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="reorderlevel">
               <div class="d-flex">
-                <span>Reorderlevel</span>
+                <span>Reorder Level</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="lastcost">
               <div class="d-flex">
-                <span>Lastcost</span>
+                <span>Last Cost</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="lastsellingprice">
               <div class="d-flex">
-                <span>Lastsellingprice</span>
+                <span>Last Selling Price</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="lmu">
               <div class="d-flex">
-                <span>Lmu</span>
+                <span>LMU</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="lmd">
               <div class="d-flex">
-                <span>Lmd</span>
+                <span>LMD</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="availablequantity">
               <div class="d-flex">
-                <span>Availablequantity</span>
+                <span>Available Quantity</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="hasbatches">
               <div class="d-flex">
-                <span>Hasbatches</span>
+                <span>Has Batches</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="itemspecfilepath">
               <div class="d-flex">
-                <span>Itemspecfilepath</span>
+                <span>Item Spec File Path</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="itemimagepath">
               <div class="d-flex">
-                <span>Itemimagepath</span>
+                <span>Item Image Path</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="returnprice">
               <div class="d-flex">
-                <span>Returnprice</span>
+                <span>Return Price</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="activeitem">
               <div class="d-flex">
-                <span>Activeitem</span>
+                <span>Active Item</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="minstock">
               <div class="d-flex">
-                <span>Minstock</span>
+                <span>Min Stock</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="maxstock">
               <div class="d-flex">
-                <span>Maxstock</span>
+                <span>Max Stock</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="dailyaverage">
               <div class="d-flex">
-                <span>Dailyaverage</span>
+                <span>Daily Average</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="bufferlevel">
               <div class="d-flex">
-                <span>Bufferlevel</span>
+                <span>Buffer Level</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="leadtime">
               <div class="d-flex">
-                <span>Leadtime</span>
+                <span>Lead Time</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="buffertime">
               <div class="d-flex">
-                <span>Buffertime</span>
+                <span>Buffer Time</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="saftydays">
               <div class="d-flex">
-                <span>Saftydays</span>
+                <span>Safety Days</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="accountcode">
               <div class="d-flex">
-                <span>Accountcode</span>
+                <span>Account Code</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="accountid">
               <div class="d-flex">
-                <span>Accountid</span>
+                <span>Account ID</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="casepackqty">
               <div class="d-flex">
-                <span>Casepackqty</span>
+                <span>Case Pack Qty</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="isregistered">
               <div class="d-flex">
-                <span>Isregistered</span>
+                <span>Is Registered</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="defaultstocklocationid">
               <div class="d-flex">
-                <span>Defaultstocklocationid</span>
+                <span>Default Stock Location ID</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="rackno">
               <div class="d-flex">
-                <span>Rackno</span>
+                <span>Rack No</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="barcodeimage">
               <div class="d-flex">
-                <span>Barcodeimage</span>
+                <span>Barcode Image</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="commissionempid">
               <div class="d-flex">
-                <span>Commissionempid</span>
+                <span>Commission Emp ID</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="checktypeid">
               <div class="d-flex">
-                <span>Checktypeid</span>
+                <span>Check Type ID</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="checktype">
               <div class="d-flex">
-                <span>Checktype</span>
+                <span>Check Type</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="reorderqty">
               <div class="d-flex">
-                <span>Reorderqty</span>
+                <span>Reorder Qty</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="notininvoice">
               <div class="d-flex">
-                <span>Notininvoice</span>
+                <span>Not In Invoice</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -358,19 +366,23 @@
         <tbody>
           @for (inventory of inventories; track trackId(inventory)) {
             <tr data-cy="entityTable">
+              <!--
               <td>
                 <a [routerLink]="['/inventory', inventory.id, 'view']">{{ inventory.id }}</a>
               </td>
+              -->
               <td>{{ inventory.code }}</td>
               <td>{{ inventory.partnumber }}</td>
               <td>{{ inventory.name }}</td>
               <td>{{ inventory.description }}</td>
-              <td>{{ inventory.type }}</td>
-              <td>{{ inventory.classification1 }}</td>
-              <td>{{ inventory.classification2 }}</td>
+              <td>{{ getInventoryTypeName(inventory.type) }}</td>
+              <!-- <td>{{ inventory.classification1 }}</td> -->
+              <td>{{ getClassification2Name(inventory.classification2) }}</td>
+              <!--
               <td>{{ inventory.classification3 }}</td>
               <td>{{ inventory.classification4 }}</td>
               <td>{{ inventory.classification5 }}</td>
+              -->
               <td>{{ inventory.unitofmeasurement }}</td>
               <td>{{ inventory.decimalplaces }}</td>
               <td>{{ inventory.isassemblyunit }}</td>
@@ -426,6 +438,7 @@
                     <img class="rac-action-icon rac-view-action-icon" src="content/images/autocare-actions/view.png" alt="View" />
                   </a>
 
+                  <!--
                   <a
                     [routerLink]="['/inventory', inventory.id, 'edit']"
                     class="btn btn-primary btn-sm rac-action-button"
@@ -433,6 +446,7 @@
                   >
                     <img class="rac-action-icon" src="content/images/autocare-actions/edit.png" alt="Edit" />
                   </a>
+                  -->
 
                   <button
                     type="submit"

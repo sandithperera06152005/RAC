@@ -1,350 +1,440 @@
-<div class="d-flex justify-content-center">
-  <div class="col-8">
-    @if (customer()) {
-      <div>
-        <h2 data-cy="customerDetailsHeading"><span>Customer</span></h2>
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      @if (customer(); as customerRef) {
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-white border-bottom py-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0 text-primary fw-bold">Customer Details</h4>
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge px-3 py-2" [ngClass]="customerRef.isactive ? 'bg-success' : 'bg-secondary'">
+                  {{ customerRef.isactive ? 'Active' : 'Inactive' }}
+                </span>
+                <span class="badge bg-primary px-3 py-2">Customer #{{ customerRef.code || customerRef.id }}</span>
+              </div>
+            </div>
+          </div>
 
-        <hr />
+          <div class="card-body p-4">
+            <jhi-alert-error></jhi-alert-error>
+            <jhi-alert></jhi-alert>
 
-        <jhi-alert-error></jhi-alert-error>
+            <div class="row g-4">
+              <div class="col-md-6">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Basic Information</h6>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">ID</div>
+                  <div class="col-7 fw-bold">{{ customerRef.id }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Customer Type</div>
+                  <div class="col-7">{{ customerRef.customertype }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Code</div>
+                  <div class="col-7">{{ customerRef.code }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Title</div>
+                  <div class="col-7">{{ customerRef.title }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Name With Initials</div>
+                  <div class="col-7 fw-bold">{{ customerRef.namewithinitials }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Full Name</div>
+                  <div class="col-7">{{ customerRef.fullname }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Calling Name</div>
+                  <div class="col-7">{{ customerRef.callingname }}</div>
+                </div>
+              </div>
 
-        <jhi-alert></jhi-alert>
+              <div class="col-md-6">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Personal Information</h6>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">NIC No</div>
+                  <div class="col-7">{{ customerRef.nicno }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">NIC Issued Date</div>
+                  <div class="col-7">{{ customerRef.nicissueddate | formatMediumDate }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Date Of Birth</div>
+                  <div class="col-7">{{ customerRef.dateofbirth | formatMediumDate }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Blood Group</div>
+                  <div class="col-7">{{ customerRef.bloodgroup }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Gender</div>
+                  <div class="col-7">{{ customerRef.gender }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Marital Status</div>
+                  <div class="col-7">{{ customerRef.maritalstatus }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Married Date</div>
+                  <div class="col-7">{{ customerRef.marrieddate | formatMediumDate }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Nationality</div>
+                  <div class="col-7">{{ customerRef.nationality }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Religion</div>
+                  <div class="col-7">{{ customerRef.religion }}</div>
+                </div>
+              </div>
 
-        <dl class="row-md jh-entity-details">
-          <dt><span>ID</span></dt>
-          <dd>
-            <span>{{ customer()!.id }}</span>
-          </dd>
-          <dt><span>Customertype</span></dt>
-          <dd>
-            <span>{{ customer()!.customertype }}</span>
-          </dd>
-          <dt><span>Code</span></dt>
-          <dd>
-            <span>{{ customer()!.code }}</span>
-          </dd>
-          <dt><span>Title</span></dt>
-          <dd>
-            <span>{{ customer()!.title }}</span>
-          </dd>
-          <dt><span>Namewithinitials</span></dt>
-          <dd>
-            <span>{{ customer()!.namewithinitials }}</span>
-          </dd>
-          <dt><span>Fullname</span></dt>
-          <dd>
-            <span>{{ customer()!.fullname }}</span>
-          </dd>
-          <dt><span>Callingname</span></dt>
-          <dd>
-            <span>{{ customer()!.callingname }}</span>
-          </dd>
-          <dt><span>Nicno</span></dt>
-          <dd>
-            <span>{{ customer()!.nicno }}</span>
-          </dd>
-          <dt><span>Nicissueddate</span></dt>
-          <dd>
-            <span>{{ customer()!.nicissueddate | formatMediumDate }}</span>
-          </dd>
-          <dt><span>Dateofbirth</span></dt>
-          <dd>
-            <span>{{ customer()!.dateofbirth | formatMediumDate }}</span>
-          </dd>
-          <dt><span>Bloodgroup</span></dt>
-          <dd>
-            <span>{{ customer()!.bloodgroup }}</span>
-          </dd>
-          <dt><span>Gender</span></dt>
-          <dd>
-            <span>{{ customer()!.gender }}</span>
-          </dd>
-          <dt><span>Maritalstatus</span></dt>
-          <dd>
-            <span>{{ customer()!.maritalstatus }}</span>
-          </dd>
-          <dt><span>Marrieddate</span></dt>
-          <dd>
-            <span>{{ customer()!.marrieddate | formatMediumDate }}</span>
-          </dd>
-          <dt><span>Nationality</span></dt>
-          <dd>
-            <span>{{ customer()!.nationality }}</span>
-          </dd>
-          <dt><span>Territory</span></dt>
-          <dd>
-            <span>{{ customer()!.territory }}</span>
-          </dd>
-          <dt><span>Religion</span></dt>
-          <dd>
-            <span>{{ customer()!.religion }}</span>
-          </dd>
-          <dt><span>Team</span></dt>
-          <dd>
-            <span>{{ customer()!.team }}</span>
-          </dd>
-          <dt><span>Businessname</span></dt>
-          <dd>
-            <span>{{ customer()!.businessname }}</span>
-          </dd>
-          <dt><span>Businessregdate</span></dt>
-          <dd>
-            <span>{{ customer()!.businessregdate | formatMediumDate }}</span>
-          </dd>
-          <dt><span>Businessregno</span></dt>
-          <dd>
-            <span>{{ customer()!.businessregno }}</span>
-          </dd>
-          <dt><span>Profilepicturepath</span></dt>
-          <dd>
-            <span>{{ customer()!.profilepicturepath }}</span>
-          </dd>
-          <dt><span>Residencehouseno</span></dt>
-          <dd>
-            <span>{{ customer()!.residencehouseno }}</span>
-          </dd>
-          <dt><span>Residenceaddress</span></dt>
-          <dd>
-            <span>{{ customer()!.residenceaddress }}</span>
-          </dd>
-          <dt><span>Residencecity</span></dt>
-          <dd>
-            <span>{{ customer()!.residencecity }}</span>
-          </dd>
-          <dt><span>Residencephone</span></dt>
-          <dd>
-            <span>{{ customer()!.residencephone }}</span>
-          </dd>
-          <dt><span>Businesslocationno</span></dt>
-          <dd>
-            <span>{{ customer()!.businesslocationno }}</span>
-          </dd>
-          <dt><span>Businessaddress</span></dt>
-          <dd>
-            <span>{{ customer()!.businessaddress }}</span>
-          </dd>
-          <dt><span>Businesscity</span></dt>
-          <dd>
-            <span>{{ customer()!.businesscity }}</span>
-          </dd>
-          <dt><span>Businessphone 1</span></dt>
-          <dd>
-            <span>{{ customer()!.businessphone1 }}</span>
-          </dd>
-          <dt><span>Businessphone 2</span></dt>
-          <dd>
-            <span>{{ customer()!.businessphone2 }}</span>
-          </dd>
-          <dt><span>Businessmobile</span></dt>
-          <dd>
-            <span>{{ customer()!.businessmobile }}</span>
-          </dd>
-          <dt><span>Businessfax</span></dt>
-          <dd>
-            <span>{{ customer()!.businessfax }}</span>
-          </dd>
-          <dt><span>Businessemail</span></dt>
-          <dd>
-            <span>{{ customer()!.businessemail }}</span>
-          </dd>
-          <dt><span>Businessprovinceid</span></dt>
-          <dd>
-            <span>{{ customer()!.businessprovinceid }}</span>
-          </dd>
-          <dt><span>Businessdistrictid</span></dt>
-          <dd>
-            <span>{{ customer()!.businessdistrictid }}</span>
-          </dd>
-          <dt><span>Contactpersonname</span></dt>
-          <dd>
-            <span>{{ customer()!.contactpersonname }}</span>
-          </dd>
-          <dt><span>Contactpersonphone</span></dt>
-          <dd>
-            <span>{{ customer()!.contactpersonphone }}</span>
-          </dd>
-          <dt><span>Contactpersonmobile</span></dt>
-          <dd>
-            <span>{{ customer()!.contactpersonmobile }}</span>
-          </dd>
-          <dt><span>Contactpersonemail</span></dt>
-          <dd>
-            <span>{{ customer()!.contactpersonemail }}</span>
-          </dd>
-          <dt><span>Rootmappath</span></dt>
-          <dd>
-            <span>{{ customer()!.rootmappath }}</span>
-          </dd>
-          <dt><span>Website</span></dt>
-          <dd>
-            <span>{{ customer()!.website }}</span>
-          </dd>
-          <dt><span>Registrationdate</span></dt>
-          <dd>
-            <span>{{ customer()!.registrationdate | formatMediumDatetime }}</span>
-          </dd>
-          <dt><span>Isactive</span></dt>
-          <dd>
-            <span>{{ customer()!.isactive }}</span>
-          </dd>
-          <dt><span>Isinternalcustomer</span></dt>
-          <dd>
-            <span>{{ customer()!.isinternalcustomer }}</span>
-          </dd>
-          <dt><span>Description</span></dt>
-          <dd>
-            <span>{{ customer()!.description }}</span>
-          </dd>
-          <dt><span>Lmu</span></dt>
-          <dd>
-            <span>{{ customer()!.lmu }}</span>
-          </dd>
-          <dt><span>Lmd</span></dt>
-          <dd>
-            <span>{{ customer()!.lmd | formatMediumDatetime }}</span>
-          </dd>
-          <dt><span>Maximumdiscount</span></dt>
-          <dd>
-            <span>{{ customer()!.maximumdiscount }}</span>
-          </dd>
-          <dt><span>Creditlimit</span></dt>
-          <dd>
-            <span>{{ customer()!.creditlimit }}</span>
-          </dd>
-          <dt><span>Hassecuritydeposit</span></dt>
-          <dd>
-            <span>{{ customer()!.hassecuritydeposit }}</span>
-          </dd>
-          <dt><span>Securitydepositamount</span></dt>
-          <dd>
-            <span>{{ customer()!.securitydepositamount }}</span>
-          </dd>
-          <dt><span>Paybycash</span></dt>
-          <dd>
-            <span>{{ customer()!.paybycash }}</span>
-          </dd>
-          <dt><span>Cashpaymentbeforeload</span></dt>
-          <dd>
-            <span>{{ customer()!.cashpaymentbeforeload }}</span>
-          </dd>
-          <dt><span>Cashlastinvoicebeforeload</span></dt>
-          <dd>
-            <span>{{ customer()!.cashlastinvoicebeforeload }}</span>
-          </dd>
-          <dt><span>Paybycredit</span></dt>
-          <dd>
-            <span>{{ customer()!.paybycredit }}</span>
-          </dd>
-          <dt><span>Creditoneweekcheck</span></dt>
-          <dd>
-            <span>{{ customer()!.creditoneweekcheck }}</span>
-          </dd>
-          <dt><span>Creditpaymentbydays</span></dt>
-          <dd>
-            <span>{{ customer()!.creditpaymentbydays }}</span>
-          </dd>
-          <dt><span>Haspurchasingdeposit</span></dt>
-          <dd>
-            <span>{{ customer()!.haspurchasingdeposit }}</span>
-          </dd>
-          <dt><span>Hassecuritydepositbond</span></dt>
-          <dd>
-            <span>{{ customer()!.hassecuritydepositbond }}</span>
-          </dd>
-          <dt><span>Hasassestsdeposit</span></dt>
-          <dd>
-            <span>{{ customer()!.hasassestsdeposit }}</span>
-          </dd>
-          <dt><span>Customerrootmappath</span></dt>
-          <dd>
-            <span>{{ customer()!.customerrootmappath }}</span>
-          </dd>
-          <dt><span>Employername</span></dt>
-          <dd>
-            <span>{{ customer()!.employername }}</span>
-          </dd>
-          <dt><span>Employeraddress</span></dt>
-          <dd>
-            <span>{{ customer()!.employeraddress }}</span>
-          </dd>
-          <dt><span>Employerphone</span></dt>
-          <dd>
-            <span>{{ customer()!.employerphone }}</span>
-          </dd>
-          <dt><span>Employerdesignation</span></dt>
-          <dd>
-            <span>{{ customer()!.employerdesignation }}</span>
-          </dd>
-          <dt><span>Previousemployername</span></dt>
-          <dd>
-            <span>{{ customer()!.previousemployername }}</span>
-          </dd>
-          <dt><span>Previousemployeraddress</span></dt>
-          <dd>
-            <span>{{ customer()!.previousemployeraddress }}</span>
-          </dd>
-          <dt><span>Previousindustry</span></dt>
-          <dd>
-            <span>{{ customer()!.previousindustry }}</span>
-          </dd>
-          <dt><span>Previousperiod</span></dt>
-          <dd>
-            <span>{{ customer()!.previousperiod }}</span>
-          </dd>
-          <dt><span>Previouspositions</span></dt>
-          <dd>
-            <span>{{ customer()!.previouspositions }}</span>
-          </dd>
-          <dt><span>Previousresionforleaving</span></dt>
-          <dd>
-            <span>{{ customer()!.previousresionforleaving }}</span>
-          </dd>
-          <dt><span>Hascreaditlimit</span></dt>
-          <dd>
-            <span>{{ customer()!.hascreaditlimit }}</span>
-          </dd>
-          <dt><span>Accountid</span></dt>
-          <dd>
-            <span>{{ customer()!.accountid }}</span>
-          </dd>
-          <dt><span>Accountcode</span></dt>
-          <dd>
-            <span>{{ customer()!.accountcode }}</span>
-          </dd>
-          <dt><span>Isregistered</span></dt>
-          <dd>
-            <span>{{ customer()!.isregistered }}</span>
-          </dd>
-          <dt><span>Vatregnumber</span></dt>
-          <dd>
-            <span>{{ customer()!.vatregnumber }}</span>
-          </dd>
-          <dt><span>Tinnumber</span></dt>
-          <dd>
-            <span>{{ customer()!.tinnumber }}</span>
-          </dd>
-          <dt><span>Lat</span></dt>
-          <dd>
-            <span>{{ customer()!.lat }}</span>
-          </dd>
-          <dt><span>Lon</span></dt>
-          <dd>
-            <span>{{ customer()!.lon }}</span>
-          </dd>
-          <dt><span>Creditperiod</span></dt>
-          <dd>
-            <span>{{ customer()!.creditperiod }}</span>
-          </dd>
-        </dl>
+              <div class="col-12 mt-4">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Contact Information</h6>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Residence House No</div>
+                      <div class="col-7">{{ customerRef.residencehouseno }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Residence Address</div>
+                      <div class="col-7">{{ customerRef.residenceaddress }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Residence City</div>
+                      <div class="col-7">{{ customerRef.residencecity }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Residence Phone</div>
+                      <div class="col-7">{{ customerRef.residencephone }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Website</div>
+                      <div class="col-7">{{ customerRef.website }}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Contact Person Name</div>
+                      <div class="col-7">{{ customerRef.contactpersonname }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Contact Person Phone</div>
+                      <div class="col-7">{{ customerRef.contactpersonphone }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Contact Person Mobile</div>
+                      <div class="col-7">{{ customerRef.contactpersonmobile }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Contact Person Email</div>
+                      <div class="col-7">{{ customerRef.contactpersonemail }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
-        </button>
+              <div class="col-12 mt-4">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Business Information</h6>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Business Name</div>
+                      <div class="col-7 fw-bold">{{ customerRef.businessname }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Business Reg Date</div>
+                      <div class="col-7">{{ customerRef.businessregdate | formatMediumDate }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Business Reg No</div>
+                      <div class="col-7">{{ customerRef.businessregno }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Business Location No</div>
+                      <div class="col-7">{{ customerRef.businesslocationno }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Business Address</div>
+                      <div class="col-7">{{ customerRef.businessaddress }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Business City</div>
+                      <div class="col-7">{{ customerRef.businesscity }}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Business Phone 1</div>
+                      <div class="col-7">{{ customerRef.businessphone1 }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Business Phone 2</div>
+                      <div class="col-7">{{ customerRef.businessphone2 }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Business Mobile</div>
+                      <div class="col-7">{{ customerRef.businessmobile }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Business Fax</div>
+                      <div class="col-7">{{ customerRef.businessfax }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Business Email</div>
+                      <div class="col-7">{{ customerRef.businessemail }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Business Province ID</div>
+                      <div class="col-7">{{ customerRef.businessprovinceid }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Business District ID</div>
+                      <div class="col-7">{{ customerRef.businessdistrictid }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-        <button type="button" [routerLink]="['/customer', customer()!.id, 'edit']" class="btn btn-primary">
-          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
-        </button>
-      </div>
-    }
+              <div class="col-12 mt-4">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Credit & Payment</h6>
+                <div class="row g-3 mb-3">
+                  <div class="col-md-3">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Credit Limit</div>
+                      <div class="fw-bold">{{ customerRef.creditlimit }}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Maximum Discount</div>
+                      <div class="fw-bold">{{ customerRef.maximumdiscount }}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Security Deposit</div>
+                      <div class="fw-bold">{{ customerRef.securitydepositamount }}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Credit Period</div>
+                      <div class="fw-bold">{{ customerRef.creditperiod }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Has Security Deposit</div>
+                      <div class="col-7">{{ customerRef.hassecuritydeposit ? 'Yes' : 'No' }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Pay By Cash</div>
+                      <div class="col-7">{{ customerRef.paybycash ? 'Yes' : 'No' }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Cash Payment Before Load</div>
+                      <div class="col-7">{{ customerRef.cashpaymentbeforeload }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Cash Last Invoice Before Load</div>
+                      <div class="col-7">{{ customerRef.cashlastinvoicebeforeload }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Pay By Credit</div>
+                      <div class="col-7">{{ customerRef.paybycredit ? 'Yes' : 'No' }}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Credit One Week Check</div>
+                      <div class="col-7">{{ customerRef.creditoneweekcheck ? 'Yes' : 'No' }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Credit Payment By Days</div>
+                      <div class="col-7">{{ customerRef.creditpaymentbydays }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Has Purchasing Deposit</div>
+                      <div class="col-7">{{ customerRef.haspurchasingdeposit ? 'Yes' : 'No' }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Has Security Deposit Bond</div>
+                      <div class="col-7">{{ customerRef.hassecuritydepositbond ? 'Yes' : 'No' }}</div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5 text-secondary">Has Assets Deposit</div>
+                      <div class="col-7">{{ customerRef.hasassestsdeposit ? 'Yes' : 'No' }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mt-4">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Employment Information</h6>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Employer Name</div>
+                  <div class="col-7">{{ customerRef.employername }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Employer Address</div>
+                  <div class="col-7">{{ customerRef.employeraddress }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Employer Phone</div>
+                  <div class="col-7">{{ customerRef.employerphone }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Employer Designation</div>
+                  <div class="col-7">{{ customerRef.employerdesignation }}</div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mt-4">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Previous Employment</h6>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Previous Employer Name</div>
+                  <div class="col-7">{{ customerRef.previousemployername }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Previous Employer Address</div>
+                  <div class="col-7">{{ customerRef.previousemployeraddress }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Previous Industry</div>
+                  <div class="col-7">{{ customerRef.previousindustry }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Previous Period</div>
+                  <div class="col-7">{{ customerRef.previousperiod }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Previous Positions</div>
+                  <div class="col-7">{{ customerRef.previouspositions }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 text-secondary">Previous Reason For Leaving</div>
+                  <div class="col-7">{{ customerRef.previousresionforleaving }}</div>
+                </div>
+              </div>
+
+              <div class="col-12 mt-4">
+                <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Status, Location & Audit Information</h6>
+                <div class="row g-3 mb-3">
+                  <div class="col-md-3">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Internal Customer</div>
+                      <div class="fw-bold">{{ customerRef.isinternalcustomer ? 'Yes' : 'No' }}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Has Credit Limit</div>
+                      <div class="fw-bold">{{ customerRef.hascreaditlimit ? 'Yes' : 'No' }}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Registered</div>
+                      <div class="fw-bold">{{ customerRef.isregistered ? 'Yes' : 'No' }}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="p-3 bg-light rounded text-center border">
+                      <div class="small text-secondary mb-1">Active</div>
+                      <div class="fw-bold">{{ customerRef.isactive ? 'Yes' : 'No' }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Territory</div>
+                  <div class="col-md-9">{{ customerRef.territory }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Team</div>
+                  <div class="col-md-9">{{ customerRef.team }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Profile Picture Path</div>
+                  <div class="col-md-9">{{ customerRef.profilepicturepath }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Root Map Path</div>
+                  <div class="col-md-9">{{ customerRef.rootmappath }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Customer Root Map Path</div>
+                  <div class="col-md-9">{{ customerRef.customerrootmappath }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Description</div>
+                  <div class="col-md-9">{{ customerRef.description }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Account ID</div>
+                  <div class="col-md-9">{{ customerRef.accountid }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Account Code</div>
+                  <div class="col-md-9">{{ customerRef.accountcode }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">VAT Reg Number</div>
+                  <div class="col-md-9">{{ customerRef.vatregnumber }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">TIN Number</div>
+                  <div class="col-md-9">{{ customerRef.tinnumber }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Lat</div>
+                  <div class="col-md-9">{{ customerRef.lat }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Lon</div>
+                  <div class="col-md-9">{{ customerRef.lon }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">Registration Date</div>
+                  <div class="col-md-9">{{ customerRef.registrationdate | formatMediumDatetime }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">LMU</div>
+                  <div class="col-md-9">{{ customerRef.lmu }}</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-3 text-secondary">LMD</div>
+                  <div class="col-md-9">{{ customerRef.lmd | formatMediumDatetime }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-footer bg-white py-3 border-top-0 d-flex gap-2 justify-content-end">
+            <button
+              type="submit"
+              (click)="previousState()"
+              class="btn btn-outline-secondary px-4 shadow-sm"
+              data-cy="entityDetailsBackButton"
+            >
+              <fa-icon icon="arrow-left" class="me-1"></fa-icon> Back
+            </button>
+
+            <!-- Edit button hidden as requested. -->
+            <!--
+            <button type="button" [routerLink]="['/customer', customerRef.id, 'edit']" class="btn btn-primary px-4 shadow-sm">
+              <fa-icon icon="pencil-alt" class="me-1"></fa-icon> Edit
+            </button>
+            -->
+          </div>
+        </div>
+      }
+    </div>
   </div>
 </div>
