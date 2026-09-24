@@ -24,9 +24,9 @@ export default class SidenavbarComponent implements OnInit {
   version = '';
   account = inject(AccountService).trackCurrentAccount();
   entitiesNavbarItems: NavbarItem[] = [];
-  isEntitiesExpanded = false;
-  isAdminExpanded = false;
-  isAccountExpanded = false;
+  isEntitiesExpanded = true;
+  isAdminExpanded = true;
+  isAccountExpanded = true;
 
   private loginService = inject(LoginService);
   private profileService = inject(ProfileService);
