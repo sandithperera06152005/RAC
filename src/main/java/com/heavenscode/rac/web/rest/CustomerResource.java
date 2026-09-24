@@ -11,6 +11,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -174,6 +175,29 @@ public class CustomerResource {
     }
 
     /**
+     * {@code GET  /customers/customer-types} : get CustomerTypeName values for Customer.customertype IDs.
+     *
+     * @param ids Customer type IDs to resolve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the matching customer type names.
+     */
+    @GetMapping("/customer-types")
+    public ResponseEntity<List<CustomerTypeNameDTO>> getCustomerTypeNamesByIds(@RequestParam("ids") List<Integer> ids) {
+        LOG.debug("REST request to get CustomerTypeName values for ids : {}", ids);
+
+        List<Integer> distinctIds = ids.stream().filter(id -> id != null && id > 0).distinct().collect(Collectors.toList());
+        if (distinctIds.isEmpty()) {
+            return ResponseEntity.ok(List.of());
+        }
+
+        List<CustomerTypeNameDTO> customerTypes = customerRepository
+            .findCustomerTypeNamesByIdIn(distinctIds)
+            .stream()
+            .map(customerType -> new CustomerTypeNameDTO(customerType.getId(), customerType.getCustomerTypeName()))
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(customerTypes);
+    }
+
+    /**
      * {@code GET  /customers/:id} : get the "id" customer.
      *
      * @param id the id of the customer to retrieve.
@@ -200,4 +224,6 @@ public class CustomerResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+    public record CustomerTypeNameDTO(Long id, String customerTypeName) {}
 }

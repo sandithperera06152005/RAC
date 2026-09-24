@@ -105,19 +105,19 @@
                 </div>
                 <div class="row mb-2">
                   <div class="col-md-3 text-secondary">Created By</div>
-                  <div class="col-md-9">{{ receipt()!.createdby }}</div>
+                  <div class="col-md-9">{{ getEmployeeName(receipt()!.createdby) }}</div>
                 </div>
                 <div class="row mb-2">
                   <div class="col-md-3 text-secondary">LMU</div>
-                  <div class="col-md-9">{{ receipt()!.lmu }}</div>
+                  <div class="col-md-9">{{ getEmployeeName(receipt()!.lmu) }}</div>
                 </div>
                 <div class="row mb-2">
                   <div class="col-md-3 text-secondary">LMD</div>
                   <div class="col-md-9">{{ receipt()!.lmd | formatMediumDatetime }}</div>
                 </div>
                 <div class="row mb-2">
-                  <div class="col-md-3 text-secondary">Term ID</div>
-                  <div class="col-md-9">{{ receipt()!.termid }}</div>
+                  <div class="col-md-3 text-secondary">Term</div>
+                  <div class="col-md-9">{{ getPaymentTermName(receipt()!.termid) }}</div>
                 </div>
                 <div class="row mb-2">
                   <div class="col-md-3 text-secondary">Comments</div>

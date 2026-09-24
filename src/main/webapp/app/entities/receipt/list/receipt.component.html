@@ -33,7 +33,7 @@
   }
 
   @if (receipts && receipts.length > 0) {
-    <div class="table-responsive table-entities" id="entities">
+    <div class="table-responsive table-entities rac-sticky-action-table" id="entities">
       <table class="table table-striped" aria-describedby="page-heading">
         <thead>
           <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
@@ -188,7 +188,7 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col"></th>
+            <th scope="col" class="rac-sticky-action-col"></th>
           </tr>
         </thead>
         <tbody>
@@ -221,7 +221,7 @@
               <td>{{ receipt.isactive }}</td>
               <td>{{ receipt.deposited }}</td>
               <td>{{ getCreatedByName(receipt.createdby) }}</td>
-              <td class="text-end">
+              <td class="text-end rac-sticky-action-col">
                 <div class="btn-group">
                   <a
                     [routerLink]="['/receipt', receipt.id, 'view']"
@@ -240,15 +240,6 @@
                     <img class="rac-action-icon" src="content/images/autocare-actions/edit.png" alt="Edit" />
                   </a>
                   -->
-
-                  <button
-                    type="submit"
-                    (click)="delete(receipt)"
-                    class="btn btn-danger btn-sm rac-action-button"
-                    data-cy="entityDeleteButton"
-                  >
-                    <img class="rac-action-icon" src="content/images/autocare-actions/delete.png" alt="Delete" />
-                  </button>
                 </div>
               </td>
             </tr>

@@ -1,9 +1,8 @@
 import { Component, NgZone, inject, OnInit } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
-import { combineLatest, filter, Observable, of, Subscription, tap } from 'rxjs';
+import { combineLatest, Observable, of, Subscription, tap } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
 import { sortStateSignal, SortDirective, SortByDirective, type SortState, SortService } from 'app/shared/sort';
@@ -12,10 +11,9 @@ import { ItemCountComponent } from 'app/shared/pagination';
 import { FormsModule } from '@angular/forms';
 
 import { ITEMS_PER_PAGE, PAGE_HEADER, TOTAL_COUNT_RESPONSE_HEADER } from 'app/config/pagination.constants';
-import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigation.constants';
+import { SORT, DEFAULT_SORT_DATA } from 'app/config/navigation.constants';
 import { IReceipt } from '../receipt.model';
 import { EntityArrayResponseType, ReceiptService } from '../service/receipt.service';
-import { ReceiptDeleteDialogComponent } from '../delete/receipt-delete-dialog.component';
 import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/service/user.service';
 
@@ -52,7 +50,6 @@ export class ReceiptComponent implements OnInit {
   protected userService = inject(UserService);
   protected activatedRoute = inject(ActivatedRoute);
   protected sortService = inject(SortService);
-  protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
   trackId = (_index: number, item: IReceipt): number => this.receiptService.getReceiptIdentifier(item);
@@ -77,18 +74,6 @@ export class ReceiptComponent implements OnInit {
 
   getCreatedByName(createdById: number | null | undefined): string | number | null | undefined {
     return createdById == null ? createdById : this.createdByNames.get(createdById) ?? createdById;
-  }
-
-  delete(receipt: IReceipt): void {
-    const modalRef = this.modalService.open(ReceiptDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
-    modalRef.componentInstance.receipt = receipt;
-    // unsubscribe not needed because closed completes on modal close
-    modalRef.closed
-      .pipe(
-        filter(reason => reason === ITEM_DELETED_EVENT),
-        tap(() => this.load()),
-      )
-      .subscribe();
   }
 
   load(): void {
@@ -140,7 +125,7 @@ export class ReceiptComponent implements OnInit {
     }
 
     this.userService
-      .queryUserNamesByIds(createdByIds)
+      .queryEmployeeNamesByIds(createdByIds)
       .pipe(catchError(() => of({ body: [] as IUser[] })))
       .subscribe(response => {
         this.createdByNames = this.createUserNameMap(response.body ?? []);
@@ -150,10 +135,6 @@ export class ReceiptComponent implements OnInit {
   protected createUserNameMap(users: IUser[]): Map<number, string> {
     const names = new Map<number, string>();
     users.forEach(user => {
-      if (user.id == null) {
-        return;
-      }
-
       names.set(user.id, user.login ?? String(user.id));
     });
     return names;

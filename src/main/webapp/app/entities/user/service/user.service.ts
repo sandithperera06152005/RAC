@@ -31,6 +31,10 @@ export class UserService {
     return this.http.get<IUser[]>(`${this.resourceUrl}/usernames`, { params: options, observe: 'response' });
   }
 
+  queryEmployeeNamesByIds(ids: number[]): Observable<EntityArrayResponseType> {
+    return this.queryUserNamesByIds(ids);
+  }
+
   getUserIdentifier(user: Pick<IUser, 'id'>): number {
     return user.id;
   }

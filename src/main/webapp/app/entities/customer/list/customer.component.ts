@@ -1,9 +1,8 @@
 import { Component, NgZone, inject, OnInit } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
-import { combineLatest, filter, Observable, of, Subscription, tap } from 'rxjs';
+import { combineLatest, Observable, of, Subscription, tap } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
 import { sortStateSignal, SortDirective, SortByDirective, type SortState, SortService } from 'app/shared/sort';
@@ -12,12 +11,11 @@ import { ItemCountComponent } from 'app/shared/pagination';
 import { FormsModule } from '@angular/forms';
 
 import { ITEMS_PER_PAGE, PAGE_HEADER, TOTAL_COUNT_RESPONSE_HEADER } from 'app/config/pagination.constants';
-import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigation.constants';
+import { SORT, DEFAULT_SORT_DATA } from 'app/config/navigation.constants';
 import { ICustomer } from '../customer.model';
-import { EntityArrayResponseType, CustomerService } from '../service/customer.service';
-import { CustomerDeleteDialogComponent } from '../delete/customer-delete-dialog.component';
-import { CommonserviceoptionService } from 'app/entities/commonserviceoption/service/commonserviceoption.service';
-import { ICommonserviceoption } from 'app/entities/commonserviceoption/commonserviceoption.model';
+import { EntityArrayResponseType, CustomerService, ICustomerTypeName } from '../service/customer.service';
+import { IUser } from 'app/entities/user/user.model';
+import { UserService } from 'app/entities/user/service/user.service';
 
 @Component({
   standalone: true,
@@ -40,6 +38,7 @@ export class CustomerComponent implements OnInit {
   customers?: ICustomer[];
   isLoading = false;
   customerTypeNames = new Map<number, string>();
+  lmuNames = new Map<number, string>();
 
   sortState = sortStateSignal({});
 
@@ -49,17 +48,14 @@ export class CustomerComponent implements OnInit {
 
   public router = inject(Router);
   protected customerService = inject(CustomerService);
-  protected commonserviceoptionService = inject(CommonserviceoptionService);
+  protected userService = inject(UserService);
   protected activatedRoute = inject(ActivatedRoute);
   protected sortService = inject(SortService);
-  protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
   trackId = (_index: number, item: ICustomer): number => this.customerService.getCustomerIdentifier(item);
 
   ngOnInit(): void {
-    this.loadCustomerTypeNames();
-
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])
       .pipe(
         tap(([params, data]) => this.fillComponentAttributeFromRoute(params, data)),
@@ -72,16 +68,8 @@ export class CustomerComponent implements OnInit {
     return customerTypeId == null ? customerTypeId : this.customerTypeNames.get(customerTypeId) ?? customerTypeId;
   }
 
-  delete(customer: ICustomer): void {
-    const modalRef = this.modalService.open(CustomerDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
-    modalRef.componentInstance.customer = customer;
-    // unsubscribe not needed because closed completes on modal close
-    modalRef.closed
-      .pipe(
-        filter(reason => reason === ITEM_DELETED_EVENT),
-        tap(() => this.load()),
-      )
-      .subscribe();
+  getEmployeeName(employeeId: number | null | undefined): string | number | null | undefined {
+    return employeeId == null ? employeeId : this.lmuNames.get(employeeId) ?? employeeId;
   }
 
   load(): void {
@@ -110,6 +98,7 @@ export class CustomerComponent implements OnInit {
     this.fillComponentAttributesFromResponseHeader(response.headers);
     const dataFromBody = this.fillComponentAttributesFromResponseBody(response.body);
     this.customers = dataFromBody;
+    this.loadCustomerLookups(dataFromBody);
   }
 
   protected fillComponentAttributesFromResponseBody(data: ICustomer[] | null): ICustomer[] {
@@ -120,27 +109,65 @@ export class CustomerComponent implements OnInit {
     this.totalItems = Number(headers.get(TOTAL_COUNT_RESPONSE_HEADER));
   }
 
-  protected loadCustomerTypeNames(): void {
-    this.commonserviceoptionService
-      .query({ size: 1000 })
-      .pipe(catchError(() => of({ body: [] as ICommonserviceoption[] })))
+  protected loadCustomerLookups(customers: ICustomer[]): void {
+    this.loadCustomerTypeNames(customers);
+    this.loadEmployeeNames(customers);
+  }
+
+  protected loadCustomerTypeNames(customers: ICustomer[]): void {
+    const customerTypeIds = this.uniquePositiveNumbers(customers.map(customer => customer.customertype));
+
+    if (customerTypeIds.length === 0) {
+      this.customerTypeNames = new Map<number, string>();
+      return;
+    }
+
+    this.customerService
+      .queryCustomerTypeNamesByIds(customerTypeIds)
+      .pipe(catchError(() => of({ body: [] as ICustomerTypeName[] })))
       .subscribe(response => {
-        this.customerTypeNames = this.createCommonOptionNameMap(response.body ?? []);
+        this.customerTypeNames = this.createCustomerTypeNameMap(response.body ?? []);
       });
   }
 
-  protected createCommonOptionNameMap(options: ICommonserviceoption[]): Map<number, string> {
-    const names = new Map<number, string>();
-    options.forEach(option => {
-      if (option.name) {
-        names.set(option.id, option.name);
+  protected loadEmployeeNames(customers: ICustomer[]): void {
+    const employeeIds = this.uniquePositiveNumbers(customers.map(customer => customer.lmu));
 
-        if (option.value != null) {
-          names.set(option.value, option.name);
-        }
+    if (employeeIds.length === 0) {
+      this.lmuNames = new Map<number, string>();
+      return;
+    }
+
+    this.userService
+      .queryEmployeeNamesByIds(employeeIds)
+      .pipe(catchError(() => of({ body: [] as IUser[] })))
+      .subscribe(response => {
+        this.lmuNames = this.createUserNameMap(response.body ?? []);
+      });
+  }
+
+  protected createCustomerTypeNameMap(customerTypes: ICustomerTypeName[]): Map<number, string> {
+    const names = new Map<number, string>();
+    customerTypes.forEach(customerType => {
+      if (customerType.customerTypeName) {
+        names.set(customerType.id, customerType.customerTypeName);
       }
     });
     return names;
+  }
+
+  protected createUserNameMap(users: IUser[]): Map<number, string> {
+    const names = new Map<number, string>();
+    users.forEach(user => {
+      names.set(user.id, user.login ?? String(user.id));
+    });
+    return names;
+  }
+
+  protected uniquePositiveNumbers(values: Array<number | null | undefined>): number[] {
+    return values
+      .filter((value): value is number => value != null && value > 0)
+      .filter((value, index, ids) => ids.indexOf(value) === index);
   }
 
   protected queryBackend(): Observable<EntityArrayResponseType> {

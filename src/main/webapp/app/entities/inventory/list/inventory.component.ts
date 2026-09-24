@@ -1,9 +1,8 @@
 import { Component, NgZone, OnInit, inject } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
-import { Observable, Subscription, combineLatest, filter, of, tap } from 'rxjs';
+import { Observable, Subscription, combineLatest, of, tap } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
 import { SortByDirective, SortDirective, SortService, type SortState, sortStateSignal } from 'app/shared/sort';
@@ -12,16 +11,17 @@ import { ItemCountComponent } from 'app/shared/pagination';
 import { FormsModule } from '@angular/forms';
 
 import { ITEMS_PER_PAGE, PAGE_HEADER, TOTAL_COUNT_RESPONSE_HEADER } from 'app/config/pagination.constants';
-import { DEFAULT_SORT_DATA, ITEM_DELETED_EVENT, SORT } from 'app/config/navigation.constants';
+import { DEFAULT_SORT_DATA, SORT } from 'app/config/navigation.constants';
 import { DataUtils } from 'app/core/util/data-util.service';
 import { FilterComponent, FilterOptions, IFilterOption, IFilterOptions } from 'app/shared/filter';
 import { EntityArrayResponseType, InventoryService } from '../service/inventory.service';
-import { InventoryDeleteDialogComponent } from '../delete/inventory-delete-dialog.component';
 import { IInventory } from '../inventory.model';
 import { CommonserviceoptionService } from 'app/entities/commonserviceoption/service/commonserviceoption.service';
 import { ICommonserviceoption } from 'app/entities/commonserviceoption/commonserviceoption.model';
 import { ServicecategoryService } from 'app/entities/servicecategory/service/servicecategory.service';
 import { IServicecategory } from 'app/entities/servicecategory/servicecategory.model';
+import { IUser } from 'app/entities/user/user.model';
+import { UserService } from 'app/entities/user/service/user.service';
 
 @Component({
   standalone: true,
@@ -46,6 +46,7 @@ export class InventoryComponent implements OnInit {
   isLoading = false;
   inventoryTypeNames = new Map<number, string>();
   categoryNames = new Map<number, string>();
+  lmuNames = new Map<number, string>();
 
   sortState = sortStateSignal({});
   filters: IFilterOptions = new FilterOptions();
@@ -58,10 +59,10 @@ export class InventoryComponent implements OnInit {
   protected inventoryService = inject(InventoryService);
   protected commonserviceoptionService = inject(CommonserviceoptionService);
   protected servicecategoryService = inject(ServicecategoryService);
+  protected userService = inject(UserService);
   protected activatedRoute = inject(ActivatedRoute);
   protected sortService = inject(SortService);
   protected dataUtils = inject(DataUtils);
-  protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
   trackId = (item: IInventory): number => this.inventoryService.getInventoryIdentifier(item);
@@ -88,24 +89,16 @@ export class InventoryComponent implements OnInit {
     return classification2Id == null ? classification2 : this.categoryNames.get(classification2Id) ?? classification2;
   }
 
+  getEmployeeName(employeeId: number | null | undefined): string | number | null | undefined {
+    return employeeId == null ? employeeId : this.lmuNames.get(employeeId) ?? employeeId;
+  }
+
   byteSize(base64String: string): string {
     return this.dataUtils.byteSize(base64String);
   }
 
   openFile(base64String: string, contentType: string | null | undefined): void {
     return this.dataUtils.openFile(base64String, contentType);
-  }
-
-  delete(inventory: IInventory): void {
-    const modalRef = this.modalService.open(InventoryDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
-    modalRef.componentInstance.inventory = inventory;
-    // unsubscribe not needed because closed completes on modal close
-    modalRef.closed
-      .pipe(
-        filter(reason => reason === ITEM_DELETED_EVENT),
-        tap(() => this.load()),
-      )
-      .subscribe();
   }
 
   load(): void {
@@ -135,6 +128,7 @@ export class InventoryComponent implements OnInit {
     this.fillComponentAttributesFromResponseHeader(response.headers);
     const dataFromBody = this.fillComponentAttributesFromResponseBody(response.body);
     this.inventories = dataFromBody;
+    this.loadEmployeeNames(dataFromBody);
   }
 
   protected fillComponentAttributesFromResponseBody(data: IInventory[] | null): IInventory[] {
@@ -181,6 +175,33 @@ export class InventoryComponent implements OnInit {
       if (category.name) {
         names.set(category.id, category.name);
       }
+    });
+    return names;
+  }
+
+  protected loadEmployeeNames(inventories: IInventory[]): void {
+    const employeeIds = inventories
+      .map(inventory => inventory.lmu)
+      .filter((employeeId): employeeId is number => employeeId != null && employeeId > 0)
+      .filter((employeeId, index, ids) => ids.indexOf(employeeId) === index);
+
+    if (employeeIds.length === 0) {
+      this.lmuNames = new Map<number, string>();
+      return;
+    }
+
+    this.userService
+      .queryEmployeeNamesByIds(employeeIds)
+      .pipe(catchError(() => of({ body: [] as IUser[] })))
+      .subscribe(response => {
+        this.lmuNames = this.createUserNameMap(response.body ?? []);
+      });
+  }
+
+  protected createUserNameMap(users: IUser[]): Map<number, string> {
+    const names = new Map<number, string>();
+    users.forEach(user => {
+      names.set(user.id, user.login ?? String(user.id));
     });
     return names;
   }

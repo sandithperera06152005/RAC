@@ -33,6 +33,11 @@ export type PartialUpdateRestCustomer = RestOf<PartialUpdateCustomer>;
 export type EntityResponseType = HttpResponse<ICustomer>;
 export type EntityArrayResponseType = HttpResponse<ICustomer[]>;
 
+export interface ICustomerTypeName {
+  id: number;
+  customerTypeName?: string | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class CustomerService {
   protected readonly http = inject(HttpClient);
@@ -72,6 +77,11 @@ export class CustomerService {
     return this.http
       .get<RestCustomer[]>(this.resourceUrl, { params: options, observe: 'response' })
       .pipe(map(res => this.convertResponseArrayFromServer(res)));
+  }
+
+  queryCustomerTypeNamesByIds(ids: number[]): Observable<HttpResponse<ICustomerTypeName[]>> {
+    const options = createRequestOption({ ids });
+    return this.http.get<ICustomerTypeName[]>(`${this.resourceUrl}/customer-types`, { params: options, observe: 'response' });
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {

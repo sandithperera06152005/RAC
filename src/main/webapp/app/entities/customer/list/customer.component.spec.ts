@@ -1,11 +1,9 @@
-import { ComponentFixture, TestBed, fakeAsync, inject, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ActivatedRoute } from '@angular/router';
-import { of, Subject } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { of } from 'rxjs';
 
-import { sampleWithRequiredData } from '../customer.test-samples';
 import { CustomerService } from '../service/customer.service';
 
 import { CustomerComponent } from './customer.component';
@@ -126,52 +124,5 @@ describe('Customer Management Component', () => {
 
     // THEN
     expect(service.query).toHaveBeenLastCalledWith(expect.objectContaining({ sort: ['id,desc'] }));
-  });
-
-  describe('delete', () => {
-    let ngbModal: NgbModal;
-    let deleteModalMock: any;
-
-    beforeEach(() => {
-      deleteModalMock = { componentInstance: {}, closed: new Subject() };
-      // NgbModal is not a singleton using TestBed.inject.
-      // ngbModal = TestBed.inject(NgbModal);
-      ngbModal = (comp as any).modalService;
-      jest.spyOn(ngbModal, 'open').mockReturnValue(deleteModalMock);
-    });
-
-    it('on confirm should call load', inject(
-      [],
-      fakeAsync(() => {
-        // GIVEN
-        jest.spyOn(comp, 'load');
-
-        // WHEN
-        comp.delete(sampleWithRequiredData);
-        deleteModalMock.closed.next('deleted');
-        tick();
-
-        // THEN
-        expect(ngbModal.open).toHaveBeenCalled();
-        expect(comp.load).toHaveBeenCalled();
-      }),
-    ));
-
-    it('on dismiss should call load', inject(
-      [],
-      fakeAsync(() => {
-        // GIVEN
-        jest.spyOn(comp, 'load');
-
-        // WHEN
-        comp.delete(sampleWithRequiredData);
-        deleteModalMock.closed.next();
-        tick();
-
-        // THEN
-        expect(ngbModal.open).toHaveBeenCalled();
-        expect(comp.load).not.toHaveBeenCalled();
-      }),
-    ));
   });
 });

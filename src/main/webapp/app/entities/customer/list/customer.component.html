@@ -33,7 +33,7 @@
   }
 
   @if (customers && customers.length > 0) {
-    <div class="table-responsive table-entities" id="entities">
+    <div class="table-responsive table-entities rac-sticky-action-table" id="entities">
       <table class="table table-striped" aria-describedby="page-heading">
         <thead>
           <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
@@ -84,6 +84,62 @@
             <th scope="col" jhiSortBy="callingname">
               <div class="d-flex">
                 <span>Calling Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="residencehouseno">
+              <div class="d-flex">
+                <span>Residence House No</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="residenceaddress">
+              <div class="d-flex">
+                <span>Residence Address</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="residencecity">
+              <div class="d-flex">
+                <span>Residence City</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="residencephone">
+              <div class="d-flex">
+                <span>Residence Phone</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="accountid">
+              <div class="d-flex">
+                <span>Account ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="accountcode">
+              <div class="d-flex">
+                <span>Account Code</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isregistered">
+              <div class="d-flex">
+                <span>Is Registered</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lmu">
+              <div class="d-flex">
+                <span>LMU</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -193,34 +249,7 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="residencehouseno">
-              <div class="d-flex">
-                <span>Residence House No</span>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="residenceaddress">
-              <div class="d-flex">
-                <span>Residence Address</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="residencecity">
-              <div class="d-flex">
-                <span>Residence City</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="residencephone">
-              <div class="d-flex">
-                <span>Residence Phone</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
             <th scope="col" jhiSortBy="businesslocationno">
               <div class="d-flex">
                 <span>Business Location No</span>
@@ -357,13 +386,6 @@
             <th scope="col" jhiSortBy="description">
               <div class="d-flex">
                 <span>Description</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="lmu">
-              <div class="d-flex">
-                <span>LMU</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -550,27 +572,7 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="accountid">
-              <div class="d-flex">
-                <span>Account ID</span>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="accountcode">
-              <div class="d-flex">
-                <span>Account Code</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="isregistered">
-              <div class="d-flex">
-                <span>Is Registered</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
             <th scope="col" jhiSortBy="vatregnumber">
               <div class="d-flex">
                 <span>VAT Reg Number</span>
@@ -606,7 +608,7 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col"></th>
+            <th scope="col" class="rac-sticky-action-col"></th>
           </tr>
         </thead>
         <tbody>
@@ -623,6 +625,14 @@
               <td>{{ customer.namewithinitials }}</td>
               <td>{{ customer.fullname }}</td>
               <td>{{ customer.callingname }}</td>
+              <td>{{ customer.residencehouseno }}</td>
+              <td>{{ customer.residenceaddress }}</td>
+              <td>{{ customer.residencecity }}</td>
+              <td>{{ customer.residencephone }}</td>
+              <td>{{ customer.accountid }}</td>
+              <td>{{ customer.accountcode }}</td>
+              <td>{{ customer.isregistered }}</td>
+              <td>{{ getEmployeeName(customer.lmu) }}</td>
               <td>{{ customer.nicno }}</td>
               <td>{{ customer.nicissueddate | formatMediumDate }}</td>
               <td>{{ customer.dateofbirth | formatMediumDate }}</td>
@@ -638,10 +648,6 @@
               <td>{{ customer.businessregdate | formatMediumDate }}</td>
               <td>{{ customer.businessregno }}</td>
               <td>{{ customer.profilepicturepath }}</td>
-              <td>{{ customer.residencehouseno }}</td>
-              <td>{{ customer.residenceaddress }}</td>
-              <td>{{ customer.residencecity }}</td>
-              <td>{{ customer.residencephone }}</td>
               <td>{{ customer.businesslocationno }}</td>
               <td>{{ customer.businessaddress }}</td>
               <td>{{ customer.businesscity }}</td>
@@ -662,7 +668,6 @@
               <td>{{ customer.isactive }}</td>
               <td>{{ customer.isinternalcustomer }}</td>
               <td>{{ customer.description }}</td>
-              <td>{{ customer.lmu }}</td>
               <td>{{ customer.lmd | formatMediumDatetime }}</td>
               <td>{{ customer.maximumdiscount }}</td>
               <td>{{ customer.creditlimit }}</td>
@@ -689,15 +694,12 @@
               <td>{{ customer.previouspositions }}</td>
               <td>{{ customer.previousresionforleaving }}</td>
               <td>{{ customer.hascreaditlimit }}</td>
-              <td>{{ customer.accountid }}</td>
-              <td>{{ customer.accountcode }}</td>
-              <td>{{ customer.isregistered }}</td>
               <td>{{ customer.vatregnumber }}</td>
               <td>{{ customer.tinnumber }}</td>
               <td>{{ customer.lat }}</td>
               <td>{{ customer.lon }}</td>
               <td>{{ customer.creditperiod }}</td>
-              <td class="text-end">
+              <td class="text-end rac-sticky-action-col">
                 <div class="btn-group">
                   <a
                     [routerLink]="['/customer', customer.id, 'view']"
@@ -716,15 +718,6 @@
                     <img class="rac-action-icon" src="content/images/autocare-actions/edit.png" alt="Edit" />
                   </a>
                   -->
-
-                  <button
-                    type="submit"
-                    (click)="delete(customer)"
-                    class="btn btn-danger btn-sm rac-action-button"
-                    data-cy="entityDeleteButton"
-                  >
-                    <img class="rac-action-icon" src="content/images/autocare-actions/delete.png" alt="Delete" />
-                  </button>
                 </div>
               </td>
             </tr>

@@ -1,10 +1,8 @@
-import { ComponentFixture, TestBed, fakeAsync, inject, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpHeaders, HttpResponse, provideHttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, of } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { of } from 'rxjs';
 
-import { sampleWithRequiredData } from '../inventory.test-samples';
 import { InventoryService } from '../service/inventory.service';
 
 import { InventoryComponent } from './inventory.component';
@@ -136,52 +134,5 @@ describe('Inventory Management Component', () => {
 
     // THEN
     expect(service.query).toHaveBeenLastCalledWith(expect.objectContaining({ 'someId.in': ['dc4279ea-cfb9-11ec-9d64-0242ac120002'] }));
-  });
-
-  describe('delete', () => {
-    let ngbModal: NgbModal;
-    let deleteModalMock: any;
-
-    beforeEach(() => {
-      deleteModalMock = { componentInstance: {}, closed: new Subject() };
-      // NgbModal is not a singleton using TestBed.inject.
-      // ngbModal = TestBed.inject(NgbModal);
-      ngbModal = (comp as any).modalService;
-      jest.spyOn(ngbModal, 'open').mockReturnValue(deleteModalMock);
-    });
-
-    it('on confirm should call load', inject(
-      [],
-      fakeAsync(() => {
-        // GIVEN
-        jest.spyOn(comp, 'load');
-
-        // WHEN
-        comp.delete(sampleWithRequiredData);
-        deleteModalMock.closed.next('deleted');
-        tick();
-
-        // THEN
-        expect(ngbModal.open).toHaveBeenCalled();
-        expect(comp.load).toHaveBeenCalled();
-      }),
-    ));
-
-    it('on dismiss should call load', inject(
-      [],
-      fakeAsync(() => {
-        // GIVEN
-        jest.spyOn(comp, 'load');
-
-        // WHEN
-        comp.delete(sampleWithRequiredData);
-        deleteModalMock.closed.next();
-        tick();
-
-        // THEN
-        expect(ngbModal.open).toHaveBeenCalled();
-        expect(comp.load).not.toHaveBeenCalled();
-      }),
-    ));
   });
 });

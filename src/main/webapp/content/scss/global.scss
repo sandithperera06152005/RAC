@@ -275,6 +275,26 @@ entity list page css
   flex: 0 0 auto;
 }
 
+.table-entities.rac-sticky-action-table .rac-sticky-action-col {
+  background-color: var(--bs-table-bg, var(--bs-body-bg));
+  box-shadow: -10px 0 14px rgba(33, 37, 41, 0.08);
+  min-width: 72px;
+  position: sticky;
+  right: 0;
+  text-align: right;
+  width: 72px;
+  z-index: 2;
+}
+
+.table-entities.rac-sticky-action-table thead .rac-sticky-action-col {
+  z-index: 3;
+}
+
+.table-entities.rac-sticky-action-table .rac-sticky-action-col .btn-group {
+  justify-content: flex-end;
+  min-width: 52px;
+}
+
 /* ==========================================================================
 entity detail page css
 ========================================================================== */
