@@ -39,6 +39,7 @@ import { ICustomervehicle } from 'app/entities/customervehicle/customervehicle.m
 import { CustomerService } from 'app/entities/customer/service/customer.service';
 import { ICustomer } from 'app/entities/customer/customer.model';
 import { AutojobsinvoicelinebatchesService } from 'app/entities/autojobsinvoicelinebatches/service/autojobsinvoicelinebatches.service';
+import { InventoryService } from 'app/entities/inventory/service/inventory.service';
 
 declare const bootstrap: any;
 @Component({
@@ -83,10 +84,12 @@ export class SalesinvoiceUpdateComponent implements OnInit {
   protected autocareappointmentService = inject(AutocareappointmentService);
   protected cdr = inject(ChangeDetectorRef);
   protected jobInvoiceLineBatches = inject(AutojobsinvoicelinebatchesService);
+  protected inventoryService = inject(InventoryService);
 
   filteredVehicles: any[] = [];
   filteredCustomers: ICustomer[] = [];
   showVehicleDropdown = false;
+  private selectedCustomer: ICustomer | null = null;
 
   filteredItems: IInventory[][] = [];
   ISalesInvoiceLines: ISalesInvoiceLines[] = [];
@@ -122,6 +125,7 @@ export class SalesinvoiceUpdateComponent implements OnInit {
   createdby: number = 0;
   accountId: number = 0;
   accountCode: string = '';
+  readonly invalidCustomerMessage = 'Customer does not exist in the system. Please enter a valid customer.';
 
   newcode: string = '';
   sourceInvoiceId: number | null = null;
@@ -887,12 +891,23 @@ export class SalesinvoiceUpdateComponent implements OnInit {
   availablequantity: number = 0;
   lastsellingprice: number = 0;
   code: string = '';
+  itemSearchText: string = '';
+  searchItemsByCode = true;
+
+  onItemSearchModeChange(byCode: boolean): void {
+    this.searchItemsByCode = byCode;
+    this.filteredItems[this.i] = [];
+    this.clearSelectedItemSearch();
+  }
+
   onItemCodeSelect(event: Event, index: number): void {
     const inputElement = event.target as HTMLInputElement;
-    const selectedCode = inputElement.value;
+    const selectedValue = inputElement.value;
+    this.itemSearchText = selectedValue;
 
-    // Find the selected item based on the code
-    const selectedItem = this.filteredItems[index]?.find(item => item.code === selectedCode);
+    const selectedItem = this.filteredItems[index]?.find(item =>
+      this.searchItemsByCode ? item.code === selectedValue : item.name === selectedValue,
+    );
 
     if (selectedItem) {
       console.log('Selected Item:', selectedItem);
@@ -901,12 +916,11 @@ export class SalesinvoiceUpdateComponent implements OnInit {
       this.availablequantity = selectedItem.availablequantity ?? 0;
       this.lastsellingprice = selectedItem.lastsellingprice ?? 0;
       this.code = selectedItem.code ?? '';
+      this.itemSearchText = this.searchItemsByCode ? this.code : this.itemname;
       this.buyquantity = 1;
     } else {
-      console.warn('No matching item found for:', selectedCode);
-      this.selectedInventoryItem = null;
-      this.itemname = ''; // Clear itemName if no match is found
-      this.buyquantity = 0;
+      console.warn('No matching item found for:', selectedValue);
+      this.clearSelectedItemSearch(selectedValue);
     }
   }
   onAddItem(): void {
@@ -972,6 +986,7 @@ export class SalesinvoiceUpdateComponent implements OnInit {
     this.availablequantity = 0;
     this.lastsellingprice = 0;
     this.code = '';
+    this.itemSearchText = '';
     this.buyquantity = 0;
     this.itemDiscountValue = 0;
     this.selectedInventoryItem = null;
@@ -981,6 +996,8 @@ export class SalesinvoiceUpdateComponent implements OnInit {
     // Type assertion: Treat event target as HTMLInputElement
     const inputElement = <HTMLInputElement>event.target;
     const value = inputElement.value; // Get the value typed by the user
+    this.itemSearchText = value;
+    this.clearSelectedItemSearch(value);
 
     // Log the input value to the console when a user types
     console.log('User typed:', value);
@@ -992,8 +1009,9 @@ export class SalesinvoiceUpdateComponent implements OnInit {
 
     console.log('Fetching items for value:', value);
 
-    this.salesInvoiceLinesService
-      .getElementsByUserInputCode(value) // Call the service to fetch items
+    const search$ = this.searchItemsByCode ? this.inventoryService.findByCode(value) : this.inventoryService.findByItem(value);
+
+    search$
       .pipe(debounceTime(300)) // Debounce to avoid frequent calls
       .subscribe({
         next: (response: HttpResponse<IInventory[]>) => {
@@ -1010,6 +1028,16 @@ export class SalesinvoiceUpdateComponent implements OnInit {
           this.filteredItems[index] = []; // Clear suggestions on error
         },
       });
+  }
+
+  private clearSelectedItemSearch(searchText = ''): void {
+    this.selectedInventoryItem = null;
+    this.itemname = '';
+    this.availablequantity = 0;
+    this.lastsellingprice = 0;
+    this.code = '';
+    this.buyquantity = 0;
+    this.itemSearchText = searchText;
   }
 
   onVehicleSearch(event: Event): void {
@@ -1089,8 +1117,10 @@ export class SalesinvoiceUpdateComponent implements OnInit {
           const customer = customerRes.body;
           if (customer) {
             const custName = customer.fullname || customer.businessname || '';
+            this.selectedCustomer = customer;
             this.customername = custName;
             this.editForm.patchValue({
+              customerid: customer.id,
               customername: custName,
               customeraddress: customer.residenceaddress || customer.businessaddress || '',
             });
@@ -1107,10 +1137,27 @@ export class SalesinvoiceUpdateComponent implements OnInit {
   onCustomerSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
     const searchTerm = input.value;
+    const selectedCustomerName = this.selectedCustomer ? this.getCustomerDisplayName(this.selectedCustomer) : '';
+
+    if (searchTerm.trim() !== selectedCustomerName) {
+      this.selectedCustomer = null;
+      this.editForm.patchValue({
+        customerid: null,
+        customeraddress: '',
+        amountowing: 0,
+        vehicleno: '',
+        autocarejobid: null,
+      });
+      this.filteredVehicles = [];
+      this.showVehicleDropdown = false;
+    }
 
     if (searchTerm.length > 2) {
-      this.customerService.query({ 'fullname.contains': searchTerm }).subscribe(response => {
-        this.filteredCustomers = response.body || [];
+      forkJoin([
+        this.customerService.query({ 'fullname.contains': searchTerm, size: 20 }),
+        this.customerService.query({ 'businessname.contains': searchTerm, size: 20 }),
+      ]).subscribe(([fullnameResponse, businessnameResponse]) => {
+        this.filteredCustomers = this.mergeUniqueCustomers([...(fullnameResponse.body || []), ...(businessnameResponse.body || [])]);
       });
     } else {
       this.filteredCustomers = [];
@@ -1125,6 +1172,7 @@ export class SalesinvoiceUpdateComponent implements OnInit {
 
     if (selectedCustomer) {
       const custName = selectedCustomer.fullname || selectedCustomer.businessname || '';
+      this.selectedCustomer = selectedCustomer;
       this.customername = custName;
       this.editForm.patchValue({
         customerid: selectedCustomer.id,
@@ -1142,28 +1190,7 @@ export class SalesinvoiceUpdateComponent implements OnInit {
       if (selectedCustomer.id) {
         this.customervehicleService.query({ 'customerid.equals': selectedCustomer.id, size: 100 }).subscribe(vehicleRes => {
           this.filteredVehicles = vehicleRes.body || [];
-          if (this.filteredVehicles.length === 1) {
-            this.showVehicleDropdown = false;
-            const vehicle = this.filteredVehicles[0];
-            this.editForm.patchValue({
-              vehicleno: vehicle.vehiclenumber || '',
-            });
-
-            // Also try to link the latest job for this vehicle
-            if (vehicle.vehiclenumber) {
-              this.autocarejobService
-                .query({ 'vehiclenumber.equals': vehicle.vehiclenumber, sort: ['id,desc'], size: 1 })
-                .subscribe(jobRes => {
-                  const latestJob = jobRes.body?.[0];
-                  if (latestJob) {
-                    this.editForm.patchValue({
-                      autocarejobid: latestJob.id,
-                    });
-                  }
-                  this.cdr.detectChanges();
-                });
-            }
-          } else if (this.filteredVehicles.length > 1) {
+          if (this.filteredVehicles.length > 0) {
             this.showVehicleDropdown = true;
             // Clear vehicle number to force selection from dropdown
             this.editForm.patchValue({
@@ -1172,6 +1199,10 @@ export class SalesinvoiceUpdateComponent implements OnInit {
             });
           } else {
             this.showVehicleDropdown = false;
+            this.editForm.patchValue({
+              vehicleno: '',
+              autocarejobid: null,
+            });
           }
           this.cdr.detectChanges();
         });
@@ -1184,18 +1215,36 @@ export class SalesinvoiceUpdateComponent implements OnInit {
     window.history.back();
   }
 
+  private getCustomerDisplayName(customer: ICustomer): string {
+    return (customer.fullname || customer.businessname || '').trim();
+  }
+
+  private mergeUniqueCustomers(customers: ICustomer[]): ICustomer[] {
+    const uniqueCustomers = new Map<number, ICustomer>();
+    customers.forEach(customer => {
+      if (customer.id != null && !uniqueCustomers.has(customer.id)) {
+        uniqueCustomers.set(customer.id, customer);
+      }
+    });
+    return [...uniqueCustomers.values()];
+  }
+
   checkDuplicateActiveInvoice(): Observable<HttpResponse<{ exists: boolean }>> {
     this.calculateDiscount();
     const salesinvoice = this.salesinvoiceFormService.getSalesinvoice(this.editForm);
     return this.salesinvoiceService.checkDuplicate(salesinvoice);
   }
 
+  isValidInvoiceCustomer(): boolean {
+    const customerId = Number(this.editForm.get('customerid')?.value ?? 0);
+    const customerName = (this.editForm.get('customername')?.value ?? '').toString().trim();
+    return customerId > 0 && customerName.length > 0;
+  }
+
   save(): void {
-    // Guard: customer must be selected before saving
-    const customerId = this.editForm.get('customerid')?.value;
-    const customerName = this.editForm.get('customername')?.value;
-    if (!customerId && !customerName) {
-      alert('Please select a customer before saving the Sales Invoice.');
+    // Guard: customer must exist in the system before saving
+    if (!this.isValidInvoiceCustomer()) {
+      alert(this.invalidCustomerMessage);
       return;
     }
 

@@ -50,6 +50,48 @@
   .selected-lines-table .action-col {
     width: 70px;
   }
+
+  .item-details-panel .form-label {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .item-search-options {
+    min-height: 31px;
+    width: 100%;
+  }
+
+  .item-search-options .form-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+    padding-left: 0;
+  }
+
+  .item-search-options .form-check-input {
+    margin: 0;
+  }
+
+  .item-search-options .form-check-label {
+    white-space: nowrap;
+  }
+
+  .item-details-panel .btn {
+    min-height: 38px;
+  }
+
+  .item-search-row {
+    display: grid;
+    grid-template-columns: minmax(180px, max-content) minmax(0, 1fr);
+    column-gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .item-search-row .item-search-options {
+    justify-content: flex-start;
+  }
 </style>
 <div justify-content-right class="row full-width-form">
   <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm" class="full-width-form">
@@ -111,7 +153,7 @@
                   formControlName="vehicleno"
                   (change)="onVehicleSelect($event)"
                 >
-                  <option [value]="null" disabled selected>Select Vehicle</option>
+                  <option value="" disabled>--select--</option>
                   <option *ngFor="let vehicle of filteredVehicles" [value]="vehicle.vehiclenumber">
                     {{ vehicle.vehiclenumber }}
                   </option>
@@ -151,31 +193,67 @@
         </div>
 
         <div class="col-md-4">
-          <div class="p-2 border rounded bg-light h-100">
+          <div class="p-2 border rounded bg-light h-100 item-details-panel">
             <h6 class="fw-bold text-primary">Item Details</h6>
-            <div class="row">
-              <!-- Left Column -->
-              <div class="col-md-6">
-                <div class="mb-2">
-                  <label class="form-label" for="field_code">Code</label>
-                  <input
-                    type="text"
-                    class="form-control form-control-sm"
-                    id="field_code"
-                    [value]="code"
-                    (input)="onItemCodeInput($event, i)"
-                    (change)="onItemCodeSelect($event, i)"
-                    [attr.list]="'autocomplete' + i"
-                  />
-                  <datalist [id]="'autocomplete' + i">
+
+            <div class="item-search-row">
+              <div>
+                <!-- <label class="form-label d-block">Search By</label> -->
+                <div class="item-search-options d-flex gap-2 align-items-center justify-content-start">
+                  <div class="form-check">
+                    <input
+                      type="radio"
+                      class="form-check-input"
+                      name="salesInvoiceItemSearchBy"
+                      id="salesInvoiceByName"
+                      [checked]="!searchItemsByCode"
+                      (change)="onItemSearchModeChange(false)"
+                    />
+                    <label class="form-check-label" for="salesInvoiceByName">By Name</label>
+                  </div>
+                  <div class="form-check">
+                    <input
+                      type="radio"
+                      class="form-check-input"
+                      name="salesInvoiceItemSearchBy"
+                      id="salesInvoiceByCode"
+                      [checked]="searchItemsByCode"
+                      (change)="onItemSearchModeChange(true)"
+                    />
+                    <label class="form-check-label" for="salesInvoiceByCode">By Code</label>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <!-- <label class="form-label" for="field_code">Item {{ searchItemsByCode ? 'Code' : 'Name' }}</label> -->
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  id="field_code"
+                  [value]="itemSearchText"
+                  (input)="onItemCodeInput($event, i)"
+                  (change)="onItemCodeSelect($event, i)"
+                  [attr.list]="'autocomplete' + i"
+                />
+                <datalist [id]="'autocomplete' + i">
+                  @if (searchItemsByCode) {
                     <option *ngFor="let item of filteredItems[i]" [value]="item.code">
                       {{ item.name }}
                     </option>
-                  </datalist>
-                </div>
+                  } @else {
+                    <option *ngFor="let item of filteredItems[i]" [value]="item.name">
+                      {{ item.code }}
+                    </option>
+                  }
+                </datalist>
+              </div>
+            </div>
+
+            <div class="row g-2">
+              <div class="col-md-6">
                 <div class="mb-2">
                   <label class="form-label" for="field_item">Item</label>
-                  <input type="text" class="form-control form-control-sm" id="field_item" [value]="itemname" readonly />
+                  <input type="text" class="form-control form-control-sm" id="field_item" [value]="itemname" readonly [title]="itemname" />
                 </div>
                 <div class="mb-2">
                   <label class="form-label" for="field_itemPrice">Item Price</label>
@@ -201,7 +279,6 @@
                 </div>
               </div>
 
-              <!-- Right Column -->
               <div class="col-md-6">
                 <div class="mb-2">
                   <label class="form-label" for="field_buyQty">Buy Quantity</label>
@@ -215,26 +292,32 @@
                   />
                 </div>
                 <div class="mb-2">
-                  <label class="form-label me-2">Discount Option</label>
-                  <div class="d-flex gap-2">
-                    <input
-                      type="radio"
-                      name="itemDiscountOption"
-                      id="itemPercentage"
-                      value="percentage"
-                      [(ngModel)]="itemDiscountOption"
-                      [ngModelOptions]="{ standalone: true }"
-                    />
-                    <label for="itemPercentage">%</label>
-                    <input
-                      type="radio"
-                      name="itemDiscountOption"
-                      id="itemValue"
-                      value="value"
-                      [(ngModel)]="itemDiscountOption"
-                      [ngModelOptions]="{ standalone: true }"
-                    />
-                    <label for="itemValue">Value</label>
+                  <label class="form-label d-block">Discount Option</label>
+                  <div class="item-search-options d-flex gap-3 align-items-center">
+                    <div class="form-check">
+                      <input
+                        type="radio"
+                        class="form-check-input"
+                        name="itemDiscountOption"
+                        id="itemPercentage"
+                        value="percentage"
+                        [(ngModel)]="itemDiscountOption"
+                        [ngModelOptions]="{ standalone: true }"
+                      />
+                      <label class="form-check-label" for="itemPercentage">%</label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        type="radio"
+                        class="form-check-input"
+                        name="itemDiscountOption"
+                        id="itemValue"
+                        value="value"
+                        [(ngModel)]="itemDiscountOption"
+                        [ngModelOptions]="{ standalone: true }"
+                      />
+                      <label class="form-check-label" for="itemValue">Value</label>
+                    </div>
                   </div>
                 </div>
                 <div class="mb-2">
@@ -249,14 +332,10 @@
                 </div>
               </div>
             </div>
-            <button
-              type="button"
-              class="btn btn-primary"
-              style="padding: 8px 16px; background-color: #1a58df; border: none; color: white; cursor: pointer"
-              (click)="onAddItem()"
-            >
-              Add Item
-            </button>
+
+            <div class="d-flex justify-content-start mt-2">
+              <button type="button" class="btn btn-primary" (click)="onAddItem()">Add Item</button>
+            </div>
           </div>
         </div>
 
@@ -400,6 +479,8 @@
               [accountId]="accountId"
               [accountCode]="accountCode"
               [invoicecode]="editForm.get('code')?.value ?? null"
+              [canFinishItems]="isValidInvoiceCustomer()"
+              [finishItemsValidationMessage]="invalidCustomerMessage"
             ></app-receipt-modal>
           </div>
         </div>

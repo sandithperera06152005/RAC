@@ -58,6 +58,8 @@ export class ReceiptModalComponent implements OnChanges {
   @Input() accountCode: string = '';
   @Input() invoicecode: string | null = null;
   @Input() sharedSubId: string | null = null;
+  @Input() canFinishItems = true;
+  @Input() finishItemsValidationMessage = 'Customer does not exist in the system. Please enter a valid customer.';
   subid: string = '';
 
   isSaving = false;
@@ -128,6 +130,18 @@ export class ReceiptModalComponent implements OnChanges {
   }
   previousState(): void {
     window.history.back();
+  }
+
+  openFinishItemsModal(): void {
+    if (!this.canFinishItems) {
+      alert(this.finishItemsValidationMessage);
+      return;
+    }
+
+    const modalElement = document.getElementById('exampleModal');
+    if (modalElement && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+      bootstrap.Modal.getOrCreateInstance(modalElement).show();
+    }
   }
 
   /** Returns current local time as a Dayjs that serializes to local time (not UTC) */
