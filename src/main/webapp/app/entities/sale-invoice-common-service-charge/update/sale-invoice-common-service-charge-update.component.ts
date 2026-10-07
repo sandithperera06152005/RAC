@@ -278,6 +278,7 @@ export class SaleInvoiceCommonServiceChargeUpdateComponent implements OnInit {
         ...resolvedOption,
         invoiceId: inid, // Assign invoice ID
         lineId: index + 1, // Ensure unique line ID for this invoice
+        servicePrice: Number(line.value ?? 0),
       };
     });
 

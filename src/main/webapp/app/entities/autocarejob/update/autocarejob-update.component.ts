@@ -15,6 +15,8 @@ import { CustomerService } from 'app/entities/customer/service/customer.service'
 import { ICustomer } from 'app/entities/customer/customer.model';
 import { AutocareappointmentService } from 'app/entities/autocareappointment/service/autocareappointment.service';
 import { IAutocareappointment } from 'app/entities/autocareappointment/autocareappointment.model';
+import { IServicecategory } from 'app/entities/servicecategory/servicecategory.model';
+import { ServicecategoryService } from 'app/entities/servicecategory/service/servicecategory.service';
 import { AutocarejobService } from '../service/autocarejob.service';
 import { AutocarejobFormService, AutocarejobFormGroup } from './autocarejob-form.service';
 
@@ -30,6 +32,7 @@ export class AutocarejobUpdateComponent implements OnInit {
   customervehicles: ICustomervehicle[] = [];
   customerDetails: any | null = null;
   autocareappointments: IAutocareappointment[] = [];
+  serviceCategories: IServicecategory[] = [];
   selectedAppointmentForJob: IAutocareappointment | null = null;
   @ViewChild(AutocarejobInstructionComponent) autocarejobinstructionComponent!: AutocarejobInstructionComponent;
   protected autocarejobService = inject(AutocarejobService);
@@ -38,6 +41,7 @@ export class AutocarejobUpdateComponent implements OnInit {
   protected customervehicleService = inject(CustomervehicleService);
   protected customerService = inject(CustomerService);
   protected autocareappointmentService = inject(AutocareappointmentService);
+  protected servicecategoryService = inject(ServicecategoryService);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: AutocarejobFormGroup = this.autocarejobFormService.createAutocarejobFormGroup();
@@ -58,7 +62,27 @@ export class AutocarejobUpdateComponent implements OnInit {
         this.updateForm(autocarejob);
       }
       this.loadAllAppointments();
+      this.loadJobTypes();
     });
+  }
+
+  loadJobTypes(): void {
+    this.servicecategoryService
+      .query({
+        size: 1000,
+        sort: ['sortorder,asc', 'name,asc'],
+        'showsecurity.equals': true,
+      })
+      .subscribe({
+        next: (res: HttpResponse<IServicecategory[]>) => {
+          this.serviceCategories = res.body || [];
+          this.syncJobTypeNameFromSelectedId();
+        },
+        error: error => {
+          console.error('Failed to load job types', error);
+          this.serviceCategories = [];
+        },
+      });
   }
 
   loadAllAppointments(): void {
@@ -99,27 +123,14 @@ export class AutocarejobUpdateComponent implements OnInit {
     this.customername = appointment.customername;
     this.appointmentnum = appointment.appointmenttype;
 
-    if (this.appointmentnum !== null) {
-      const jobType = this.jobTypeMap[this.appointmentnum];
-      if (jobType) {
-        console.log('Appointment type is:', jobType);
-        this.jobType = jobType;
-      } else {
-        console.log('Unknown appointment type');
-      }
-    } else {
-      console.log('Appointment type is not defined');
-    }
-
     this.editForm.patchValue({
       vehiclenumber: appointment.vehiclenumber || '',
       customername: appointment.customername || '',
       customertel: appointment.contactnumber || '',
-      jobtypename: this.jobType || '',
       customerid: appointment.customerid ?? null,
-      jobtypeid: appointment.appointmenttype ?? null,
       vehicleid: appointment.vehicleid ?? null,
     });
+    this.patchJobTypeFromId(appointment.appointmenttype ?? null);
   }
 
   jobTypeMap: { [key: number]: string } = {
@@ -231,16 +242,14 @@ export class AutocarejobUpdateComponent implements OnInit {
       console.log('Selected Vehicle:', selectedAppointment);
       this.selectedAppointmentForJob = selectedAppointment;
 
-      const jobTypeText = this.jobTypeMap[selectedAppointment.appointmenttype ?? 0];
-      this.editForm.get('jobtypename')?.patchValue(jobTypeText);
       this.editForm.patchValue({
         vehiclenumber: selectedAppointment.vehiclenumber || '',
         customername: selectedAppointment.customername || '',
         customertel: selectedAppointment.contactnumber || '',
         customerid: selectedAppointment.customerid ?? null,
-        jobtypeid: selectedAppointment.appointmenttype ?? null,
         vehicleid: selectedAppointment.vehicleid ?? null,
       });
+      this.patchJobTypeFromId(selectedAppointment.appointmenttype ?? null);
 
       this.customervehicleService.findByVehicleNumber(selectedVehicleNumber).subscribe(response => {
         const customerVehicleFromResponse =
@@ -345,6 +354,55 @@ export class AutocarejobUpdateComponent implements OnInit {
     );
   }
 
+  onJobTypeSelect(): void {
+    this.syncJobTypeNameFromSelectedId();
+  }
+
+  getJobTypeDisplayName(jobTypeId: number | null | undefined): string {
+    return this.findServiceCategoryById(jobTypeId)?.name || this.jobTypeMap[jobTypeId ?? 0] || '';
+  }
+
+  private patchJobTypeFromId(jobTypeId: number | null): void {
+    const serviceCategory = this.findServiceCategoryById(jobTypeId);
+
+    if (!serviceCategory) {
+      this.editForm.patchValue({
+        jobtypeid: null,
+        jobtypename: null,
+      });
+      return;
+    }
+
+    this.editForm.patchValue({
+      jobtypeid: serviceCategory.id,
+      jobtypename: serviceCategory.name ?? '',
+    });
+  }
+
+  private syncJobTypeNameFromSelectedId(): void {
+    const jobTypeId = this.normalizeJobTypeId(this.editForm.get('jobtypeid')?.value);
+    const serviceCategory = this.findServiceCategoryById(jobTypeId);
+
+    this.editForm.patchValue({
+      jobtypeid: serviceCategory?.id ?? jobTypeId,
+      jobtypename: serviceCategory?.name ?? null,
+    });
+  }
+
+  private findServiceCategoryById(jobTypeId: number | string | null | undefined): IServicecategory | undefined {
+    const normalizedId = this.normalizeJobTypeId(jobTypeId);
+    return normalizedId == null ? undefined : this.serviceCategories.find(serviceCategory => serviceCategory.id === normalizedId);
+  }
+
+  private normalizeJobTypeId(jobTypeId: number | string | null | undefined): number | null {
+    if (jobTypeId === null || jobTypeId === undefined || jobTypeId === '') {
+      return null;
+    }
+
+    const normalizedId = Number(jobTypeId);
+    return Number.isNaN(normalizedId) ? null : normalizedId;
+  }
+
   save(): void {
     if (this.isSaving) {
       return;
@@ -360,7 +418,10 @@ export class AutocarejobUpdateComponent implements OnInit {
     const autocarejob = this.autocarejobFormService.getAutocarejob(this.editForm);
 
     // Ensure lookup-driven fields are included in the payload
-    autocarejob.jobtypeid = this.editForm.get('jobtypeid')?.value ?? this.getJobTypeId(autocarejob.jobtypename);
+    const selectedJobTypeId = this.normalizeJobTypeId(this.editForm.get('jobtypeid')?.value);
+    const selectedJobType = this.findServiceCategoryById(selectedJobTypeId);
+    autocarejob.jobtypeid = selectedJobType?.id ?? selectedJobTypeId;
+    autocarejob.jobtypename = selectedJobType?.name ?? this.editForm.get('jobtypename')?.value;
     autocarejob.vehicleid = this.editForm.get('vehicleid')?.value;
     autocarejob.customerid = this.editForm.get('customerid')?.value;
     autocarejob.vehicletypeid = this.editForm.get('vehicletypeid')?.value;
@@ -398,21 +459,6 @@ export class AutocarejobUpdateComponent implements OnInit {
         this.isSaving = false;
       },
     });
-  }
-
-  private getJobTypeId(jobTypeName: string | null | undefined): number | null {
-    switch (jobTypeName) {
-      case 'Full Service and Other Services':
-        return 1;
-      case 'Detailing services':
-        return 2;
-      case 'Performance Care':
-        return 3;
-      case 'Other':
-        return 4;
-      default:
-        return null;
-    }
   }
 
   invid: number = 0;

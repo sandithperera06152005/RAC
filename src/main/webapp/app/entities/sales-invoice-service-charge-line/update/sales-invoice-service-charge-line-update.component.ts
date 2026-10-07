@@ -219,7 +219,7 @@ export class SalesInvoiceServiceChargeLineUpdateComponent implements OnInit {
     const netValue = Number((servicePrice - Math.min(Math.max(discount, 0), servicePrice)).toFixed(2));
 
     const formGroup = this.fb.group({
-      id: [item.id ?? null],
+      id: [item.sourceAutoJobInvoiceId ? null : item.id ?? null],
       invoiceId: [item.invoiceId ?? null],
       lineId: [item.lineId ?? null],
       serviceName: [item.serviceName ?? item.itemname ?? ''],
@@ -568,11 +568,14 @@ export class SalesInvoiceServiceChargeLineUpdateComponent implements OnInit {
     const serviceChargeLines = this.serviceChargeLinesArray.controls.map((control, index) => {
       const line = (control as FormGroup).getRawValue();
       const entryType = this.inferDiscountEntryTypeFromForm(control as FormGroup);
+      const value = Number(line.value ?? 0);
+      const discount = Number(line.discount ?? 0);
       return {
         ...line,
         invoiceId: inid,
         lineId: index + 1,
         optionId: line.optionId,
+        servicePrice: discount > 0 ? line.servicePrice : value,
         serviceDescription: this.buildDescriptionWithDiscountEntry(line, entryType),
       };
     });

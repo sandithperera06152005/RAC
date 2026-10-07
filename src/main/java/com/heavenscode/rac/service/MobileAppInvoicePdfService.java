@@ -181,7 +181,7 @@ public class MobileAppInvoicePdfService {
             if (topY > 760) {
                 break;
             }
-            BigDecimal price = amount(valueOrFallback(line, "servicePrice", "value"));
+            BigDecimal price = amount(valueOrFallback(line, "value", "servicePrice"));
             addDetailLine(
                 page,
                 topY,
@@ -198,7 +198,7 @@ public class MobileAppInvoicePdfService {
             if (topY > 760) {
                 break;
             }
-            BigDecimal price = amount(valueOrFallback(line, "servicePrice", "value"));
+            BigDecimal price = amount(valueOrFallback(line, "value", "servicePrice"));
             addDetailLine(
                 page,
                 topY,

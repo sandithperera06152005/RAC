@@ -48,7 +48,7 @@ export class PrintinvoiceComponent implements OnInit {
   }
 
   getServicePrice(line: any): number {
-    return Number(line?.servicePrice ?? line?.serviceprice ?? 0);
+    return Number(line?.value ?? line?.servicePrice ?? line?.serviceprice ?? 0);
   }
 
   getInventoryLineTotalBeforeDiscount(line: any): number {

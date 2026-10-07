@@ -671,12 +671,12 @@ export class ReceiptModalComponent implements OnChanges {
     term: 'string',
     date: dayjs().add(-new Date().getTimezoneOffset(), 'minute'),
     amount: 0,
-    checkdate: dayjs().add(-new Date().getTimezoneOffset(), 'minute'),
-    checkno: 'string',
-    bank: 'string',
+    checkdate: null as dayjs.Dayjs | null,
+    checkno: '',
+    bank: '',
     customerid: 0,
     isactive: true,
-    deposited: true,
+    deposited: false,
     createdby: 0,
     vehicleno: 'string',
     id: null as number | null,
@@ -772,7 +772,9 @@ export class ReceiptModalComponent implements OnChanges {
     this.receipt.lmd = dayjs().add(-new Date().getTimezoneOffset(), 'minute');
     this.receipt.customername = this.customername ?? '';
     this.receipt.totalamount = receiptTotalAmount;
-    this.receipt.deposited = this.method === 'Cheque' ? false : this.deposited ?? true;
+    this.receipt.amount = receiptTotalAmount;
+    this.applyReceiptChequeFields();
+    this.receipt.deposited = this.getReceiptDeposited();
 
     // Calculate amount in words if not already set or to ensure it's current
     const words = toWords(receiptTotalAmount).replace(/,/g, '').replace(/and/g, 'and');
@@ -969,12 +971,12 @@ export class ReceiptModalComponent implements OnChanges {
     this.receipt.date = this.date ? this.localDateTime(this.date) : this.localNow();
 
     this.receipt.amount = this.amount ?? 0;
-    this.receipt.checkdate = this.checkdate ? this.localDateTime(this.checkdate) : this.localNow();
-    this.receipt.checkno = this.checkno ?? '';
+    this.receipt.checkdate = null;
+    this.receipt.checkno = '';
     this.receipt.bank = this.bank ?? '';
     this.receipt.customerid = this.customerid ?? 0;
     this.receipt.isactive = this.isactive ?? true;
-    this.receipt.deposited = this.deposited ?? true;
+    this.receipt.deposited = false;
     this.receipt.createdby = this.createdby ?? 0;
     this.receipt.totalamountinword = this.totalamountinword ?? '';
     this.receipt.code = this.newcode ?? '';
@@ -1014,6 +1016,7 @@ export class ReceiptModalComponent implements OnChanges {
     console.log('Selected Term ID:', termid);
     this.method = paymentMethod;
     this.accountmethod(paymentMethod);
+    this.applyReceiptChequeFields();
     if (this.method === 'Cash') {
       this.balance = Number((Number(this.totalamount || 0) - Number(this.cash || 0)).toFixed(2));
     }
@@ -1028,7 +1031,7 @@ export class ReceiptModalComponent implements OnChanges {
     }
     this.receipt.term = paymentMethod;
     this.receipt.termid = termid;
-    this.receipt.deposited = this.method === 'Cheque' ? false : this.deposited ?? true;
+    this.receipt.deposited = this.getReceiptDeposited();
     if (this.method === 'Credit') {
       this.receipt.totalamount = 0;
     }
@@ -1044,6 +1047,21 @@ export class ReceiptModalComponent implements OnChanges {
     console.log(totalAmountInWords + ' Rupees Only');
     this.receipt.totalamountinword = totalAmountInWords + ' Rupees Only';
     console.log('Updated Receipt:', this.receipt);
+  }
+
+  private applyReceiptChequeFields(): void {
+    if (this.method === 'Cheque') {
+      this.receipt.checkdate = this.checkdate ? this.localDateTime(this.checkdate) : this.localNow();
+      this.receipt.checkno = this.checkno ?? '';
+      return;
+    }
+
+    this.receipt.checkdate = null;
+    this.receipt.checkno = '';
+  }
+
+  private getReceiptDeposited(): boolean {
+    return this.method === 'Cheque';
   }
 
   private getCurrentPaymentAmount(): number {

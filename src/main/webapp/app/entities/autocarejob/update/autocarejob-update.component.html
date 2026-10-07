@@ -67,24 +67,24 @@
               <label class="form-label" for="field_jobtypename">Job Type</label>
               <select
                 class="form-control"
-                name="jobtypename"
+                name="jobtypeid"
                 id="field_jobtypename"
                 data-cy="jobtypename"
-                formControlName="jobtypename"
-                [ngModel]="jobType"
-                [class.is-invalid]="isRequiredInvalid('jobtypename')"
+                formControlName="jobtypeid"
+                (change)="onJobTypeSelect()"
+                [class.is-invalid]="isRequiredInvalid('jobtypeid')"
                 required
               >
-                <option value="Full Service and Other Services">Full Service and Other Services</option>
-                <option value="Detailing services">Detailing services</option>
-                <option value="Performance Care">Performance Care</option>
-                <option value="Other">Other</option>
+                <option [ngValue]="null">-- Select Job Type --</option>
+                <option *ngFor="let serviceCategory of serviceCategories" [ngValue]="serviceCategory.id">
+                  {{ serviceCategory.name }}
+                </option>
               </select>
-              <div *ngIf="isRequiredInvalid('jobtypename')" class="invalid-feedback">Job Type is required.</div>
+              <div *ngIf="isRequiredInvalid('jobtypeid')" class="invalid-feedback">Job Type is required.</div>
             </div>
 
             <!-- Description -->
-            <div class="mb-3">
+            <!-- <div class="mb-3">
               <label class="form-label" for="field_description">Description</label>
               <input
                 type="text"
@@ -95,7 +95,7 @@
                 formControlName="description"
                 placeholder="Enter description"
               />
-            </div>
+            </div> -->
 
             <!-- Customer Name & Tel (side by side) -->
             <div class="row">
@@ -229,7 +229,7 @@
                 <td class="text-wrap" style="overflow-wrap: anywhere">{{ appointment.customername }}</td>
                 <td class="text-wrap" style="overflow-wrap: anywhere">{{ appointment.vehiclenumber }}</td>
                 <td class="text-wrap" style="overflow-wrap: anywhere">{{ appointment.appointmentdate | formatMediumDatetime }}</td>
-                <td class="text-wrap" style="overflow-wrap: anywhere">{{ jobTypeMap[appointment.appointmenttype ?? 0] }}</td>
+                <td class="text-wrap" style="overflow-wrap: anywhere">{{ getJobTypeDisplayName(appointment.appointmenttype) }}</td>
                 <td class="text-wrap" style="overflow-wrap: anywhere">{{ appointment.contactnumber }}</td>
                 <td class="text-center">
                   <button class="btn btn-info btn-sm px-2" (click)="loadAppointment(appointment)">Load</button>
