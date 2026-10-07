@@ -154,9 +154,9 @@
                     />
                   </div>
 
-                  <!-- FIXED BANK SELECT -->
+                  <!-- FIXED BANK ACCOUNT SELECT -->
                   <div class="mb-3">
-                    <label class="form-label" for="bank">Bank</label>
+                    <label class="form-label" for="bank">Bank Account</label>
                     <select
                       class="form-control"
                       id="bank"
@@ -171,8 +171,8 @@
                     </select>
                   </div>
 
-                  <!-- FIXED BRANCH SELECT -->
-                  <div class="mb-3">
+                  <!-- Branch is taken from the selected company bank account. -->
+                  <!-- <div class="mb-3">
                     <label class="form-label" for="branch">Branch</label>
                     <select
                       class="form-control"
@@ -186,7 +186,7 @@
                         {{ branch.branchname }}
                       </option>
                     </select>
-                  </div>
+                  </div> -->
 
                   <div class="mb-3">
                     <label class="form-label" for="chequeDate">Cheque Date <span class="text-danger">*</span></label>
@@ -287,9 +287,9 @@
                     <label class="form-label" for="field_input9">Ref </label>
                     <input type="text" class="form-control" name="inputI" id="field_input9" data-cy="inputI" />
                   </div>
-                  <!-- FIXED OPTION 5 BANK AND BRANCH (Assuming you want Bank Deposit to work like Cheque) -->
+                  <!-- FIXED OPTION 5 BANK ACCOUNT -->
                   <div class="mb-3">
-                    <label class="form-label" for="bankDeposit">Bank</label>
+                    <label class="form-label" for="bankDeposit">Bank Account</label>
                     <select
                       class="form-control"
                       id="bankDeposit"
@@ -304,7 +304,8 @@
                     </select>
                   </div>
 
-                  <div class="mb-3">
+                  <!-- Branch is taken from the selected company bank account. -->
+                  <!-- <div class="mb-3">
                     <label class="form-label" for="branchDeposit">Branch</label>
                     <select
                       class="form-control"
@@ -318,7 +319,7 @@
                         {{ branch.branchname }}
                       </option>
                     </select>
-                  </div>
+                  </div> -->
                 </div>
               </div>
               <!-- End Billing Process Button -->

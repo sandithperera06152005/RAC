@@ -84,6 +84,19 @@ export class PrintinvoiceComponent implements OnInit {
     return `(${this.vatPercentage}%)`;
   }
 
+  get isCardPayment(): boolean {
+    const paymentType = String(this.salesInvoice?.paymenttype ?? '').toLowerCase();
+    return paymentType.includes('card') || paymentType.includes('visa') || paymentType.includes('master');
+  }
+
+  get displayPaidAmount(): number {
+    return this.isCardPayment ? 0 : Number(this.salesInvoice?.paidamount ?? 0);
+  }
+
+  get displayBalanceAmount(): number {
+    return this.isCardPayment ? 0 : Number(this.salesInvoice?.nettotal ?? 0) - this.displayPaidAmount;
+  }
+
   getSalesInvoice(id: number): void {
     this.salesInvoiceDummyService.find(id).subscribe({
       next: response => {

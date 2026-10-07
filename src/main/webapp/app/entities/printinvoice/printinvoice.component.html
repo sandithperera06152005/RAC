@@ -299,8 +299,8 @@
       <div class="total-line">{{ salesInvoice.totaldiscount | number: '1.2-2' }}</div>
       <div class="total-line">{{ vatLabel }} {{ displayVatAmount | number: '1.2-2' }}</div>
       <div class="total-line">{{ salesInvoice.nettotal | number: '1.2-2' }}</div>
-      <div class="total-line">{{ salesInvoice.paidamount | number: '1.2-2' }}</div>
-      <div class="total-line">{{ salesInvoice.nettotal - (salesInvoice.paidamount || 0) | number: '1.2-2' }}</div>
+      <div class="total-line">{{ displayPaidAmount | number: '1.2-2' }}</div>
+      <div class="total-line">{{ displayBalanceAmount | number: '1.2-2' }}</div>
     </div>
   </div>
 </div>

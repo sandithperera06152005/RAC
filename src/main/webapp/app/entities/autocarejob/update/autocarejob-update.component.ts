@@ -97,6 +97,7 @@ export class AutocarejobUpdateComponent implements OnInit {
         sort: ['appointmentdate,asc', 'id,asc'],
         'appointmentdate.greaterThanOrEqual': todayStart.toJSON(),
         'appointmentdate.lessThan': tomorrowStart.toJSON(),
+        'isconformed.equals': true,
       })
       .pipe(finalize(() => (this.isLoadingAppointments = false)))
       .subscribe({
@@ -130,7 +131,7 @@ export class AutocarejobUpdateComponent implements OnInit {
       customerid: appointment.customerid ?? null,
       vehicleid: appointment.vehicleid ?? null,
     });
-    this.patchJobTypeFromId(appointment.appointmenttype ?? null);
+    this.clearJobTypeSelection();
   }
 
   jobTypeMap: { [key: number]: string } = {
@@ -234,6 +235,7 @@ export class AutocarejobUpdateComponent implements OnInit {
   onVehicleSelect(event: Event): void {
     const input = event.target as HTMLInputElement;
     const selectedVehicleNumber = input.value;
+    this.clearJobTypeSelection();
 
     const selectedAppointment = this.filteredVehicles.find(vehicle => vehicle.vehiclenumber === selectedVehicleNumber);
     const selectedCustomerVehicle = this.findCustomerVehicleByNumber(selectedVehicleNumber);
@@ -249,7 +251,6 @@ export class AutocarejobUpdateComponent implements OnInit {
         customerid: selectedAppointment.customerid ?? null,
         vehicleid: selectedAppointment.vehicleid ?? null,
       });
-      this.patchJobTypeFromId(selectedAppointment.appointmenttype ?? null);
 
       this.customervehicleService.findByVehicleNumber(selectedVehicleNumber).subscribe(response => {
         const customerVehicleFromResponse =
@@ -362,20 +363,10 @@ export class AutocarejobUpdateComponent implements OnInit {
     return this.findServiceCategoryById(jobTypeId)?.name || this.jobTypeMap[jobTypeId ?? 0] || '';
   }
 
-  private patchJobTypeFromId(jobTypeId: number | null): void {
-    const serviceCategory = this.findServiceCategoryById(jobTypeId);
-
-    if (!serviceCategory) {
-      this.editForm.patchValue({
-        jobtypeid: null,
-        jobtypename: null,
-      });
-      return;
-    }
-
+  private clearJobTypeSelection(): void {
     this.editForm.patchValue({
-      jobtypeid: serviceCategory.id,
-      jobtypename: serviceCategory.name ?? '',
+      jobtypeid: null,
+      jobtypename: null,
     });
   }
 
