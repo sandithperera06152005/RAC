@@ -154,39 +154,39 @@
                     />
                   </div>
 
-                  <!-- FIXED BANK ACCOUNT SELECT -->
+                  <!-- CHEQUE BANK SELECT -->
                   <div class="mb-3">
-                    <label class="form-label" for="bank">Bank Account</label>
+                    <label class="form-label" for="bank">Bank</label>
                     <select
                       class="form-control"
                       id="bank"
-                      [(ngModel)]="selectedCompanyBankAccountId"
+                      [(ngModel)]="selectedChequeBankId"
                       [ngModelOptions]="{ standalone: true }"
-                      (change)="onItemBankInput($event)"
+                      (change)="onChequeBankInput($event)"
                     >
                       <option value="">--select--</option>
-                      <option *ngFor="let bank of banks" [value]="bank.id">
-                        {{ bank.accountnumber ? bank.accountnumber + ' - ' : '' }}{{ bank.bankname }}
+                      <option *ngFor="let bank of chequeBanks" [value]="bank.id">
+                        {{ bank.name }}
                       </option>
                     </select>
                   </div>
 
-                  <!-- Branch is taken from the selected company bank account. -->
-                  <!-- <div class="mb-3">
+                  <!-- CHEQUE BRANCH SELECT -->
+                  <div class="mb-3">
                     <label class="form-label" for="branch">Branch</label>
                     <select
                       class="form-control"
                       id="branch"
-                      [(ngModel)]="selectedCompanyBankAccountId"
+                      [(ngModel)]="selectedChequeBranchId"
                       [ngModelOptions]="{ standalone: true }"
-                      (change)="onItemChequebranchInput($event)"
+                      (change)="onChequeBranchInput($event)"
                     >
                       <option value="">--select branch--</option>
-                      <option *ngFor="let branch of bankbranch" [value]="branch.id">
+                      <option *ngFor="let branch of chequeBankBranches" [value]="branch.id">
                         {{ branch.branchname }}
                       </option>
                     </select>
-                  </div> -->
+                  </div>
 
                   <div class="mb-3">
                     <label class="form-label" for="chequeDate">Cheque Date <span class="text-danger">*</span></label>

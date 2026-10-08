@@ -24,6 +24,10 @@ import { CustomerService } from 'app/entities/customer/service/customer.service'
 import { ICompanybankaccount } from '../companybankaccount/companybankaccount.model';
 import { CompanybankaccountService } from '../companybankaccount/service/companybankaccount.service';
 import { AccountService } from 'app/core/auth/account.service';
+import { IBanks } from '../banks/banks.model';
+import { BanksService } from '../banks/service/banks.service';
+import { IBankbranch } from '../bankbranch/bankbranch.model';
+import { BankbranchService } from '../bankbranch/service/bankbranch.service';
 
 declare const bootstrap: any;
 
@@ -77,12 +81,18 @@ export class ReceiptModalComponent implements OnChanges {
   bankbranch: ICompanybankaccount[] = [];
   selectedCompanyBankAccount: ICompanybankaccount | null = null;
   selectedCompanyBankAccountId: number | null = null;
+  chequeBanks: IBanks[] = [];
+  chequeBankBranches: IBankbranch[] = [];
+  selectedChequeBankId: number | null = null;
+  selectedChequeBranchId: number | null = null;
 
   salesinvoiceupdate = inject(SalesinvoiceUpdateComponent);
 
   protected receiptpaymentsdetailsService = inject(ReceiptpaymentsdetailsService);
   protected receiptpaymentsdetailsFormService = inject(ReceiptpaymentsdetailsFormService);
   protected companybankaccountService = inject(CompanybankaccountService);
+  protected banksService = inject(BanksService);
+  protected bankbranchService = inject(BankbranchService);
   reciptService = inject(ReceiptService);
   autocarejobService = inject(AutocarejobService);
   reciptlines = inject(ReceiptLinesService);
@@ -110,6 +120,7 @@ export class ReceiptModalComponent implements OnChanges {
       console.log('Updated receiptpaymentsdetails:', changes['receiptpaymentsdetails'].currentValue);
       this.updateForm(this.receiptpaymentsdetails);
       this.loadCompanyBankAccounts();
+      this.loadChequeBanks();
     }
     if (changes['customername']) {
       const custName = changes['customername'].currentValue;
@@ -124,6 +135,7 @@ export class ReceiptModalComponent implements OnChanges {
     console.log('selectedOption:', this.selectedOption);
     this.fetchpaymentmethod();
     this.loadCompanyBankAccounts();
+    this.loadChequeBanks();
     if (this.customername && this.customername.trim().toUpperCase() === 'CASH') {
       this.onOptionChange(1);
     }
@@ -161,6 +173,12 @@ export class ReceiptModalComponent implements OnChanges {
       this.companyBankAccounts = res.body || [];
       this.banks = this.companyBankAccounts.filter(account => !!account.bankname);
       this.loadBankBranch();
+    });
+  }
+
+  loadChequeBanks(): void {
+    this.banksService.query({ size: 1000, sort: ['name,asc'] }).subscribe((res: HttpResponse<IBanks[]>) => {
+      this.chequeBanks = res.body || [];
     });
   }
 
@@ -585,6 +603,51 @@ export class ReceiptModalComponent implements OnChanges {
   bankid: number = 0;
   bankname: string = '';
 
+  onChequeBankInput(event: Event): void {
+    const selectedBankId = Number((event.target as HTMLSelectElement).value);
+    const selectedBank = this.chequeBanks.find(bank => bank.id === selectedBankId);
+
+    this.selectedChequeBankId = selectedBank?.id ?? null;
+    this.selectedChequeBranchId = null;
+    this.chequeBankBranches = [];
+    this.Branch = '';
+    this.branchid = 0;
+
+    if (!selectedBank) {
+      this.bankid = 0;
+      this.bankname = '';
+      this.bank = '';
+      return;
+    }
+
+    this.bankid = selectedBank.id;
+    this.bankname = selectedBank.name ?? '';
+    this.bank = this.bankname;
+
+    if (!selectedBank.code) {
+      return;
+    }
+
+    this.bankbranchService.findByBankcode(selectedBank.code).subscribe({
+      next: (response: HttpResponse<IBankbranch[]>) => {
+        this.chequeBankBranches = response.body || [];
+      },
+      error: error => {
+        console.error('Failed to load cheque bank branches:', error);
+        this.chequeBankBranches = [];
+      },
+    });
+  }
+
+  onChequeBranchInput(event: Event): void {
+    const selectedBranchId = Number((event.target as HTMLSelectElement).value);
+    const selectedBranch = this.chequeBankBranches.find(branch => branch.id === selectedBranchId);
+
+    this.selectedChequeBranchId = selectedBranch?.id ?? null;
+    this.Branch = selectedBranch?.branchname ?? '';
+    this.branchid = selectedBranch?.id ?? 0;
+  }
+
   onItemBankInput($event: Event): void {
     const selectedBank = ($event.target as HTMLSelectElement).value;
 
@@ -755,7 +818,7 @@ export class ReceiptModalComponent implements OnChanges {
 
   saveReceipt(finalUserId: number): void {
     const paymentAmount = this.getCurrentPaymentAmount();
-    const selectedPaymentBankAccount = this.method === 'Cheque' || this.method === 'Bank' ? this.selectedCompanyBankAccount : null;
+    const selectedPaymentBankAccount = this.method === 'Bank' ? this.selectedCompanyBankAccount : null;
     const paymentAccountId =
       selectedPaymentBankAccount?.accountid && !isNaN(Number(selectedPaymentBankAccount.accountid))
         ? Number(selectedPaymentBankAccount.accountid)
@@ -1021,6 +1084,25 @@ export class ReceiptModalComponent implements OnChanges {
       this.balance = Number((Number(this.totalamount || 0) - Number(this.cash || 0)).toFixed(2));
     }
     if (paymentMethod !== 'Cheque' && paymentMethod !== 'Bank') {
+      this.selectedCompanyBankAccount = null;
+      this.selectedCompanyBankAccountId = null;
+      this.bankbranch = [];
+      this.bankid = 0;
+      this.bankname = '';
+      this.Branch = '';
+      this.branchid = 0;
+      this.selectedChequeBankId = null;
+      this.selectedChequeBranchId = null;
+      this.chequeBankBranches = [];
+    } else if (paymentMethod !== 'Cheque') {
+      this.selectedChequeBankId = null;
+      this.selectedChequeBranchId = null;
+      this.chequeBankBranches = [];
+      this.bankid = 0;
+      this.bankname = '';
+      this.Branch = '';
+      this.branchid = 0;
+    } else {
       this.selectedCompanyBankAccount = null;
       this.selectedCompanyBankAccountId = null;
       this.bankbranch = [];
