@@ -949,7 +949,7 @@ export class ReceiptModalComponent implements OnChanges {
 
     this.salesinvoiceupdate.editForm.patchValue({
       paidamount: currentPaidAmount,
-      paymenttype: this.method,
+      paymenttype: this.getSalesInvoicePaymentType(),
     });
 
     const finalUserId = this.getStoredLoggedInUserId();
@@ -1120,7 +1120,7 @@ export class ReceiptModalComponent implements OnChanges {
 
     // Sync with main SalesInvoice form
     this.salesinvoiceupdate.editForm.patchValue({
-      paymenttype: paymentMethod,
+      paymenttype: this.getSalesInvoicePaymentType(paymentMethod),
     });
 
     console.log('totalamount:', this.totalamount);
@@ -1144,6 +1144,10 @@ export class ReceiptModalComponent implements OnChanges {
 
   private getReceiptDeposited(): boolean {
     return this.method === 'Cheque';
+  }
+
+  private getSalesInvoicePaymentType(paymentMethod = this.method): string {
+    return paymentMethod === 'Card/Other' ? 'Card' : paymentMethod;
   }
 
   private getCurrentPaymentAmount(): number {
