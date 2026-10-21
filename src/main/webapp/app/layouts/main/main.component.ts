@@ -79,6 +79,13 @@ import SidenavbarComponent from '../sidenavbar/sidenavbar.component';
         min-height: 100vh;
         padding: 0;
       }
+
+      .content-container.rac-print-content-shell,
+      .rac-print-body-shell {
+        background: #ffffff;
+        min-height: 0;
+        padding: 0;
+      }
     `,
   ],
 })
