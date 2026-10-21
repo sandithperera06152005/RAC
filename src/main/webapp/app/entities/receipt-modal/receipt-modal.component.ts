@@ -6,8 +6,8 @@ import {
   ReceiptpaymentsdetailsFormGroup,
 } from 'app/entities/receiptpaymentsdetails/update/receiptpaymentsdetails-form.service';
 import { HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/internal/Observable';
-import { finalize } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import SharedModule from 'app/shared/shared.module';
 import { toWords } from 'number-to-words';
@@ -311,7 +311,14 @@ export class ReceiptModalComponent implements OnChanges {
     lmd: this.localNow(),
   };
 
-  reciptnocustransactions(recid: number, reccode: String, subid: string, termid: number, termname: string, paymentAmount: number): void {
+  reciptnocustransactions(
+    recid: number,
+    reccode: String,
+    subid: string,
+    termid: number,
+    termname: string,
+    paymentAmount: number,
+  ): Observable<unknown> {
     this.reciptnocustransaction.refId = recid;
     this.reciptnocustransaction.subId = subid;
     this.reciptnocustransaction.refDoc = reccode ? reccode.toString() : '';
@@ -321,32 +328,35 @@ export class ReceiptModalComponent implements OnChanges {
     this.reciptnocustransaction.paymentTermName = termname;
 
     const custName = this.customername || 'CASH';
-    this.salesInvoiceService.fetchReceiptAccountId(custName).subscribe(resAcc => {
-      const accounts = resAcc.body;
-      if (accounts && accounts.length > 0) {
-        const account = accounts[0];
-        this.reciptnocustransaction.accountId = account.id;
-        this.reciptnocustransaction.accountCode = account.code;
-      } else {
-        this.reciptnocustransaction.accountId = this.transaction.accountId;
-        this.reciptnocustransaction.accountCode = this.transaction.accountCode;
-      }
-      this.transtactions.create(this.reciptnocustransaction as any).subscribe();
-    });
+    return this.salesInvoiceService.fetchReceiptAccountId(custName).pipe(
+      switchMap(resAcc => {
+        const accounts = resAcc.body;
+        if (accounts && accounts.length > 0) {
+          const account = accounts[0];
+          this.reciptnocustransaction.accountId = account.id;
+          this.reciptnocustransaction.accountCode = account.code;
+        } else {
+          this.reciptnocustransaction.accountId = this.transaction.accountId;
+          this.reciptnocustransaction.accountCode = this.transaction.accountCode;
+        }
+        return this.transtactions.create(this.reciptnocustransaction as any);
+      }),
+    );
   }
 
-  reciptnocustomerupdate(accountid: number): void {
-    this.acc.query({ 'id.equals': accountid }).subscribe({
-      next: (res: HttpResponse<any[]>) => {
+  reciptnocustomerupdate(accountid: number): Observable<unknown> {
+    return this.acc.query({ 'id.equals': accountid }).pipe(
+      switchMap((res: HttpResponse<any[]>) => {
         const accounts: any[] = res.body || [];
         const account = accounts[0];
         if (account) {
           const updatedAmount = Number(account.amount || 0) - this.totalamount;
           const updatedCredit = Number(account.debitamount || 0) + this.totalamount;
-          this.acc.partialUpdate({ id: this.accountId, debitamount: updatedCredit, amount: updatedAmount }).subscribe();
+          return this.acc.partialUpdate({ id: this.accountId, debitamount: updatedCredit, amount: updatedAmount });
         }
-      },
-    });
+        return of(null);
+      }),
+    );
   }
 
   receiptmainacctransaction = {
@@ -366,7 +376,7 @@ export class ReceiptModalComponent implements OnChanges {
     lmd: this.localNow(),
   };
 
-  receiptmainacctransactions(recid: number, reccode: String, subid: string, totalrecived: number): void {
+  receiptmainacctransactions(recid: number, reccode: String, subid: string, totalrecived: number): Observable<unknown> {
     this.receiptmainacctransaction.refId = recid;
     this.receiptmainacctransaction.subId = subid;
     this.receiptmainacctransaction.refDoc = reccode ? reccode.toString() : '';
@@ -374,7 +384,7 @@ export class ReceiptModalComponent implements OnChanges {
     this.receiptmainacctransaction.credit = 0;
     this.receiptmainacctransaction.accountId = this.accountId;
     this.receiptmainacctransaction.accountCode = this.accountCode;
-    this.transtactions.create(this.receiptmainacctransaction as any).subscribe();
+    return this.transtactions.create(this.receiptmainacctransaction as any);
   }
 
   receipttransaction = {
@@ -394,7 +404,14 @@ export class ReceiptModalComponent implements OnChanges {
     lmd: this.localNow(),
   };
 
-  receipttransactions(recid: number, reccode: String, subid: string, termid: number, termname: string, paymentAmount: number): void {
+  receipttransactions(
+    recid: number,
+    reccode: String,
+    subid: string,
+    termid: number,
+    termname: string,
+    paymentAmount: number,
+  ): Observable<unknown> {
     this.receipttransaction.refId = recid;
     this.receipttransaction.subId = subid;
     this.receipttransaction.refDoc = reccode ? reccode.toString() : '';
@@ -402,37 +419,40 @@ export class ReceiptModalComponent implements OnChanges {
     this.receipttransaction.credit = paymentAmount;
 
     if (this.customername) {
-      this.salesInvoiceService.fetchReceiptAccountId(this.customername).subscribe(resAcc => {
-        const accounts = resAcc.body;
-        if (accounts && accounts.length > 0) {
-          const account = accounts[0];
-          this.receipttransaction.accountId = account.id;
-          this.receipttransaction.accountCode = account.code;
-        } else {
-          this.receipttransaction.accountId = this.transaction.accountId;
-          this.receipttransaction.accountCode = this.transaction.accountCode;
-        }
-        this.transtactions.create(this.receipttransaction as any).subscribe();
-      });
-    } else {
-      this.receipttransaction.accountId = this.transaction.accountId;
-      this.receipttransaction.accountCode = this.transaction.accountCode;
-      this.transtactions.create(this.receipttransaction as any).subscribe();
+      return this.salesInvoiceService.fetchReceiptAccountId(this.customername).pipe(
+        switchMap(resAcc => {
+          const accounts = resAcc.body;
+          if (accounts && accounts.length > 0) {
+            const account = accounts[0];
+            this.receipttransaction.accountId = account.id;
+            this.receipttransaction.accountCode = account.code;
+          } else {
+            this.receipttransaction.accountId = this.transaction.accountId;
+            this.receipttransaction.accountCode = this.transaction.accountCode;
+          }
+          return this.transtactions.create(this.receipttransaction as any);
+        }),
+      );
     }
+
+    this.receipttransaction.accountId = this.transaction.accountId;
+    this.receipttransaction.accountCode = this.transaction.accountCode;
+    return this.transtactions.create(this.receipttransaction as any);
   }
 
-  updaterecipttransactionwithcustomer(): void {
-    this.acc.query({ 'id.equals': this.accountId }).subscribe({
-      next: (res: HttpResponse<any[]>) => {
+  updaterecipttransactionwithcustomer(): Observable<unknown> {
+    return this.acc.query({ 'id.equals': this.accountId }).pipe(
+      switchMap((res: HttpResponse<any[]>) => {
         const accounts: any[] = res.body || [];
         const account = accounts[0];
         if (account) {
           const updatedAmount = Number(account.amount || 0) - this.totalamount;
           const updatedCredit = Number(account.creditamount || 0) + this.totalamount;
-          this.acc.partialUpdate({ id: this.accountId, creditamount: updatedCredit, amount: updatedAmount }).subscribe();
+          return this.acc.partialUpdate({ id: this.accountId, creditamount: updatedCredit, amount: updatedAmount });
         }
-      },
-    });
+        return of(null);
+      }),
+    );
   }
 
   accountmethod(name: string): void {
@@ -449,18 +469,19 @@ export class ReceiptModalComponent implements OnChanges {
     });
   }
 
-  updatecustomermain(amountrec: number): void {
-    this.acc.query({ 'id.equals': 7 }).subscribe({
-      next: (res: HttpResponse<any[]>) => {
+  updatecustomermain(amountrec: number): Observable<unknown> {
+    return this.acc.query({ 'id.equals': 7 }).pipe(
+      switchMap((res: HttpResponse<any[]>) => {
         const accounts = res.body || [];
         const account = accounts[0];
         if (account) {
           const updatedAmount = Number(account.amount || 0) - amountrec;
           const updatedCredit = Number(account.debitamount || 0) + amountrec;
-          this.acc.partialUpdate({ id: 7, debitamount: updatedCredit, amount: updatedAmount }).subscribe();
+          return this.acc.partialUpdate({ id: 7, debitamount: updatedCredit, amount: updatedAmount });
         }
-      },
-    });
+        return of(null);
+      }),
+    );
   }
 
   incrementId(id: string): string {
@@ -806,6 +827,10 @@ export class ReceiptModalComponent implements OnChanges {
   id: number = 0;
 
   finishBilling(): void {
+    if (this.isSaving) {
+      return;
+    }
+
     this.balance = Number((Number(this.totalamount || 0) - Number(this.cash || 0)).toFixed(2));
 
     if (this.method === 'Cash' && this.balance > 0.004) {
@@ -864,10 +889,6 @@ export class ReceiptModalComponent implements OnChanges {
         accountid: safeAccountId,
       };
       console.log('ReceiptLines Payload:', receiptLinePayload);
-      this.reciptlines.create(receiptLinePayload).subscribe({
-        next: () => console.log('ReceiptLines saved OK'),
-        error: (err: any) => console.error('ReceiptLines error:', err),
-      });
 
       // ==========================================
       // FIX: PROPERLY MAP CHEQUE DETAILS INTO THE PAYLOAD
@@ -918,27 +939,40 @@ export class ReceiptModalComponent implements OnChanges {
         isbankreconciliation: false,
       };
       console.log('ReceiptPayments Payload:', receiptPaymentsPayload);
-      this.paymentdetails.create(receiptPaymentsPayload).subscribe({
-        next: () => console.log('Receiptpaymentsdetails saved OK'),
-        error: (err: any) => console.error('Receiptpaymentsdetails error:', err),
-      });
-
-      this.salesinvoiceupdate.save();
 
       this.subid = crypto.randomUUID();
 
       const transactionAmount = this.method === 'Cash' ? this.totalamount || 0 : paymentAmount || 0;
+      const receiptSaveRequests: Observable<unknown>[] = [
+        this.reciptlines.create(receiptLinePayload),
+        this.paymentdetails.create(receiptPaymentsPayload),
+        this.updatecustomermain(transactionAmount),
+        this.receiptmainacctransactions(receiptId, this.receipt.code, this.subid, transactionAmount),
+      ];
 
       if (this.customername != 'CASH') {
-        this.updaterecipttransactionwithcustomer();
-        this.receipttransactions(receiptId, this.receipt.code, this.subid, this.receipt.termid, this.method, transactionAmount);
+        receiptSaveRequests.push(
+          this.updaterecipttransactionwithcustomer(),
+          this.receipttransactions(receiptId, this.receipt.code, this.subid, this.receipt.termid, this.method, transactionAmount),
+        );
       } else {
-        this.reciptnocustomerupdate(this.accountId);
-        this.reciptnocustransactions(receiptId, this.receipt.code, this.subid, this.receipt.termid, this.method, transactionAmount);
+        receiptSaveRequests.push(
+          this.reciptnocustomerupdate(this.accountId),
+          this.reciptnocustransactions(receiptId, this.receipt.code, this.subid, this.receipt.termid, this.method, transactionAmount),
+        );
       }
 
-      this.updatecustomermain(transactionAmount);
-      this.receiptmainacctransactions(receiptId, this.receipt.code, this.subid, transactionAmount);
+      forkJoin(receiptSaveRequests).subscribe({
+        next: () => {
+          console.log('All receipt and accounting requests completed successfully.');
+          this.salesinvoiceupdate.save();
+        },
+        error: error => {
+          console.error('Failed to complete receipt and accounting requests:', error);
+          this.onSaveError();
+          this.onSaveFinalize();
+        },
+      });
     });
   }
 
@@ -998,25 +1032,17 @@ export class ReceiptModalComponent implements OnChanges {
     }
   }
 
-  protected subscribeToSaveResponse(result: Observable<HttpResponse<any>>): void {
-    result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
-      next: response => {
-        this.id = response.body.id;
-        this.onSaveSuccess();
-      },
-      error: () => this.onSaveError(),
-    });
-  }
-
   protected subscribeToSaveResponseWithCallback(result: Observable<HttpResponse<any>>, callback: (id: number) => void): void {
-    result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
+    result.subscribe({
       next: response => {
         this.id = response.body.id;
         this.receipt.code = response.body.code;
         callback(response.body.id);
-        this.onSaveSuccess();
       },
-      error: () => this.onSaveError(),
+      error: () => {
+        this.onSaveError();
+        this.onSaveFinalize();
+      },
     });
   }
 
@@ -1170,37 +1196,12 @@ export class ReceiptModalComponent implements OnChanges {
     return this.totalamount || 0;
   }
 
-  protected onSaveSuccess(): void {
-    this.cleanupModalBackdrop();
-
-    // No navigation here anymore, letting SalesinvoiceUpdateComponent handle it
-  }
-
-  private cleanupModalBackdrop(): void {
-    const modalElement = document.getElementById('exampleModal');
-    const modalInstance =
-      modalElement && typeof bootstrap !== 'undefined' && bootstrap.Modal ? bootstrap.Modal.getInstance(modalElement) : null;
-
-    if (modalInstance) {
-      modalInstance.hide();
-    }
-
-    if (modalElement) {
-      modalElement.classList.remove('show');
-      modalElement.setAttribute('aria-hidden', 'true');
-      modalElement.removeAttribute('aria-modal');
-      modalElement.removeAttribute('role');
-      modalElement.style.display = 'none';
-    }
-
-    document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
-    document.body.classList.remove('modal-open');
-    document.body.style.removeProperty('overflow');
-    document.body.style.removeProperty('padding-right');
-  }
-
   protected onSaveError(): void {
     // Api for inheritance.
+  }
+
+  billingFailed(): void {
+    this.onSaveFinalize();
   }
 
   protected onSaveFinalize(): void {

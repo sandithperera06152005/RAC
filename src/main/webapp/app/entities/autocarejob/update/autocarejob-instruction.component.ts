@@ -1550,9 +1550,19 @@ export class AutocarejobInstructionComponent implements OnInit {
             }
             #printSummary .print-customer-grid {
               display: grid;
-              grid-template-columns: repeat(3, minmax(0, 1fr));
+              grid-template-columns: repeat(12, minmax(0, 1fr));
               row-gap: 5px;
-              column-gap: 22px;
+              column-gap: 12px;
+            }
+            #printSummary .print-customer-grid > div {
+              grid-column: span 4;
+            }
+            #printSummary .print-customer-grid > .print-summary-special-requirements,
+            #printSummary .print-customer-grid > .print-summary-remarks {
+              grid-column: span 3;
+            }
+            #printSummary .print-customer-grid > .print-summary-sp-instructions {
+              grid-column: span 6;
             }
             .print-summary-pair {
               display: block;
@@ -1574,8 +1584,8 @@ export class AutocarejobInstructionComponent implements OnInit {
             .text-right { text-align: right; }
             .text-start { text-align: left !important; }
             .text-end { text-align: right !important; }
-            .print-summary-table th:nth-child(n + 2),
-            .print-summary-table td:nth-child(n + 2),
+            .print-summary-table th:nth-child(n + 3),
+            .print-summary-table td:nth-child(n + 3),
             .print-summary-table th.text-end,
             .print-summary-table td.text-end {
               text-align: right !important;
@@ -1616,12 +1626,6 @@ export class AutocarejobInstructionComponent implements OnInit {
   row-gap: 0rem;
   column-gap: 1.5rem;
 }
-            .print-item-description-grid {
-              display: grid;
-              grid-template-columns: 105px minmax(0, 1fr);
-              column-gap: 6px;
-              align-items: start;
-            }
             @media print {
               body { padding: 0; }
               .print-actions { display: none !important; }

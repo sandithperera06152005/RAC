@@ -957,17 +957,17 @@
             </p>
           </div>
 
-          <div>
+          <div class="print-summary-special-requirements">
             <p class="m-0 print-summary-pair">
               <strong>SPECIAL REQUIRMENTS </strong><span>{{ editForm.controls['specialrquirments'].value || '' }}</span>
             </p>
           </div>
-          <div>
+          <div class="print-summary-remarks">
             <p class="m-0 print-summary-pair">
               <strong>REMARKS </strong><span>{{ editForm.controls['remarks'].value || '' }}</span>
             </p>
           </div>
-          <div>
+          <div class="print-summary-sp-instructions">
             <p class="m-0 print-summary-pair">
               <strong>SP INSTRUCTIONS </strong><span>{{ editForm.controls['specialinstructions'].value || '' }}</span>
             </p>
@@ -981,6 +981,7 @@
         <thead>
           <tr>
             <th class="text-start">DESCRIPTION</th>
+            <th class="text-end">CODE</th>
             <th class="text-end">PRICE</th>
             <th class="text-end">QTY</th>
             <th class="text-end">DIS %</th>
@@ -989,20 +990,11 @@
         </thead>
         <tbody>
           <tr>
-            <td colspan="5" class="text-start">
-              <div class="print-item-description-grid">
-                <strong>CODE</strong>
-                <strong>ITEM</strong>
-              </div>
-            </td>
+            <td colspan="6" class="text-start"><strong>ITEMS</strong></td>
           </tr>
           <tr *ngFor="let item of selectedItems; let i = index">
-            <td class="text-start">
-              <div class="print-item-description-grid">
-                <span>{{ item.code }}</span>
-                <span>{{ item.name }}</span>
-              </div>
-            </td>
+            <td class="text-start">{{ item.name }}</td>
+            <td class="text-end">{{ item.code }}</td>
             <td class="text-end">{{ item.lastsellingprice || 0 | number: '1.2-2' }}</td>
             <td class="text-end">{{ item.requestedQuantity || 0 | number: '1.0-2' }}</td>
             <td class="text-end">{{ item.discountPercentage || 0 | number: '1.2-2' }}</td>
@@ -1010,10 +1002,11 @@
           </tr>
 
           <tr>
-            <td colspan="5" class="text-start"><strong>SERVICE CHARGES</strong></td>
+            <td colspan="6" class="text-start"><strong>SERVICE CHARGES</strong></td>
           </tr>
           <tr *ngFor="let service of selectedServices; let i = index">
             <td class="text-start">{{ getBillingServiceOptionName(service.billingserviceoptionid) }}</td>
+            <td class="text-start"></td>
             <td class="text-end">{{ service.value || 0 | number: '1.2-2' }}</td>
             <td class="text-end">{{ 1 | number: '1.0-2' }}</td>
             <td class="text-end">{{ 0 | number: '1.2-2' }}</td>
@@ -1021,10 +1014,11 @@
           </tr>
 
           <tr>
-            <td colspan="5" class="text-start"><strong>COMMON SERVICES</strong></td>
+            <td colspan="6" class="text-start"><strong>COMMON SERVICES</strong></td>
           </tr>
           <tr *ngFor="let service of selectedcommonServices; let i = index">
             <td class="text-start">{{ service.name }}</td>
+            <td class="text-start"></td>
             <td class="text-end">{{ service.value || 0 | number: '1.2-2' }}</td>
             <td class="text-end">{{ 1 | number: '1.0-2' }}</td>
             <td class="text-end">{{ 0 | number: '1.2-2' }}</td>
@@ -1111,13 +1105,22 @@
 
     #printSummary .print-customer-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(12, minmax(0, 1fr));
       row-gap: 5px;
-      column-gap: 22px;
+      column-gap: 12px;
     }
 
-    #printSummary .mt-3 {
-      margin-top: 10px !important;
+    #printSummary .print-customer-grid > div {
+      grid-column: span 4;
+    }
+
+    #printSummary .print-customer-grid > .print-summary-special-requirements,
+    #printSummary .print-customer-grid > .print-summary-remarks {
+      grid-column: span 3;
+    }
+
+    #printSummary .print-customer-grid > .print-summary-sp-instructions {
+      grid-column: span 6;
     }
 
     #printSummary .print-summary-table {
@@ -1127,11 +1130,8 @@
       line-height: 1.05;
     }
 
-    .print-item-description-grid {
-      display: grid;
-      grid-template-columns: 105px minmax(0, 1fr);
-      column-gap: 6px;
-      align-items: start;
+    #printSummary .mt-3 {
+      margin-top: 10px !important;
     }
 
     .print-summary-pair {
@@ -1156,8 +1156,8 @@
       vertical-align: top;
     }
 
-    .print-summary-table th:nth-child(n + 2),
-    .print-summary-table td:nth-child(n + 2),
+    .print-summary-table th:nth-child(n + 3),
+    .print-summary-table td:nth-child(n + 3),
     .print-summary-table th.text-end,
     .print-summary-table td.text-end {
       text-align: right !important;

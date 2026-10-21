@@ -69,6 +69,8 @@ export class SalesinvoiceUpdateComponent implements OnInit {
 
   @ViewChild(SaleInvoiceCommonServiceChargeUpdateComponent)
   SaleInvoiceCommonServiceChargesUpdateComponent!: SaleInvoiceCommonServiceChargeUpdateComponent;
+
+  @ViewChild(ReceiptModalComponent) receiptModalComponent?: ReceiptModalComponent;
   protected salesInvoiceService = inject(SalesinvoiceService);
   autojobinvoice = inject(AutojobsinvoiceService);
   protected vehicletypesService = inject(VehicletypeService);
@@ -1372,6 +1374,7 @@ export class SalesinvoiceUpdateComponent implements OnInit {
                 },
                 error: err => {
                   console.error('Error saving child components:', err);
+                  this.receiptModalComponent?.billingFailed();
                 },
               });
             } else {
@@ -1392,6 +1395,7 @@ export class SalesinvoiceUpdateComponent implements OnInit {
   }
 
   protected onSaveError(error?: any): void {
+    this.receiptModalComponent?.billingFailed();
     if (error?.status === 400 && error?.error?.message === 'error.salesinvoiceexists') {
       alert('This sales invoice already exists.');
     }

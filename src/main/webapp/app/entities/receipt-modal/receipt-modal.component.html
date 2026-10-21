@@ -7,7 +7,13 @@
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">Payment Method</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close"
+          [attr.data-bs-dismiss]="isSaving ? null : 'modal'"
+          [disabled]="isSaving"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
         <div class="d-flex justify-content-center">
@@ -324,7 +330,9 @@
               </div>
               <!-- End Billing Process Button -->
               <div class="mt-3">
-                <button type="button" class="btn btn-primary" (click)="finishBilling()" [disabled]="isSaving">End Billing Process</button>
+                <button type="button" class="btn btn-primary" (click)="finishBilling()" [disabled]="isSaving">
+                  {{ isSaving ? 'Ending...' : 'End Billing Process' }}
+                </button>
               </div>
 
               <div *ngIf="false">
