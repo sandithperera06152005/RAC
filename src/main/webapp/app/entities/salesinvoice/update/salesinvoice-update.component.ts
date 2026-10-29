@@ -907,23 +907,37 @@ export class SalesinvoiceUpdateComponent implements OnInit {
     const selectedValue = inputElement.value;
     this.itemSearchText = selectedValue;
 
-    const selectedItem = this.filteredItems[index]?.find(item =>
-      this.searchItemsByCode ? item.code === selectedValue : item.name === selectedValue,
-    );
-
-    if (selectedItem) {
-      console.log('Selected Item:', selectedItem);
-      this.selectedInventoryItem = selectedItem;
-      this.itemname = selectedItem.name ?? ''; // Update itemName with the selected item's name or an empty string if undefined
-      this.availablequantity = selectedItem.availablequantity ?? 0;
-      this.lastsellingprice = selectedItem.lastsellingprice ?? 0;
-      this.code = selectedItem.code ?? '';
-      this.itemSearchText = this.searchItemsByCode ? this.code : this.itemname;
-      this.buyquantity = 1;
-    } else {
+    if (!this.selectItemFromSearchValue(selectedValue, index)) {
       console.warn('No matching item found for:', selectedValue);
       this.clearSelectedItemSearch(selectedValue);
     }
+  }
+
+  private selectItemFromSearchValue(value: string, index: number): boolean {
+    const normalizedValue = value.trim().toLocaleLowerCase();
+    const selectedItem = this.filteredItems[index]?.find(item => {
+      const itemValue = this.searchItemsByCode ? item.code : item.name;
+      return itemValue?.trim().toLocaleLowerCase() === normalizedValue;
+    });
+
+    if (!selectedItem) {
+      return false;
+    }
+
+    console.log('Selected Item:', selectedItem);
+    this.selectedInventoryItem = selectedItem;
+    this.itemname = selectedItem.name ?? '';
+    this.availablequantity = selectedItem.availablequantity ?? 0;
+    this.lastsellingprice = selectedItem.lastsellingprice ?? 0;
+    this.code = selectedItem.code ?? '';
+    this.itemSearchText = this.searchItemsByCode ? this.code : this.itemname;
+    this.buyquantity = 1;
+
+    // A native datalist commits its option through the input event; change may
+    // not fire until the field loses focus. Refresh now so details appear as
+    // soon as the user clicks an option.
+    this.cdr.detectChanges();
+    return true;
   }
   onAddItem(): void {
     if (this.availablequantity <= 0) {
@@ -999,6 +1013,13 @@ export class SalesinvoiceUpdateComponent implements OnInit {
     const inputElement = <HTMLInputElement>event.target;
     const value = inputElement.value; // Get the value typed by the user
     this.itemSearchText = value;
+
+    // Selecting a native datalist option emits input immediately, while change
+    // is deferred until blur in some browsers.
+    if (this.selectItemFromSearchValue(value, index)) {
+      return;
+    }
+
     this.clearSelectedItemSearch(value);
 
     // Log the input value to the console when a user types

@@ -120,4 +120,29 @@ describe('Salesinvoice Management Update Component', () => {
       expect(comp.previousState).not.toHaveBeenCalled();
     });
   });
+
+  describe('item selection', () => {
+    it('Should load item details immediately when a datalist option emits input', () => {
+      comp.filteredItems[0] = [
+        {
+          id: 101,
+          code: 'ITEM-101',
+          name: 'Test item',
+          availablequantity: 8,
+          lastsellingprice: 1250,
+        },
+      ];
+      const detectChanges = jest.spyOn((comp as any).cdr, 'detectChanges');
+      const event = { target: { value: 'ITEM-101' } } as unknown as Event;
+
+      comp.onItemCodeInput(event, 0);
+
+      expect(comp.itemname).toBe('Test item');
+      expect(comp.availablequantity).toBe(8);
+      expect(comp.lastsellingprice).toBe(1250);
+      expect(comp.code).toBe('ITEM-101');
+      expect(comp.buyquantity).toBe(1);
+      expect(detectChanges).toHaveBeenCalled();
+    });
+  });
 });
