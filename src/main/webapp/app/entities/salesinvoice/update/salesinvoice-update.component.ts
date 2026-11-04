@@ -40,6 +40,7 @@ import { CustomerService } from 'app/entities/customer/service/customer.service'
 import { ICustomer } from 'app/entities/customer/customer.model';
 import { AutojobsinvoicelinebatchesService } from 'app/entities/autojobsinvoicelinebatches/service/autojobsinvoicelinebatches.service';
 import { InventoryService } from 'app/entities/inventory/service/inventory.service';
+import { generateUuid } from 'app/core/util/uuid';
 
 declare const bootstrap: any;
 @Component({
@@ -1360,13 +1361,7 @@ export class SalesinvoiceUpdateComponent implements OnInit {
             const childSaveObservables: Observable<any>[] = [];
 
             if (response.status === 201) {
-              const sharedSubId = window.crypto.randomUUID
-                ? window.crypto.randomUUID()
-                : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-                    const r = (Math.random() * 16) | 0,
-                      v = c == 'x' ? r : (r & 0x3) | 0x8;
-                    return v.toString(16);
-                  });
+              const sharedSubId = generateUuid();
               this.salesInvoiceLinesService.setSubId(sharedSubId);
               this.salesInvoiceLinesUpdateComponent.transactionmodule(invoiceId);
             }

@@ -28,6 +28,7 @@ import { IBanks } from '../banks/banks.model';
 import { BanksService } from '../banks/service/banks.service';
 import { IBankbranch } from '../bankbranch/bankbranch.model';
 import { BankbranchService } from '../bankbranch/service/bankbranch.service';
+import { generateUuid } from 'app/core/util/uuid';
 
 declare const bootstrap: any;
 
@@ -842,6 +843,14 @@ export class ReceiptModalComponent implements OnChanges {
   }
 
   saveReceipt(finalUserId: number): void {
+    try {
+      this.subid = generateUuid();
+    } catch {
+      alert('Unable to generate a receipt transaction ID in this browser. Please use a supported browser.');
+      this.onSaveFinalize();
+      return;
+    }
+
     const paymentAmount = this.getCurrentPaymentAmount();
     const selectedPaymentBankAccount = this.method === 'Bank' ? this.selectedCompanyBankAccount : null;
     const paymentAccountId =
@@ -939,8 +948,6 @@ export class ReceiptModalComponent implements OnChanges {
         isbankreconciliation: false,
       };
       console.log('ReceiptPayments Payload:', receiptPaymentsPayload);
-
-      this.subid = crypto.randomUUID();
 
       const transactionAmount = this.method === 'Cash' ? this.totalamount || 0 : paymentAmount || 0;
       const receiptSaveRequests: Observable<unknown>[] = [
