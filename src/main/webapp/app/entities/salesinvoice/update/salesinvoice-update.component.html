@@ -15,7 +15,9 @@
   }
 
   .full-width-form .col-md-4,
+  .full-width-form .col-md-5,
   .full-width-form .col-md-6,
+  .full-width-form .col-md-7,
   .full-width-form .col-12 {
     padding: 10px;
   }
@@ -249,12 +251,29 @@
               </div>
             </div>
 
-            <div class="row g-2">
-              <div class="col-md-6">
+            <div class="row gx-2">
+              <div class="col-md-7">
                 <div class="mb-2">
                   <label class="form-label" for="field_item">Item</label>
                   <input type="text" class="form-control form-control-sm" id="field_item" [value]="itemname" readonly [title]="itemname" />
                 </div>
+              </div>
+
+              <div class="col-md-5">
+                <div class="mb-2">
+                  <label class="form-label" for="field_buyQty">Buy Quantity</label>
+                  <input
+                    type="text"
+                    inputmode="decimal"
+                    class="form-control form-control-sm text-end"
+                    id="field_buyQty"
+                    [value]="buyquantity | number: '1.0-2'"
+                    (input)="onBuyQtyChange($event)"
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-6">
                 <div class="mb-2">
                   <label class="form-label" for="field_itemPrice">Item Price</label>
                   <input
@@ -280,17 +299,6 @@
               </div>
 
               <div class="col-md-6">
-                <div class="mb-2">
-                  <label class="form-label" for="field_buyQty">Buy Quantity</label>
-                  <input
-                    type="text"
-                    inputmode="decimal"
-                    class="form-control form-control-sm text-end"
-                    id="field_buyQty"
-                    [value]="buyquantity | number: '1.0-2'"
-                    (input)="onBuyQtyChange($event)"
-                  />
-                </div>
                 <div class="mb-2">
                   <label class="form-label d-block">Discount Option</label>
                   <div class="item-search-options d-flex gap-3 align-items-center">

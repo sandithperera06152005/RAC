@@ -1,9 +1,9 @@
-import { Component, inject, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, ChangeDetectorRef, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, forkJoin } from 'rxjs';
-import { finalize } from 'rxjs/operators';
-import { debounceTime } from 'rxjs/operators';
+import { Observable, Subject, forkJoin, of } from 'rxjs';
+import { catchError, debounceTime, finalize, map, switchMap } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -88,6 +88,56 @@ export class SalesinvoiceUpdateComponent implements OnInit {
   protected cdr = inject(ChangeDetectorRef);
   protected jobInvoiceLineBatches = inject(AutojobsinvoicelinebatchesService);
   protected inventoryService = inject(InventoryService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly itemSearchRequests = new Subject<{ value: string; index: number; byCode: boolean }>();
+  private readonly itemSearchInputValues: Record<number, string> = {};
+
+  constructor() {
+    this.itemSearchRequests
+      .pipe(
+        debounceTime(300),
+        switchMap(request => {
+          const search$ = request.byCode
+            ? this.inventoryService.findByCode(request.value)
+            : this.inventoryService.findByItem(request.value);
+
+          return search$.pipe(
+            map(response => ({ request, response, error: null })),
+            catchError(error => of({ request, response: null, error })),
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(({ request, response, error }) => {
+        const currentValue = this.itemSearchInputValues[request.index] ?? '';
+        const requestIsCurrent =
+          this.normalizeItemSearchValue(currentValue) === this.normalizeItemSearchValue(request.value) &&
+          this.searchItemsByCode === request.byCode;
+
+        // A response for an older keystroke must never replace the current
+        // suggestions or clear/populate the current selection.
+        if (!requestIsCurrent) {
+          return;
+        }
+
+        if (error) {
+          console.error('Error fetching items:', error);
+          this.filteredItems[request.index] = [];
+          this.cdr.detectChanges();
+          return;
+        }
+
+        const items = response?.body ?? [];
+        this.filteredItems[request.index] = items.filter(item => item && item.code && item.name);
+
+        // When the user has already typed the full code/name, a native
+        // datalist click may not emit input because its value does not change.
+        // Select the exact backend result immediately instead.
+        if (!this.selectItemFromSearchValue(currentValue, request.index)) {
+          this.cdr.detectChanges();
+        }
+      });
+  }
 
   filteredVehicles: any[] = [];
   filteredCustomers: ICustomer[] = [];
@@ -900,6 +950,7 @@ export class SalesinvoiceUpdateComponent implements OnInit {
   onItemSearchModeChange(byCode: boolean): void {
     this.searchItemsByCode = byCode;
     this.filteredItems[this.i] = [];
+    this.itemSearchInputValues[this.i] = '';
     this.clearSelectedItemSearch();
   }
 
@@ -915,14 +966,19 @@ export class SalesinvoiceUpdateComponent implements OnInit {
   }
 
   private selectItemFromSearchValue(value: string, index: number): boolean {
-    const normalizedValue = value.trim().toLocaleLowerCase();
+    const normalizedValue = this.normalizeItemSearchValue(value);
     const selectedItem = this.filteredItems[index]?.find(item => {
       const itemValue = this.searchItemsByCode ? item.code : item.name;
-      return itemValue?.trim().toLocaleLowerCase() === normalizedValue;
+      return this.normalizeItemSearchValue(itemValue ?? '') === normalizedValue;
     });
 
     if (!selectedItem) {
-      return false;
+      const currentSelectedValue = this.searchItemsByCode ? this.selectedInventoryItem?.code : this.selectedInventoryItem?.name;
+
+      // The suggestions are transient and can be refreshed independently of
+      // the selected item. Do not erase a valid selection on change/blur just
+      // because it is no longer present in the latest suggestions array.
+      return this.normalizeItemSearchValue(currentSelectedValue ?? '') === normalizedValue && normalizedValue.length > 0;
     }
 
     console.log('Selected Item:', selectedItem);
@@ -1014,14 +1070,14 @@ export class SalesinvoiceUpdateComponent implements OnInit {
     const inputElement = <HTMLInputElement>event.target;
     const value = inputElement.value; // Get the value typed by the user
     this.itemSearchText = value;
+    this.itemSearchInputValues[index] = value;
 
     // Selecting a native datalist option emits input immediately, while change
     // is deferred until blur in some browsers.
-    if (this.selectItemFromSearchValue(value, index)) {
-      return;
+    const selectedFromCurrentSuggestions = this.selectItemFromSearchValue(value, index);
+    if (!selectedFromCurrentSuggestions) {
+      this.clearSelectedItemSearch(value);
     }
-
-    this.clearSelectedItemSearch(value);
 
     // Log the input value to the console when a user types
     console.log('User typed:', value);
@@ -1031,27 +1087,11 @@ export class SalesinvoiceUpdateComponent implements OnInit {
       return;
     }
 
-    console.log('Fetching items for value:', value);
+    this.itemSearchRequests.next({ value, index, byCode: this.searchItemsByCode });
+  }
 
-    const search$ = this.searchItemsByCode ? this.inventoryService.findByCode(value) : this.inventoryService.findByItem(value);
-
-    search$
-      .pipe(debounceTime(300)) // Debounce to avoid frequent calls
-      .subscribe({
-        next: (response: HttpResponse<IInventory[]>) => {
-          const items = response.body || [];
-
-          // Log the response body items received
-          console.log('API response items:', items);
-
-          this.filteredItems[index] = items.filter(item => item && item.code && item.name); // Filter out invalid items
-          console.log('Filtered items for index', index, ':', this.filteredItems[index]); // Log filtered items
-        },
-        error: error => {
-          console.error('Error fetching items:', error);
-          this.filteredItems[index] = []; // Clear suggestions on error
-        },
-      });
+  private normalizeItemSearchValue(value: string): string {
+    return value.trim().toLocaleLowerCase();
   }
 
   private clearSelectedItemSearch(searchText = ''): void {
